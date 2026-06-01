@@ -1,5 +1,5 @@
 
-from typing import final
+from typing import final, overload, override
 from warnings import deprecated
 
 from datagen.types.util.char import Char
@@ -67,12 +67,28 @@ class Identifier():
         namespace, path = identifier.split(~cls.namespace_separator)
         return Identifier.of(namespace, path)
 
+    @overload
     @classmethod
-    def of(cls, namespace: str, path: str) -> "Identifier":
-        id = cls()
-        id._namespace = namespace
-        id._path = path
-        return id
+    def of(cls, identifier: str, /) -> "Identifier": ...
+
+    @overload
+    @classmethod
+    def of(cls, namespace: str, path: str, /) -> "Identifier": ...
+
+    @classmethod
+    def of(cls, *a) -> "Identifier":
+        if len(a) == 1:
+            return cls.from_string(a[0])
+        
+        elif len(a) == 2:
+            namespace, path = a
+            id = cls()
+            id._namespace = namespace
+            id._path = path
+            return id
+        
+        else:
+            raise ValueError("Invalid number of arguments for Identifier.of() method. Expected 1 or 2, got {len(a)}.")
     
     def to_string(self) -> str:
         return str(self)
@@ -85,3 +101,6 @@ class Identifier():
     
     def hash_code(self) -> int:
         return hash(str(self))
+    
+    def __invert__(self):
+        return str(self)
