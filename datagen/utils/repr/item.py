@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Self, overload
+from typing import TYPE_CHECKING, Any, Self, Type, overload
 
 from datagen.types.protocols.todict import ToDict
 from datagen.utils.minecraft.identifier import Identifier
@@ -6,10 +6,22 @@ from datagen.utils.minecraft.targetselector import TargetSelector
 if TYPE_CHECKING:
     from datagen.utils.repr.itemstack import ItemStack
 
-class Item[T: ToDict | dict[str, Any]]():
-    def __init__(self, id: Identifier, components: T) -> None:
+class __Settings__(ToDict):
+    def __init__(self) -> None:
+        pass
+
+    def to_dict(self) -> dict:
+        return {}
+
+class Item[T: __Settings__]():
+
+    class Settings(__Settings__):
+        def __init__(self) -> None:
+            super().__init__()
+
+    def __init__(self, id: Identifier, components: T | dict) -> None:
         self.id = id
-        self.nbt = components
+        self.nbt = components if not isinstance(components, dict) else self.Settings()
 
     def __get_nbt_dict(self) -> dict:
         if not isinstance(self.nbt, dict):
@@ -24,9 +36,9 @@ class Item[T: ToDict | dict[str, Any]]():
 
     # utils
     @overload
-    def to_item_stack(self) -> "ItemStack": ...
+    def to_item_stack(self, /) -> "ItemStack": ...
     @overload
-    def to_item_stack(self, count: int = 1) -> "ItemStack": ...
+    def to_item_stack(self, count: int, /) -> "ItemStack": ...
 
     def to_item_stack(self, count: int = 1) -> "ItemStack":
         from datagen.utils.repr.itemstack import ItemStack
@@ -39,5 +51,5 @@ class Item[T: ToDict | dict[str, Any]]():
         self.nbt = nbt
         return self
     
-    def with_settings[U: ToDict](self, setting: U) -> "Item[U]":
+    def with_settings[U: Settings](self, setting: U) -> "Item[U]":
         return Item[U](self.id, setting)
