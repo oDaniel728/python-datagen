@@ -66,4 +66,73 @@ class TargetSelectorSettings():
         limit: int | None = None,
         sort: TargetSelectorSettings.TSort | None = None,
     ) -> None:
-        ...
+        self.x = x
+        self.y = y
+        self.z = z
+
+        self.dx = dx
+        self.dy = dy
+        self.dz = dz
+
+        self.distance = distance
+
+        self.x_rotation = x_rotation
+        self.y_rotation = y_rotation
+
+        self.scores = scores
+
+        self.tag = tag
+
+        self.team = team
+
+        self.name = name
+        self.type = type
+        self.predicate = predicate
+
+        self.nbt = nbt
+
+        self.level = level
+        self.gamemode = gamemode
+        self.advancements = advancements
+
+        self.limit = limit
+        self.sort = sort
+
+    def to_dict(self) -> dict:
+        return {
+            "x": self.x,
+            "y": self.y,
+            "z": self.z,
+
+            "dx": self.dx,
+            "dy": self.dy,
+            "dz": self.dz,
+
+            "distance": self.distance,
+
+            "x_rotation": self.x_rotation,
+            "y_rotation": self.y_rotation,
+            
+            "scores": self.scores,
+            
+            "tag": self.tag,
+            
+            "team": self.team,
+            
+            "name": self.name,
+            
+            "type": self.type,
+            
+            "predicate": self.predicate,
+            
+            "nbt": self.nbt,
+            
+            "level": self.level,
+            
+            "gamemode": self.gamemode,
+            
+            "advancements": self.advancements,
+            
+            "limit": self.limit,
+            "sort": self.sort
+        }
