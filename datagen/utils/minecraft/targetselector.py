@@ -25,6 +25,8 @@ class TargetSelector():
     
     def __invert__(self):
         return self.__str__()
+    
+    def to_string(self): return ~self
 
 TargetSelector.SELF = TargetSelector("@s")
 
