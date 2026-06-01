@@ -36,11 +36,11 @@ class Item[T: __Settings__]():
 
     # utils
     @overload
-    def to_item_stack(self, /) -> "ItemStack": ...
+    def get_stack(self, /) -> "ItemStack": ...
     @overload
-    def to_item_stack(self, count: int, /) -> "ItemStack": ...
+    def get_stack(self, count: int, /) -> "ItemStack": ...
 
-    def to_item_stack(self, count: int = 1) -> "ItemStack":
+    def get_stack(self, count: int = 1) -> "ItemStack":
         from datagen.utils.repr.itemstack import ItemStack
         return ItemStack(self, count)
 
