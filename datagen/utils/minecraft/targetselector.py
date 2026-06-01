@@ -3,6 +3,8 @@ from datagen.utils.minecraft.targetselectorsettings import TargetSelectorSetting
 
 class TargetSelector():
 
+    SELF: TargetSelector
+
     NEAREST_PLAYER: TargetSelector
     NEAREST_ENTITY: TargetSelector
 
@@ -23,6 +25,8 @@ class TargetSelector():
     
     def __invert__(self):
         return self.__str__()
+
+TargetSelector.SELF = TargetSelector("@s")
 
 TargetSelector.NEAREST_PLAYER = TargetSelector("@p")
 TargetSelector.NEAREST_ENTITY = TargetSelector("@e", TargetSelectorSettings(sort="nearest", limit=1))
