@@ -82,3 +82,6 @@ class Identifier():
     
     def get_path(self) -> str:
         return self._path
+    
+    def hash_code(self) -> int:
+        return hash(str(self))
