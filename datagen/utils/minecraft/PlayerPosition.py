@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 
 
 if TYPE_CHECKING:
-    from datagen.utils.minecraft.BlockPosition import BlockPosition
+    from datagen.utils.minecraft.blockposition import BlockPosition
 
 class PlayerPosition():
     def __init__(self, x: float, y: float, z: float):
@@ -27,5 +27,5 @@ class PlayerPosition():
         return (self.x, self.y, self.z)
     
     def to_block_position(self) -> "BlockPosition":
-        from datagen.utils.minecraft.BlockPosition import BlockPosition
+        from datagen.utils.minecraft.blockposition import BlockPosition
         return BlockPosition(int(self.x), int(self.y), int(self.z))
