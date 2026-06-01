@@ -17,6 +17,11 @@ class Function():
     def add_command(self, command: Command) -> Self:
         self.commands.append(command)
         return self
+    
+    def add_commands(self, *commands: Command) -> Self:
+        for command in commands:
+            self.add_command(command)
+        return self
 
     def get_filepath(self):
         return FUNCTIONS_PATH + self.id._path.replace(".", "/").replace(" ", "_") + ".mcfunction"
