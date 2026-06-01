@@ -7,7 +7,7 @@ from datagen.utils.snbtserializer import SNBTSerializer
 
 
 class SetBlock(Command):
-    def __init__(self, block_pos: BlockPosition, block: Block, nbt):
+    def __init__(self, block_pos: BlockPosition, block: Block):
         self.block_pos = block_pos
         self.block = block
 
