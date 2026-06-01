@@ -6,6 +6,4 @@ class RelativeBlockPosition(BlockPosition):
         super().__init__(x, y, z)
 
     def to_string(self) -> str:
-        return f"~{self.x if self.x != 0 else ''}\
-                 ~{self.y if self.y != 0 else ''}\
-                 ~{self.z if self.z != 0 else ''}"
+        return f"~{self.x if self.x != 0 else ''} ~{self.y if self.y != 0 else ''} ~{self.z if self.z != 0 else ''}"
