@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, overload
+from typing import TYPE_CHECKING, Any, Self, overload
 
 from datagen.types.protocols.todict import ToDict
 from datagen.utils.minecraft.identifier import Identifier
@@ -31,3 +31,6 @@ class Item[T: ToDict | dict[str, Any]]():
     def to_item_stack(self, count: int = 1) -> "ItemStack":
         from datagen.utils.repr.itemstack import ItemStack
         return ItemStack(self, count)
+
+    def copy(self) -> "Item[T]":
+        return Item(self.id, self.nbt)
