@@ -21,7 +21,7 @@ class Item[T: ToDict | dict[str, Any]]():
 
     def __invert__(self):
         return self.id
-    
+
     # utils
     @overload
     def to_item_stack(self) -> "ItemStack": ...
@@ -33,4 +33,11 @@ class Item[T: ToDict | dict[str, Any]]():
         return ItemStack(self, count)
 
     def copy(self) -> "Item[T]":
-        return Item(self.id, self.nbt)
+        return Item[T](self.id, self.nbt) # type: ignore
+
+    def set_nbt(self, nbt: T) -> Self:
+        self.nbt = nbt
+        return self
+    
+    def with_settings[U: ToDict](self, setting: U) -> "Item[U]":
+        return Item[U](self.id, setting)
