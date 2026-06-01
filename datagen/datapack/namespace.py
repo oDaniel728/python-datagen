@@ -1,5 +1,6 @@
 from pathlib import Path
 from typing import final
+from uuid import uuid4
 from typing_extensions import Self
 
 from datagen.function.function import Function
@@ -10,6 +11,7 @@ from datagen.utils.minecraft.logger import Logger
 @final
 class Namespace():
     minecraft: Namespace
+    temp: Namespace
 
     instances = dict[str, "Self"]()
     
@@ -87,3 +89,4 @@ class Namespace():
         Logger.end_task(f"Building namespace '{self.name}'")
 
 Namespace.minecraft = Namespace("minecraft")
+Namespace.temp = Namespace(f"temp")
