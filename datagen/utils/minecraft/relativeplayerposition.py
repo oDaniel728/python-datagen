@@ -1,12 +1,11 @@
 from typing import TYPE_CHECKING
 
-from datagen.utils.repr.position3 import Position3
-
+from datagen.utils.minecraft.playerposition import PlayerPosition
 
 if TYPE_CHECKING:
     from datagen.utils.minecraft.blockposition import BlockPosition
 
-class RelativePlayerPosition(Position3[float]):
+class RelativePlayerPosition(PlayerPosition):
     def __init__(self, x: float, y: float, z: float):
         super().__init__(x, y, z)
 
