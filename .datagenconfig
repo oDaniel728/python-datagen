@@ -1,0 +1,6 @@
+{
+    "builderSettings": {
+        "source": "src/",
+        "output": "generated/"
+    }
+}

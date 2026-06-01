@@ -1,0 +1,24 @@
+{
+    "python.analysis.autoImportCompletions": true,
+    "python.analysis.packageIndexDepths": [
+        {
+            "name": "typing",
+            "depth": 4,
+            "includeAllSymbols": false
+        },
+        {
+            "name": "datagen",
+            "depth": 5,
+            "includeAllSymbols": false
+        }
+    ],
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/.DS_Store": true,
+        "**/Thumbs.db": true,
+        "**/__pycache__": true,
+    },
+    "python.REPL.enableREPLSmartSend": false,
+}
