@@ -1,17 +1,18 @@
+import sys
 import json
 from pathlib import Path
-from typing import Callable
-
-import sys
 sys.path.append(str(Path(__file__).parent.parent))
+
+from typing import Callable
+from datagen.globals import DatagenConfig
 from datagen.utils.minecraft.identifier import Identifier
 from datagen.utils.repr.block import Block
 from datagen.utils.repr.enchantment import Enchantment
 from datagen.utils.repr.entitytype import EntityType
 from datagen.utils.repr.instrument import Instrument
 
-INPUT_PATH  = "dumpgen/dumps/"
-OUTPUT_PATH = "datagen/utils/minecraft/collections/"
+INPUT_PATH  = DatagenConfig.config["dumperSettings"]["source"]
+OUTPUT_PATH = DatagenConfig.config["dumperSettings"]["output"]
 
 INPUT_FILE = Path(INPUT_PATH)
 OUTPUT_FILE = Path(OUTPUT_PATH)
