@@ -21,4 +21,7 @@
         "**/__pycache__": true,
     },
     "python.REPL.enableREPLSmartSend": false,
+    "explorer.fileNesting.patterns": {
+        "*.py": "${capture}.pyi, ${capture}.pyc, ${capture}.__pycache__/*",
+    },
 }
