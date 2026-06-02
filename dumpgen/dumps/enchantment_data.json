@@ -1,0 +1,170 @@
+[
+  {
+    "max_level": 5,
+    "id": "minecraft:efficiency"
+  },
+  {
+    "max_level": 3,
+    "id": "minecraft:sweeping_edge"
+  },
+  {
+    "max_level": 3,
+    "id": "minecraft:looting"
+  },
+  {
+    "max_level": 3,
+    "id": "minecraft:quick_charge"
+  },
+  {
+    "max_level": 1,
+    "id": "minecraft:silk_touch"
+  },
+  {
+    "max_level": 3,
+    "id": "minecraft:soul_speed"
+  },
+  {
+    "max_level": 4,
+    "id": "minecraft:breach"
+  },
+  {
+    "max_level": 5,
+    "id": "minecraft:density"
+  },
+  {
+    "max_level": 1,
+    "id": "minecraft:flame"
+  },
+  {
+    "max_level": 3,
+    "id": "minecraft:fortune"
+  },
+  {
+    "max_level": 1,
+    "id": "minecraft:aqua_affinity"
+  },
+  {
+    "max_level": 1,
+    "id": "minecraft:multishot"
+  },
+  {
+    "max_level": 1,
+    "id": "minecraft:channeling"
+  },
+  {
+    "max_level": 3,
+    "id": "minecraft:loyalty"
+  },
+  {
+    "max_level": 1,
+    "id": "minecraft:binding_curse"
+  },
+  {
+    "max_level": 2,
+    "id": "minecraft:punch"
+  },
+  {
+    "max_level": 5,
+    "id": "minecraft:power"
+  },
+  {
+    "max_level": 4,
+    "id": "minecraft:projectile_protection"
+  },
+  {
+    "max_level": 5,
+    "id": "minecraft:sharpness"
+  },
+  {
+    "max_level": 2,
+    "id": "minecraft:frost_walker"
+  },
+  {
+    "max_level": 4,
+    "id": "minecraft:fire_protection"
+  },
+  {
+    "max_level": 5,
+    "id": "minecraft:impaling"
+  },
+  {
+    "max_level": 3,
+    "id": "minecraft:luck_of_the_sea"
+  },
+  {
+    "max_level": 3,
+    "id": "minecraft:riptide"
+  },
+  {
+    "max_level": 1,
+    "id": "minecraft:mending"
+  },
+  {
+    "max_level": 4,
+    "id": "minecraft:protection"
+  },
+  {
+    "max_level": 3,
+    "id": "minecraft:respiration"
+  },
+  {
+    "max_level": 4,
+    "id": "minecraft:piercing"
+  },
+  {
+    "max_level": 4,
+    "id": "minecraft:feather_falling"
+  },
+  {
+    "max_level": 3,
+    "id": "minecraft:swift_sneak"
+  },
+  {
+    "max_level": 3,
+    "id": "minecraft:unbreaking"
+  },
+  {
+    "max_level": 2,
+    "id": "minecraft:fire_aspect"
+  },
+  {
+    "max_level": 3,
+    "id": "minecraft:lure"
+  },
+  {
+    "max_level": 5,
+    "id": "minecraft:smite"
+  },
+  {
+    "max_level": 2,
+    "id": "minecraft:knockback"
+  },
+  {
+    "max_level": 3,
+    "id": "minecraft:depth_strider"
+  },
+  {
+    "max_level": 3,
+    "id": "minecraft:wind_burst"
+  },
+  {
+    "max_level": 1,
+    "id": "minecraft:infinity"
+  },
+  {
+    "max_level": 1,
+    "id": "minecraft:vanishing_curse"
+  },
+  {
+    "max_level": 5,
+    "id": "minecraft:bane_of_arthropods"
+  },
+  {
+    "max_level": 4,
+    "id": "minecraft:blast_protection"
+  },
+  {
+    "max_level": 3,
+    "id": "minecraft:thorns"
+  }
+]
