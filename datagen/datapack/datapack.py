@@ -6,6 +6,7 @@ from typing_extensions import Self
 
 from datagen.datapack.namespace import Namespace
 from datagen.function.function import Function
+from datagen.globals import DatagenConfig
 from datagen.utils.minecraft.identifier import Identifier
 from datagen.utils.minecraft.logger import Logger
 
@@ -59,7 +60,9 @@ class DataPack():
         if _log_this:
             Logger.end_task(f"Clearing output directory '{output}'")
 
-    def build(self, output: str | Path):
+    def build(self, output: str | Path | None = None):
+        if not output:
+            output = DatagenConfig.config["builderSettings"]["output"]
         Logger.start_task(f"Building datapack '{self.name}'")
         out = Path(output) / self.name
         self.__clear(out)
