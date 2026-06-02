@@ -7,6 +7,7 @@ from datagen.function.commands.runfunction import RunFunction
 from datagen.function.commands.say import Say
 from datagen.function.commands.setblock import SetBlock
 from datagen.function.commands.teleport import Teleport
+from datagen.function.commands.tellraw import TellRaw
 from datagen.function.function import Function
 from datagen.tag.tag import Tag
 from datagen.utils.minecraft.blockposition import BlockPosition
@@ -15,6 +16,7 @@ from datagen.utils.minecraft.collections.blocksettings import BlockSettings
 from datagen.utils.minecraft.collections.items import Items
 from datagen.utils.minecraft.relativeblockposition import RelativeBlockPosition
 from datagen.utils.minecraft.targetselector import TargetSelector
+from datagen.utils.minecraft.text import Text
 from datagen.utils.repr.position3 import Position3
 
 def main():
@@ -23,8 +25,11 @@ def main():
     dp = DataPack("example", "An example datapack generated with python-datagen")
 
     namespace = Namespace("example")
-    dp.add_namespace(namespace)
-    dp.add_namespace(Namespace.minecraft)
+    (
+        dp
+            .add_namespace(namespace)
+            .add_namespace(Namespace.minecraft)
+    )
     func = Function(namespace.identifier("func")) \
         .add_commands(
             Say("Hello, World!"),
@@ -45,8 +50,15 @@ def main():
         )
     load = Function(namespace.identifier("load")) \
         .add_command(
-            RunFunction(func)
+            TellRaw(
+                TargetSelector.ALL_PLAYERS, 
+                Text.of(Text.LiteralTextSettings(
+                    text="Hello, World!",
+                    color="green"
+                )
+            )
         )
+    )
 
     namespace.add(func)
     namespace.add(load)
