@@ -1,6 +1,6 @@
 {
     "builderSettings": {
         "source": "src/",
-        "output": "generated/"
+        "output": "datapacks/"
     }
 }
