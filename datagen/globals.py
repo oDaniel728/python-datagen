@@ -10,8 +10,13 @@ class DatagenConfig():
     class TDatagenConfigTBuilderOptions(TypedDict):
         source: str
         output: str
+    class TDataGenConfigTDumperSettings(TypedDict):
+        source: str
+        output: str
+
     class TDatagenConfig(TypedDict):
         builderSettings: DatagenConfig.TDatagenConfigTBuilderOptions
+        dumperSettings: DatagenConfig.TDataGenConfigTDumperSettings
         
     config: TDatagenConfig
 
