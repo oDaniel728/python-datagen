@@ -1,6 +1,6 @@
 import json
 from pathlib import Path
-from typing import Iterable, Self
+from typing import Iterable, Self, Type
 
 from datagen.function.function import Function
 from datagen.globals import TAGS_PATH
@@ -16,6 +16,7 @@ class Tag[T]():
 
         self.values = set(values)
         self.replace = replace
+        self.type: Type[T] = type(list(values)[0])
 
     def add_value(self, value: T) -> Self:
         self.values.add(value)
@@ -24,6 +25,11 @@ class Tag[T]():
     def remove_value(self, value: T) -> Self:
         self.values.remove(value)
         return self
+
+    def parent(self) -> str:
+        if self.type == Function:
+            return "function"
+        return self.type.__name__.lower()
     
     def has_value(self, value: T) -> bool:
         return value in self.values
@@ -58,4 +64,4 @@ class Tag[T]():
         return json.dumps(self.to_dict(), indent=4)
 
     def to_file(self) -> SimpleFile:
-        return SimpleFile(Path(TAGS_PATH) / (self.id._path.replace(".", "/") + ".json"), self.to_string())
+        return SimpleFile(Path(TAGS_PATH) / self.parent() / (self.id._path.replace(".", "/") + ".json"), self.to_string())
