@@ -11,7 +11,7 @@ class Command(ABC):
         return False
     
     def __str__(self) -> str:
-        return self.to_string()
+        return self.auto_macro(self.to_string())
 
     def to_macro(self, command: str) -> str:
         return f"${command}" if not command.startswith("$") else command
