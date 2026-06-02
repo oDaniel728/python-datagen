@@ -10,9 +10,8 @@ from datagen.utils.repr.enchantment import Enchantment
 from datagen.utils.repr.entitytype import EntityType
 from datagen.utils.repr.instrument import Instrument
 
-INPUT_PATH  = "dumpgen/dumps/block_types.json"
-CLASS_NAME  = "BlockTypes"
-OUTPUT_PATH = "dumpgen/dumps/block_types.py"
+INPUT_PATH  = "dumpgen/dumps/"
+OUTPUT_PATH = "datagen/utils/minecraft/collections/"
 
 INPUT_FILE = Path(INPUT_PATH)
 OUTPUT_FILE = Path(OUTPUT_PATH)
@@ -62,15 +61,15 @@ def main(input: str | Path, output: str | Path, class_name: str, process: Callab
 
 def dump_block_types():
     main(
-        "dumpgen/dumps/block_types.json", 
-        "dumpgen/dumps/block_types.py", 
+        INPUT_FILE / "block_types.json", 
+        OUTPUT_FILE / "block_types.py", 
         "BlockTypes", 
         json_list_identifier_str_to_identifier_static_class
     )
 def dump_blocks():
     main(
-        "dumpgen/dumps/blocks.json", 
-        "dumpgen/dumps/blocks.py", 
+        INPUT_FILE / "blocks.json", 
+        OUTPUT_FILE / "blocks.py", 
         "Blocks", 
         json_list_identifier_str_to_custom_class_static_class(
             "datagen.utils.repr.block", "Block"
@@ -78,15 +77,15 @@ def dump_blocks():
     )
 def dump_enchantment_data():
     main(
-        "dumpgen/dumps/enchantment_data.json", 
-        "dumpgen/dumps/enchantments.py", 
+        INPUT_FILE / "enchantment_data.json", 
+        OUTPUT_FILE / "enchantments.py", 
         "Enchantments", 
         json_list_enchantment_data_to_enchantment_static_class
     )
 def dump_entity_types():
     main(
-        "dumpgen/dumps/entity_types.json", 
-        "dumpgen/dumps/entity_types.py", 
+        INPUT_FILE / "entity_types.json", 
+        OUTPUT_FILE / "entity_types.py", 
         "EntityTypes", 
         json_list_identifier_str_to_custom_class_static_class(
             "datagen.utils.repr.entitytype", "EntityType"
@@ -94,8 +93,8 @@ def dump_entity_types():
     )
 def dump_instruments():
     main(
-        "dumpgen/dumps/instruments.json", 
-        "dumpgen/dumps/instruments.py", 
+        INPUT_FILE / "instruments.json", 
+        OUTPUT_FILE / "instruments.py", 
         "Instruments", 
         json_list_identifier_str_to_custom_class_static_class(
             "from datagen.utils.repr.instrument import Instrument", "Instrument"
@@ -104,8 +103,8 @@ def dump_instruments():
 
 def dump_items():
     main(
-        "dumpgen/dumps/items.json", 
-        "dumpgen/dumps/items.py", 
+        INPUT_FILE / "items.json", 
+        OUTPUT_FILE / "items.py", 
         "Items", 
         json_list_identifier_str_to_custom_class_static_class(
             "from datagen.utils.repr.item import Item", "Item"
@@ -114,8 +113,8 @@ def dump_items():
 
 def dump_particle_types():
     main(
-        "dumpgen/dumps/particle_types.json", 
-        "dumpgen/dumps/particle_types.py", 
+        INPUT_FILE / "particle_types.json", 
+        OUTPUT_FILE / "particle_types.py", 
         "ParticleTypes", 
         json_list_identifier_str_to_custom_class_static_class(
             "from datagen.utils.repr.particle import ParticleType", "ParticleType"
@@ -124,8 +123,8 @@ def dump_particle_types():
 
 def dump_sounds():
     main(
-        "dumpgen/dumps/sounds.json", 
-        "dumpgen/dumps/sounds.py", 
+        INPUT_FILE / "sounds.json", 
+        OUTPUT_FILE / "sounds.py", 
         "Sounds", 
         json_list_identifier_str_to_custom_class_static_class(
             "from datagen.utils.repr.sound import Sound", "Sound"
