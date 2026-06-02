@@ -10,6 +10,13 @@ from datagen.utils.minecraft.identifier import Identifier
 from datagen.utils.minecraft.targetselector import TargetSelector
 from datagen.utils.repr.keybind import KeyBind
 
+class __notNone__():
+    @staticmethod
+    def __matmul__[T](other: T | None) -> T:
+        if other is None:
+            raise ValueError("Value cannot be None")
+        return other
+unNull = __notNone__()
 
 class Text():
     @deprecated("Do not use __init__ in Text, use .literal or .translate instead")
@@ -290,8 +297,8 @@ class Text():
             self.selector = selector
             self.settings = settings
 
-        def to_string(self) -> str:
-            return json.dumps(self.settings.to_dict() | {"type": "selector"} | {"selector": self.selector.to_string()} if self.settings else {"selector": self.selector.to_string()})
+        def to_dict(self) -> dict:
+            return self.settings.to_dict() | {"type": "selector"} | {"selector": self.selector.to_string()} if self.settings else {"selector": self.selector.to_string()}
         
     class keybind(BaseText):
         def __init__(self, keybind: KeyBind, settings: 'Text.BaseTextSettings | None' = None) -> None:
@@ -336,15 +343,16 @@ class Text():
 
     @staticmethod
     def of(settings: BaseTextSettings):
-        typeMap = {
-            Text.LiteralTextSettings: Text.literal,
-            Text.TranslateTextSettings: Text.translate,
-            Text.ScoreTextSettings: Text.score,
-            Text.SelectorTextSettings: Text.selector,
-            Text.KeybindTextSettings: Text.keybind,
-            Text.NBTTextSettings: Text.nbt
-        }
-        for settingsType, textType in typeMap.items():
-            if isinstance(settings, settingsType):
-                return textType("", settings)
+        if isinstance(settings, Text.LiteralTextSettings):
+            return Text.literal(settings.text, settings)
+        elif isinstance(settings, Text.TranslateTextSettings):
+            return Text.translate(unNull @ settings.translate, settings)
+        elif isinstance(settings, Text.ScoreTextSettings):
+            return Text.score(settings.name, settings.objective, settings)
+        elif isinstance(settings, Text.SelectorTextSettings):
+            return Text.selector(unNull @ settings.selector, settings)
+        elif isinstance(settings, Text.KeybindTextSettings):
+            return Text.keybind(unNull @ settings.keybind, settings)
+        elif isinstance(settings, Text.NBTTextSettings):
+            return Text.nbt(settings.nbt, settings.source, settings)
         raise ValueError(f"Invalid settings type: {type(settings)}")
