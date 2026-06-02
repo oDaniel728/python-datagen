@@ -255,25 +255,26 @@ class Text():
         def to_dict(self) -> dict:
             return super().to_dict() | {"nbt": self.nbt, "block": self.block, "entity": self.entity, "storage": self.storage, "separator": self.separator.to_string() if self.separator else None}
 
-    class BaseText(ToString): 
+    class BaseText(ToString, ToDict): 
         def to_string(self) -> str:
-            return '{}'
+            return json.dumps({k: v for k, v in self.to_dict().items() if v is not None})
 
     class literal(BaseText):
         def __init__(self, value: str, settings: 'Text.BaseTextSettings | None' = None) -> None:
             self.value = value
             self.settings = settings
 
-        def to_string(self) -> str:
-            return json.dumps(self.settings.to_dict() | {"type": "text"} | {"text": self.value} if self.settings else {"text": self.value})
+        def to_dict(self) -> dict:
+            return self.settings.to_dict() | {"type": "text"} | {"text": self.value} if self.settings else {"text": self.value}
+
     
     class translate(BaseText):
         def __init__(self, value: Identifier, settings: 'Text.BaseTextSettings | None' = None) -> None:
             self.value = value
             self.settings = settings
 
-        def to_string(self) -> str:
-            return json.dumps(self.settings.to_dict() | {"type": "translatable"} | {"translate": self.value.to_string()} if self.settings else {"translate": self.value.to_string()})
+        def to_dict(self) -> dict:
+            return self.settings.to_dict() | {"type": "translatable"} | {"translate": self.value.to_string()} if self.settings else {"translate": self.value.to_string()}
 
     class score(BaseText):
         def __init__(self, name: str, objective: str, settings: 'Text.BaseTextSettings | None' = None) -> None:
@@ -281,8 +282,8 @@ class Text():
             self.objective = objective
             self.settings = settings
 
-        def to_string(self) -> str:
-            return json.dumps(self.settings.to_dict() | {"type": "score"} | {"score": {"name": self.name, "objective": self.objective}} if self.settings else {"score": {"name": self.name, "objective": self.objective}})
+        def to_dict(self) -> dict:
+            return self.settings.to_dict() | {"type": "score"} | {"score": {"name": self.name, "objective": self.objective}} if self.settings else {"score": {"name": self.name, "objective": self.objective}}
         
     class selector(BaseText):
         def __init__(self, selector: TargetSelector, settings: 'Text.BaseTextSettings | None' = None) -> None:
@@ -297,8 +298,8 @@ class Text():
             self.keybind = keybind
             self.settings = settings
 
-        def to_string(self) -> str:
-            return json.dumps(self.settings.to_dict() | {"type": "keybind"} | {"keybind": self.keybind} if self.settings else {"keybind": self.keybind})
+        def to_dict(self) -> dict:
+            return self.settings.to_dict() | {"type": "keybind"} | {"keybind": self.keybind} if self.settings else {"keybind": self.keybind}
 
     class nbt(BaseText):
         def __init__(self, nbt: str, source: Text.NBTTextSettings.TSource = "block", settings: 'Text.BaseTextSettings | None' = None) -> None:
@@ -306,8 +307,8 @@ class Text():
             self.source = source
             self.settings = settings
 
-        def to_string(self) -> str:
-            return json.dumps(self.settings.to_dict() | {"type": "nbt"} | {"nbt": self.nbt, self.source: self.nbt} if self.settings else {"nbt": self.nbt, self.source: self.nbt})
+        def to_dict(self) -> dict:
+            return self.settings.to_dict() | {"type": "nbt"} | {"nbt": self.nbt, self.source: self.nbt} if self.settings else {"nbt": self.nbt, self.source: self.nbt}
 
     @overload
     @staticmethod
