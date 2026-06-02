@@ -13,7 +13,7 @@ class Block[T: __Settings__](Item[T]):
         def __init__(self) -> None:
             super().__init__()
 
-    def __init__(self, id: Identifier, nbt: T | dict) -> None:
+    def __init__(self, id: Identifier, nbt: T | dict = {}) -> None:
         super().__init__(id, nbt)
 
     def with_settings[U: __Settings__](self, setting: U) -> "Block[U]": # type: ignore

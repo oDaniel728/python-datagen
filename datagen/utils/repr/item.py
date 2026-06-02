@@ -19,7 +19,7 @@ class Item[T: __Settings__]():
         def __init__(self) -> None:
             super().__init__()
 
-    def __init__(self, id: Identifier, components: T | dict) -> None:
+    def __init__(self, id: Identifier, components: T | dict = {}) -> None:
         self.id = id
         self.nbt = components if not isinstance(components, dict) else self.Settings()
 
