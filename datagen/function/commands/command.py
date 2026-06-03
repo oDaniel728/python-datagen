@@ -5,8 +5,9 @@ class Command(ABC):
 
     def __init__(self):
         from datagen.function.function import Function
-        if Function.__current_function:
-            Function.__current_function.add_command(self)
+        current_function = getattr(Function, "_Function__current_function", None)
+        if current_function:
+            current_function.add_command(self)
 
     @abstractmethod
     def to_string(self) -> str: ...

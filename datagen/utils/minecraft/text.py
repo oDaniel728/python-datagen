@@ -1,5 +1,5 @@
 import json
-from typing import Any, Literal, override, override
+from typing import TYPE_CHECKING, Any, Literal, override, override
 from warnings import deprecated
 
 from typing import overload
@@ -9,7 +9,8 @@ from datagen.types.protocols.tostring import ToString
 from datagen.utils.minecraft.identifier import Identifier
 from datagen.utils.minecraft.targetselector import TargetSelector
 from datagen.utils.repr.keybind import KeyBind
-from datagen.utils.scoreboard.player import ScoreboardPlayer
+if TYPE_CHECKING:
+    from datagen.utils.scoreboard.player import ScoreboardPlayer
 
 class __notNone__():
     @staticmethod
@@ -143,7 +144,7 @@ class Text():
 
     class ScoreTextSettings(BaseTextSettings):
         def __init__(self, *,
-            player: ScoreboardPlayer,
+            player: "ScoreboardPlayer",
             italic: bool = False,
             bold: bool = False,
             underlined: bool = False,
@@ -162,7 +163,7 @@ class Text():
                 font=font
             )
             self.type = "score"
-            self.player: ScoreboardPlayer = player
+            self.player: "ScoreboardPlayer" = player
 
         def to_dict(self) -> dict:
             return super().to_dict() | {"score": {"name": str(self.player), "objective": str(self.player.objective)}} if self.player else {}
@@ -282,7 +283,7 @@ class Text():
             return self.settings.to_dict() | {"type": "translatable"} | {"translate": self.value.to_string()} if self.settings else {"translate": self.value.to_string()}
 
     class score(BaseText):
-        def __init__(self, player: ScoreboardPlayer, settings: 'Text.BaseTextSettings | None' = None) -> None:
+        def __init__(self, player: "ScoreboardPlayer", settings: 'Text.BaseTextSettings | None' = None) -> None:
             self.player = player    
             self.settings = settings
 
