@@ -16,7 +16,7 @@ class Tag[T]():
 
         self.values = set(values)
         self.replace = replace
-        self.type: Type[T] = type(list(values)[0])
+        self.type: Type[T] = type(list(values)[0]) if len(values) > 0 else None # type: ignore
 
     def add_value(self, value: T) -> Self:
         self.values.add(value)
