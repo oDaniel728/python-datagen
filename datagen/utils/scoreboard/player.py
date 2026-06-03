@@ -179,6 +179,12 @@ class ScoreboardPlayer():
             str(target.objective)
         )
 
+    def get(self):
+        out = CustomCommand()
+        out += f"# get {self.name}"
+        out += f"scoreboard players get {self} {self.objective}"
+        return out
+
     @staticmethod
     def all_from(objective: ScoreboardObjective):
         return ScoreboardPlayer(objective, '*')
