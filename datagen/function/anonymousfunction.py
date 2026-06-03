@@ -1,3 +1,4 @@
+from typing import Self
 from uuid import uuid4
 
 from datagen.datapack.datapack import DataPack

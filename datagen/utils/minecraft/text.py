@@ -24,7 +24,7 @@ class Text():
     @deprecated("Do not use __init__ in Text, use .literal or .translate instead")
     def __init__(self):
         pass
-
+    
     class BaseTextSettings(ToDict):
         TextColor = Literal[
             "black",
@@ -167,6 +167,7 @@ class Text():
 
         def to_dict(self) -> dict:
             return super().to_dict() | {"score": {"name": str(self.player), "objective": str(self.player.objective)}} if self.player else {}
+    
     class SelectorTextSettings(BaseTextSettings):
         def __init__(self, *,
             italic: bool = False,
@@ -261,9 +262,13 @@ class Text():
         def to_dict(self) -> dict:
             return super().to_dict() | {"nbt": self.nbt, "block": self.block, "entity": self.entity, "storage": self.storage, "separator": self.separator.to_string() if self.separator else None}
 
-    class BaseText(ToString, ToDict): 
+    class BaseText(ToString, ToDict):
         def to_string(self) -> str:
             return json.dumps({k: v for k, v in self.to_dict().items() if v is not None})
+        
+        @staticmethod
+        def components(*components: 'Text.BaseText') -> 'list[Text.BaseText]':
+            return list(components)
 
     class literal(BaseText):
         def __init__(self, value: str, settings: 'Text.BaseTextSettings | None' = None) -> None:
@@ -272,7 +277,6 @@ class Text():
 
         def to_dict(self) -> dict:
             return self.settings.to_dict() | {"type": "text"} | {"text": self.value} if self.settings else {"text": self.value}
-
     
     class translate(BaseText):
         def __init__(self, value: Identifier, settings: 'Text.BaseTextSettings | None' = None) -> None:
