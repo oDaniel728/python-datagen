@@ -16,6 +16,9 @@ class Function():
 
         self.commands = list[Command]()
 
+    def __hash__(self) -> int:
+        return hash(self.id)
+
     def add_command(self, command: Command) -> Self:
         self.commands.append(command)
         return self

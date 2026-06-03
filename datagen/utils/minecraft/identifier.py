@@ -104,3 +104,6 @@ class Identifier():
     
     def __invert__(self):
         return str(self)
+    
+    def __hash__(self) -> int:
+        return self.hash_code()
