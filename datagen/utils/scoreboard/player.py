@@ -1,6 +1,7 @@
 from typing import Literal
 
 from datagen.function.commands.customcommand import CustomCommand
+from datagen.function.function import Function
 from datagen.utils.minecraft.targetselector import TargetSelector
 from datagen.utils.scoreboard.objective import ScoreboardObjective
 
@@ -46,7 +47,7 @@ class ScoreboardPlayer():
         else:
             return self.operation(score, "=")
         
-    def multiply(self, score: "int | ScoreboardPlayer"):
+    def multiply(self, score: "int | ScoreboardPlayer") -> "CustomCommand":
         from datagen.utils.minecraft.text import Text
         out = CustomCommand()
         # 1. score add temp
@@ -55,12 +56,18 @@ class ScoreboardPlayer():
         # 4. score player self *= temp
         # 6. score remove temp
         tmpscore = ScoreboardObjective("temp_multiply", Text.literal(""), self.objective.criterion)
-        out += tmpscore.add()
-        tmp = tmpscore.player()
-        out += tmp.set(0)
-        out += tmp.add(score)
-        out += self.operation(tmp, "*=")
-        out += tmpscore.remove()
+        from datagen.function.function import Function
+        current_function = getattr(Function, "_Function__current_function", None)
+        try:
+            Function._Function__current_function = None # type: ignore
+            out += tmpscore.add()
+            tmp = tmpscore.player()
+            out += tmp.set(0)
+            out += tmp.add(score)
+            out += self.operation(tmp, "*=")
+            out += tmpscore.remove()
+        finally:
+            Function._Function__current_function = current_function # type: ignore
         return out
     
     def divide(self, score: "int | ScoreboardPlayer"):
@@ -72,12 +79,18 @@ class ScoreboardPlayer():
         # 4. score player self /= temp
         # 6. score remove temp
         tmpscore = ScoreboardObjective("temp_divide", Text.literal(""), self.objective.criterion)
-        out += tmpscore.add()
-        tmp = tmpscore.player()
-        out += tmp.set(0)
-        out += tmp.add(score)
-        out += self.operation(tmp, "/=")
-        out += tmpscore.remove()
+        from datagen.function.function import Function
+        current_function = getattr(Function, "_Function__current_function", None)
+        try:
+            Function._Function__current_function = None
+            out += tmpscore.add()
+            tmp = tmpscore.player()
+            out += tmp.set(0)
+            out += tmp.add(score)
+            out += self.operation(tmp, "/=")
+            out += tmpscore.remove()
+        finally:
+            Function._Function__current_function = current_function
         return out
     
     def modulus(self, score: "int | ScoreboardPlayer"):
@@ -89,12 +102,18 @@ class ScoreboardPlayer():
         # 4. score player self %= temp
         # 6. score remove temp
         tmpscore = ScoreboardObjective("temp_mod", Text.literal(""), self.objective.criterion)
-        out += tmpscore.add()
-        tmp = tmpscore.player()
-        out += tmp.set(0)
-        out += tmp.add(score)
-        out += self.operation(tmp, "%=")
-        out += tmpscore.remove()
+        from datagen.function.function import Function
+        current_function = getattr(Function, "_Function__current_function", None)
+        try:
+            Function._Function__current_function = None
+            out += tmpscore.add()
+            tmp = tmpscore.player()
+            out += tmp.set(0)
+            out += tmp.add(score)
+            out += self.operation(tmp, "%=")
+            out += tmpscore.remove()
+        finally:
+            Function._Function__current_function = current_function
         return out
 
     def swap(self, score: "ScoreboardPlayer"):
