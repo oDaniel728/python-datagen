@@ -62,8 +62,7 @@ class ScoreboardPlayer():
             Function._Function__current_function = None # type: ignore
             out += tmpscore.add()
             tmp = tmpscore.player()
-            out += tmp.set(0)
-            out += tmp.add(score)
+            out += tmp.set(score)
             out += self.operation(tmp, "*=")
             out += tmpscore.remove()
         finally:
