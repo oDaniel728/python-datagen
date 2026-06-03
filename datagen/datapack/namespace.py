@@ -88,5 +88,8 @@ class Namespace():
         self.build_tags(base)
         Logger.end_task(f"Building namespace '{self.name}'")
 
+    def __truediv__(self, path: str) -> Identifier:
+        return self.identifier(path)
+
 Namespace.minecraft = Namespace("minecraft")
 Namespace.temp = Namespace(f"temp")

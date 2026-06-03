@@ -8,6 +8,7 @@ from datagen.utils.simplefile import SimpleFile
 
 class Function():
     __current_function: Function | None = None
+    __funcs = dict[Identifier, "Self"]()
     def __init__(self, id: Identifier):
         from datagen.datapack.namespace import Namespace
         self.id = id
@@ -49,4 +50,13 @@ class Function():
     
     def __exit__(self, exc_type, exc_value, traceback):
         Function.__current_function = None
-        self.to_file().write(self.to_string())
+        self.namespace.add_function(self)
+
+    @staticmethod
+    def get(id: Identifier) -> "Function":
+        if id in Function.__funcs:
+            return Function.__funcs[id]
+        else:
+            func = Function(id)
+            Function.__funcs[id] = func
+            return func
