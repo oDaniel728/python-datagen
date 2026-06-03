@@ -10,6 +10,7 @@ class DatagenConfig():
     class TDatagenConfigTBuilderOptions(TypedDict):
         source: str
         output: str
+        indentation: int
     class TDataGenConfigTDumperSettings(TypedDict):
         source: str
         output: str

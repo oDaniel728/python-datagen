@@ -1,7 +1,8 @@
 {
     "builderSettings": {
         "source": "src/",
-        "output": "datapacks/"
+        "output": "datapacks/",
+        "indentation": 4
     },
     "dumperSettings": {
         "source": "dumpgen/dumps/",

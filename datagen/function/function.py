@@ -2,7 +2,7 @@ from typing import Self
 
 from datagen.utils.minecraft.identifier import Identifier
 from datagen.function.commands.command import Command
-from datagen.globals import FUNCTIONS_PATH
+from datagen.globals import FUNCTIONS_PATH, DatagenConfig
 from datagen.utils.simplefile import SimpleFile
 
 
@@ -34,7 +34,7 @@ class Function():
     def to_string(self) -> str:
         lines: list[str] = []
         lines.append("# " + self.id._path)
-        indent = "    "
+        indent = " " * DatagenConfig.config["builderSettings"]["indentation"]
         for command in self.commands:
             cmd_str = command.to_string()
             # remove only leading newlines to avoid accidental empty first line
