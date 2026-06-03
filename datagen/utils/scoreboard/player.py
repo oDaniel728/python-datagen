@@ -2,6 +2,7 @@ from typing import Literal
 
 from datagen.function.commands.customcommand import CustomCommand
 from datagen.function.function import Function
+from datagen.utils.minecraft.identifier import Identifier
 from datagen.utils.minecraft.targetselector import TargetSelector
 from datagen.utils.scoreboard.objective import ScoreboardObjective
 
@@ -11,12 +12,16 @@ class ScoreboardPlayer():
         self.objective = objective
         self.name = name
 
+    def to_identiifer(self) -> Identifier:
+        return Identifier.of(self.objective.name, str(self.name).replace("@", "at_").replace("#", "hs_"))
+
     def __str__(self) -> str: return str(self.name)
     def to_string(self) -> str: return str(self)
 
     def add(self, score: "int | ScoreboardPlayer"):
         if isinstance(score, int):
             return CustomCommand(
+                f"# add {~self.to_identiifer()} {score}\n",
                 "scoreboard players add", 
                 str(self), 
                 str(self.objective), 
@@ -28,6 +33,7 @@ class ScoreboardPlayer():
     def remove(self, score: "int | ScoreboardPlayer"):
         if isinstance(score, int):
             return CustomCommand(
+                f"# remove {~self.to_identiifer()} {score}\n",
                 "scoreboard players remove", 
                 str(self), 
                 str(self.objective), 
@@ -39,6 +45,7 @@ class ScoreboardPlayer():
     def set(self, score: "int | ScoreboardPlayer"):
         if isinstance(score, int):
             return CustomCommand(
+                f"# set {~self.to_identiifer()} {score}\n",
                 "scoreboard players set", 
                 str(self), 
                 str(self.objective), 
@@ -59,6 +66,7 @@ class ScoreboardPlayer():
         from datagen.function.function import Function
         current_function = getattr(Function, "_Function__current_function", None)
         try:
+            out += f"# multiply {self.name} {str(score)}\n"
             Function._Function__current_function = None # type: ignore
             out += tmpscore.add()
             tmp = tmpscore.player()
@@ -81,6 +89,7 @@ class ScoreboardPlayer():
         from datagen.function.function import Function
         current_function = getattr(Function, "_Function__current_function", None)
         try:
+            out += f"# divide {self.name} {str(score)}\n"
             Function._Function__current_function = None # type: ignore
             out += tmpscore.add()
             tmp = tmpscore.player()
@@ -104,6 +113,7 @@ class ScoreboardPlayer():
         from datagen.function.function import Function
         current_function = getattr(Function, "_Function__current_function", None)
         try:
+            out += f"# modulus {self.name} {str(score)}\n"
             Function._Function__current_function = None # type: ignore
             out += tmpscore.add()
             tmp = tmpscore.player()
@@ -117,21 +127,25 @@ class ScoreboardPlayer():
 
     def swap(self, score: "ScoreboardPlayer"):
         out = CustomCommand()
+        out += f"# swap {self.name} {score.name}\n"
         out += self.operation(score, "><")
         return out
     
     def min(self, score: "ScoreboardPlayer"):
         out = CustomCommand()
+        out += f"# min {self.name} {score.name}\n"
         out += self.operation(score, "<")
         return out
     
     def max(self, score: "ScoreboardPlayer"):
         out = CustomCommand()
+        out += f"# max {self.name} {score.name}\n"
         out += self.operation(score, ">")
         return out
 
     def reset(self):
         return CustomCommand(
+            f"# reset {self.name}\n",
             "scoreboard players reset", 
             str(self), 
             str(self.objective)
@@ -139,6 +153,7 @@ class ScoreboardPlayer():
     
     def enable(self):
         return CustomCommand(
+            f"# enable {self.name}\n",
             "scoreboard players enable", 
             str(self), 
             str(self.objective)
@@ -146,6 +161,7 @@ class ScoreboardPlayer():
     
     def display_name(self, name: str):
         return CustomCommand(
+            f"# display name {self.name} {name}\n",
             "scoreboard players display name", 
             str(self), 
             str(name)
@@ -154,6 +170,7 @@ class ScoreboardPlayer():
     TOperation = Literal["+=", "-=", "*=", "/=", "%=", "><", "=", "<", ">", "!="]
     def operation(self, target: "ScoreboardPlayer", operation: TOperation):
         return CustomCommand(
+            f"# {self.name} {operation} {target.name}\n",
             "scoreboard players operation", 
             str(self), 
             str(self.objective), 
