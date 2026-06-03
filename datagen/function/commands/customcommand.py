@@ -11,13 +11,13 @@ class CustomCommand(Command):
     
     def __add__(self, other: "Command | str") -> "CustomCommand":
         if isinstance(other, str):
-            return CustomCommand(self.command + " " + other)
+            return CustomCommand(self.command + "\n " + other)
         else:
-            return CustomCommand(self.command + " " + other.to_string())
+            return CustomCommand(self.command + "\n " + other.to_string())
         
     def __iadd__(self, other: "Command | str") -> "CustomCommand":
         if isinstance(other, str):
-            self.command += " " + other
+            self.command += "\n " + other
         else:
-            self.command += " " + other.to_string()
+            self.command += "\n " + other.to_string()
         return self
