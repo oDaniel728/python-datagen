@@ -32,11 +32,23 @@ class Function():
         return FUNCTIONS_PATH + self.id._path.replace(".", "/").replace(" ", "_") + ".mcfunction"
 
     def to_string(self) -> str:
-        c = ""
-        c += "# " + self.id._path + "\n"
+        lines: list[str] = []
+        lines.append("# " + self.id._path)
+        indent = "    "
         for command in self.commands:
-            c += "\n" + command.to_string()
-        return c
+            cmd_str = command.to_string()
+            # remove only leading newlines to avoid accidental empty first line
+            cmd_str = cmd_str.lstrip("\n")
+            for line in cmd_str.splitlines():
+                if line.strip() == "":
+                    lines.append("")
+                elif line.lstrip().startswith("#"):
+                    # keep comment lines unindented
+                    lines.append(line.lstrip())
+                else:
+                    # normalize existing leading whitespace and indent command lines
+                    lines.append(indent + line.lstrip())
+        return "\n".join(lines)
     
     def __str__(self) -> str:
         return self.id.__str__()
