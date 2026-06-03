@@ -9,6 +9,7 @@ from datagen.types.protocols.tostring import ToString
 from datagen.utils.minecraft.identifier import Identifier
 from datagen.utils.minecraft.targetselector import TargetSelector
 from datagen.utils.repr.keybind import KeyBind
+from datagen.utils.scoreboard.player import ScoreboardPlayer
 
 class __notNone__():
     @staticmethod
@@ -142,6 +143,7 @@ class Text():
 
     class ScoreTextSettings(BaseTextSettings):
         def __init__(self, *,
+            player: ScoreboardPlayer,
             italic: bool = False,
             bold: bool = False,
             underlined: bool = False,
@@ -149,8 +151,6 @@ class Text():
             obfuscated: bool = False,
             color: 'Text.BaseTextSettings.TextColor' = "white",
             font: Identifier | None = None,
-            name: str = "",
-            objective: str = ""
         ) -> None:
             super().__init__(
                 italic=italic,
@@ -162,12 +162,10 @@ class Text():
                 font=font
             )
             self.type = "score"
-            self.name: str = name
-            self.objective: str = objective
+            self.player: ScoreboardPlayer = player
 
         def to_dict(self) -> dict:
-            return super().to_dict() | {"score": {"name": self.name, "objective": self.objective}}
-        
+            return super().to_dict() | {"score": {"name": str(self.player), "objective": str(self.player.objective)}} if self.player else {}
     class SelectorTextSettings(BaseTextSettings):
         def __init__(self, *,
             italic: bool = False,
@@ -284,13 +282,12 @@ class Text():
             return self.settings.to_dict() | {"type": "translatable"} | {"translate": self.value.to_string()} if self.settings else {"translate": self.value.to_string()}
 
     class score(BaseText):
-        def __init__(self, name: str, objective: str, settings: 'Text.BaseTextSettings | None' = None) -> None:
-            self.name = name
-            self.objective = objective
+        def __init__(self, player: ScoreboardPlayer, settings: 'Text.BaseTextSettings | None' = None) -> None:
+            self.player = player    
             self.settings = settings
 
         def to_dict(self) -> dict:
-            return self.settings.to_dict() | {"type": "score"} | {"score": {"name": self.name, "objective": self.objective}} if self.settings else {"score": {"name": self.name, "objective": self.objective}}
+            return self.settings.to_dict() | {"type": "score"} | {"score": {"name": str(self.player.name), "objective": str(self.player.objective)}} if self.settings else {"score": {"name": str(self.player), "objective": str(self.player.objective)}}
         
     class selector(BaseText):
         def __init__(self, selector: TargetSelector, settings: 'Text.BaseTextSettings | None' = None) -> None:
@@ -348,7 +345,7 @@ class Text():
         elif isinstance(settings, Text.TranslateTextSettings):
             return Text.translate(unNull @ settings.translate, settings)
         elif isinstance(settings, Text.ScoreTextSettings):
-            return Text.score(settings.name, settings.objective, settings)
+            return Text.score(settings.player, settings)
         elif isinstance(settings, Text.SelectorTextSettings):
             return Text.selector(unNull @ settings.selector, settings)
         elif isinstance(settings, Text.KeybindTextSettings):
