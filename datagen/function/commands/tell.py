@@ -4,6 +4,7 @@ from datagen.utils.minecraft.targetselector import TargetSelector
 
 class Tell(Command):
     def __init__(self, target: TargetSelector, message: str):
+        super().__init__()
         self.target = target
         self.message = message
 
