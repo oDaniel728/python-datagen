@@ -7,6 +7,10 @@ if __name__ == "__main__":
     try:
         src.main.main()
         if "--watch" in argv or "-w" in argv:
-            FileWatcher(src.main.__file__).watch(lambda _: src.main.main())
+            @FileWatcher(src.main.__file__).watch
+            def _(p):
+                import importlib
+                importlib.reload(src.main)
+                src.main.main()
     except KeyboardInterrupt:
         print("Exiting...")
