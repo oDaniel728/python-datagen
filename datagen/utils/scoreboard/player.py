@@ -2,7 +2,6 @@ from typing import Literal
 
 from datagen.function.commands.customcommand import CustomCommand
 from datagen.utils.minecraft.targetselector import TargetSelector
-from datagen.utils.minecraft.text import Text
 from datagen.utils.scoreboard.objective import ScoreboardObjective
 
 
@@ -48,6 +47,7 @@ class ScoreboardPlayer():
             return self.operation(score, "=")
         
     def multiply(self, score: "int | ScoreboardPlayer"):
+        from datagen.utils.minecraft.text import Text
         out = CustomCommand()
         # 1. score add temp
         # 2. score player temp = 0
@@ -64,6 +64,7 @@ class ScoreboardPlayer():
         return out
     
     def divide(self, score: "int | ScoreboardPlayer"):
+        from datagen.utils.minecraft.text import Text
         out = CustomCommand()
         # 1. score add temp
         # 2. score player temp = 0
@@ -80,6 +81,7 @@ class ScoreboardPlayer():
         return out
     
     def modulus(self, score: "int | ScoreboardPlayer"):
+        from datagen.utils.minecraft.text import Text
         out = CustomCommand()
         # 1. score add temp
         # 2. score player temp = 0
