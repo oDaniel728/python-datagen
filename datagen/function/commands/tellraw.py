@@ -4,6 +4,7 @@ from datagen.utils.minecraft.text import Text
 
 class TellRaw(Command):
     def __init__(self, target: TargetSelector, message: Text.BaseText):
+        super().__init__()
         self.target = target
         self.message = message
 

@@ -3,6 +3,7 @@ from datagen.function.commands.command import Command
 
 class CustomCommand(Command):
     def __init__(self, *command: str) -> None:
+        super().__init__()
         self.command = " ".join(command)
 
     def to_string(self) -> str:

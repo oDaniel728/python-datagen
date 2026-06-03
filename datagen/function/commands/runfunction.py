@@ -4,6 +4,7 @@ from datagen.function.function import Function
 
 class RunFunction(Command):
     def __init__(self, func: Function) -> None:
+        super().__init__()
         self.func = func
 
     def to_string(self) -> str:

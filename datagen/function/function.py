@@ -7,6 +7,7 @@ from datagen.utils.simplefile import SimpleFile
 
 
 class Function():
+    __current_function: Function | None = None
     def __init__(self, id: Identifier):
         from datagen.datapack.namespace import Namespace
         self.id = id
@@ -38,3 +39,14 @@ class Function():
     
     def to_file(self) -> SimpleFile:
         return SimpleFile(self.get_filepath(), self.to_string())
+    
+    def __iadd__(self, command: Command) -> Self:
+        return self.add_command(command)
+    
+    def __enter__(self) -> Self:
+        Function.__current_function = self
+        return self
+    
+    def __exit__(self, exc_type, exc_value, traceback):
+        Function.__current_function = None
+        self.to_file().write(self.to_string())

@@ -1,6 +1,13 @@
 from abc import ABC, abstractmethod
 
+from datagen.function.function import Function
+
 class Command(ABC):
+
+    def __init__(self):
+        if Function.__current_function:
+            Function.__current_function.add_command(self)
+
     @abstractmethod
     def to_string(self) -> str: ...
 
