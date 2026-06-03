@@ -82,7 +82,7 @@ class ScoreboardPlayer():
         from datagen.function.function import Function
         current_function = getattr(Function, "_Function__current_function", None)
         try:
-            Function._Function__current_function = None
+            Function._Function__current_function = None # type: ignore
             out += tmpscore.add()
             tmp = tmpscore.player()
             out += tmp.set(0)
@@ -90,7 +90,7 @@ class ScoreboardPlayer():
             out += self.operation(tmp, "/=")
             out += tmpscore.remove()
         finally:
-            Function._Function__current_function = current_function
+            Function._Function__current_function = current_function # type: ignore
         return out
     
     def modulus(self, score: "int | ScoreboardPlayer"):
@@ -105,7 +105,7 @@ class ScoreboardPlayer():
         from datagen.function.function import Function
         current_function = getattr(Function, "_Function__current_function", None)
         try:
-            Function._Function__current_function = None
+            Function._Function__current_function = None # type: ignore
             out += tmpscore.add()
             tmp = tmpscore.player()
             out += tmp.set(0)
@@ -113,7 +113,7 @@ class ScoreboardPlayer():
             out += self.operation(tmp, "%=")
             out += tmpscore.remove()
         finally:
-            Function._Function__current_function = current_function
+            Function._Function__current_function = current_function # type: ignore
         return out
 
     def swap(self, score: "ScoreboardPlayer"):
