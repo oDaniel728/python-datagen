@@ -34,7 +34,7 @@ class Function():
     def to_string(self) -> str:
         lines: list[str] = []
         lines.append("# " + self.id._path)
-        indent = " " * DatagenConfig.config["builderSettings"]["indentation"]
+        indent = " " * DatagenConfig.config["builderSettings"]["indent"]
         for command in self.commands:
             cmd_str = command.to_string()
             # remove only leading newlines to avoid accidental empty first line
