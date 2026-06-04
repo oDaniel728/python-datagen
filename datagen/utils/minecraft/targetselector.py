@@ -1,4 +1,5 @@
 from datagen.utils.minecraft.targetselectorsettings import TargetSelectorSettings
+from datagen.utils.repr.entitytype import EntityType
 
 
 class TargetSelector():
@@ -27,6 +28,22 @@ class TargetSelector():
         return self.__str__()
     
     def to_string(self): return ~self
+
+    @staticmethod
+    def nearest(entity: EntityType, limit: int = 1, filters: dict | TargetSelectorSettings = {}) -> "TargetSelector":
+        return TargetSelector("@e", TargetSelectorSettings(type=entity, **filters if isinstance(filters, dict) else filters.to_dict(), sort="nearest", limit=limit))
+
+    @staticmethod
+    def furthest(entity: EntityType, limit: int = 1, filters: dict | TargetSelectorSettings = {}) -> "TargetSelector":
+        return TargetSelector("@e", TargetSelectorSettings(type=entity, **filters if isinstance(filters, dict) else filters.to_dict(), sort="furthest", limit=limit))
+
+    @staticmethod
+    def random(entity: EntityType, limit: int = 1, filters: dict | TargetSelectorSettings = {}) -> "TargetSelector":
+        return TargetSelector("@e", TargetSelectorSettings(type=entity, **filters if isinstance(filters, dict) else filters.to_dict(), sort="random", limit=limit))
+
+    @staticmethod
+    def arbitrary(entity: EntityType, limit: int = 1, filters: dict | TargetSelectorSettings = {}) -> "TargetSelector":
+        return TargetSelector("@e", TargetSelectorSettings(type=entity, **filters if isinstance(filters, dict) else filters.to_dict(), sort="arbitrary", limit=limit))
 
 TargetSelector.SELF = TargetSelector("@s")
 

@@ -2,6 +2,7 @@ from typing import Literal
 
 from datagen.tag.tag import Tag
 from datagen.utils.minecraft.identifier import Identifier
+from datagen.utils.repr.entitytype import EntityType
 
 
 class TargetSelectorSettings():
@@ -51,7 +52,7 @@ class TargetSelectorSettings():
 
         # Entity
         name: str | None = None,
-        type: str | None = None,
+        type: EntityType | str | None = None,
         predicate: Identifier | None = None,
 
         # Entity Data
@@ -121,7 +122,7 @@ class TargetSelectorSettings():
             
             "name": self.name,
             
-            "type": self.type,
+            "type": self.type if isinstance(self.type, str) else ~self.type.id if self.type is not None else None,
             
             "predicate": self.predicate,
             
