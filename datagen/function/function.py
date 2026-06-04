@@ -68,7 +68,7 @@ class Function():
         self.namespace.add_function(self)
 
     @staticmethod
-    def get(id: Identifier) -> "Function":
+    def of(id: Identifier) -> "Function":
         if id in Function.__funcs:
             return Function.__funcs[id]
         else:
