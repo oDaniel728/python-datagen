@@ -3,6 +3,7 @@ from datagen.datapack.namespace import Namespace
 from datagen.function.anonymousfunction import AnonymousFunction
 from datagen.function.commands.fill import Fill
 from datagen.function.commands.give import Give
+from datagen.function.commands._return import Return
 from datagen.function.commands.runfunction import RunFunction
 from datagen.function.commands.say import Say
 from datagen.function.commands.scoreboard import Scoreboard
@@ -39,28 +40,32 @@ def main():
     hello_world_func = AnonymousFunction(dp)
     hello_world_func += Say("Hello, world!")
 
-    with Function(Identifier.of(ns.name, "test")):
-        Say("This is a test function.")
-        Give(TargetSelector.NEAREST_PLAYER, Items.DIAMOND.get_stack(64))
+    with Function(ns/"test"):
+        ~Say("This is a test function.")
+        ~Give(TargetSelector.NEAREST_PLAYER, Items.DIAMOND.get_stack(64))
 
     with Function(ns/"aa"):
-        SetBlock(BlockPosition(0, 0, 0), Blocks.STONE)
-        Fill(BlockPosition(1, 0, 0), BlockPosition(3, 0, 0), Blocks.DIRT)
-        Teleport(TargetSelector.NEAREST_PLAYER, RelativeBlockPosition(0, 10, 0))
-        TellRaw(TargetSelector.NEAREST_PLAYER, Text.literal("You have been teleported!"))
-        RunFunction(ns/"test")
+        ~SetBlock(BlockPosition(0, 0, 0), Blocks.STONE)
+        ~Fill(BlockPosition(1, 0, 0), BlockPosition(3, 0, 0), Blocks.DIRT)
+        ~Teleport(TargetSelector.NEAREST_PLAYER, RelativeBlockPosition(0, 10, 0))
+        ~TellRaw(TargetSelector.NEAREST_PLAYER, Text.literal("You have been teleported!"))
+        ~RunFunction(ns/"test")
 
-    with Function(ns/"scoretest"):
+    with Function(ns/"scoretest") as scoretest:
         score = Scoreboard.objective("test_score", Text.literal("Test Score"), ObjectiveCriterion.DUMMY)
-        score.add()
-        score.set_display("sidebar")
+        ~score.add()
+        ~score.set_display("sidebar")
         at_p = TargetSelector.NEAREST_PLAYER
         me = score.player(at_p)
-        me.set(0)
-        me.add(25)
-        me.remove(10)
-        me.multiply(2)
-        TellRaw(at_p, Text.BaseText.components(Text.literal("Your score is: "), Text.score(me)))
+        ~me.set(0)
+        ~me.add(25)
+        ~me.remove(10)
+        ~me.multiply(2)
+        ~TellRaw(at_p, Text.BaseText.components(Text.literal("Your score is: "), Text.score(me)))
+        ~Return.score(me)
+
+    with Function(ns/"test2"):
+        ~Return.function(scoretest)
 
     load_tag.add_value(hello_world_func)
 
