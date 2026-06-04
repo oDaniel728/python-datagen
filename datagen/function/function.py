@@ -8,9 +8,18 @@ from datagen.utils.simplefile import SimpleFile
 
 class Function():
     __current_function: Function | None = None
+
+    @staticmethod
+    def get_current_function() -> Function | None:
+        return Function.__current_function
+    
+    @staticmethod
+    def set_current_function(func: Function | None):
+        Function.__current_function = func
+
     __funcs = dict[Identifier, "Self"]()
 
-    def __new__(cls, id: Identifier):
+    def __new__(cls, id: Identifier) -> Self:
         if id in cls.__funcs:
             return cls.__funcs[id]
         else:
