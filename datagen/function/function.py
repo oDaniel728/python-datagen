@@ -8,6 +8,7 @@ from datagen.utils.simplefile import SimpleFile
 
 class Function():
     __current_function: Function | None = None
+    __functions = list["Function"]()
 
     @staticmethod
     def get_current_function() -> Function | None:
@@ -16,6 +17,25 @@ class Function():
     @staticmethod
     def set_current_function(func: Function | None):
         Function.__current_function = func
+        if func:
+            Function.__functions.append(func)
+
+    @staticmethod
+    def get_back_current_function() -> Function | None:
+        # undoes the current function
+        # before: [A, B, C] with current C
+        # after: [A, B] with current B
+        if Function.__current_function is not None:
+            func = Function.__current_function
+            Function.__current_function = None
+            if func in Function.__functions:
+                Function.__functions.remove(func)
+            Function.__current_function = Function.__functions[-1] \
+                if len(Function.__functions) > 0 \
+                else None
+            return func
+        else:
+            return None
 
     __funcs = dict[Identifier, "Self"]()
 
@@ -78,11 +98,11 @@ class Function():
         return self.add_command(command)
     
     def __enter__(self) -> Self:
-        Function.__current_function = self
+        Function.set_current_function(self)
         return self
     
     def __exit__(self, exc_type, exc_value, traceback):
-        Function.__current_function = None
+        Function.get_back_current_function()
         self.namespace.add_function(self)
 
     @staticmethod
