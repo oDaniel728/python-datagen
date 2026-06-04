@@ -9,6 +9,15 @@ from datagen.utils.simplefile import SimpleFile
 class Function():
     __current_function: Function | None = None
     __funcs = dict[Identifier, "Self"]()
+
+    def __new__(cls, id: Identifier):
+        if id in cls.__funcs:
+            return cls.__funcs[id]
+        else:
+            func = super(Function, cls).__new__(cls)
+            cls.__funcs[id] = func
+            return func
+
     def __init__(self, id: Identifier):
         from datagen.datapack.namespace import Namespace
         self.id = id
