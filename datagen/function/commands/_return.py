@@ -3,6 +3,7 @@ from xml.etree.ElementTree import tostring
 
 from datagen.function.commands.command import Command
 from datagen.function.commands.customcommand import CustomCommand
+from datagen.function.function import Function
 from datagen.utils.scoreboard.player import ScoreboardPlayer
 
 
@@ -27,6 +28,11 @@ class Return(Command):
     def score(player: ScoreboardPlayer):
         p = player.get().raw()
         return Return.run(CustomCommand(p))
+    
+    @staticmethod
+    def function(function: Function):
+        return Return.run(CustomCommand("function", function.id.to_string()))
+
     def to_string(self) -> str:
         return f"# returns {self.value}\nreturn {self.value}"
     
