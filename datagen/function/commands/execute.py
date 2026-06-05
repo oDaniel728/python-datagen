@@ -335,7 +335,7 @@ class Execute(Command):
             target_id = target.id if isinstance(target, DataStorage) else target
             self._chunks.append(f"store {result_type} storage {target_id} {path} {data_type} {scale}")
         elif type == "bossbar":
-            _, result_type, _, target, value = args
+            _, result_type, target, value = args
             self._chunks.append(f"store {result_type} bossbar {target._id} {value}")
         else:
             raise ValueError("Invalid store type")

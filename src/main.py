@@ -1,6 +1,8 @@
 from datagen.datapack.datapack import DataPack
 from datagen.datapack.namespace import Namespace
 from datagen.function.anonymousfunction import AnonymousFunction
+from datagen.function.commands.bossbar import BossBar
+from datagen.function.commands.execute import Execute
 from datagen.function.commands.fill import Fill
 from datagen.function.commands.give import Give
 from datagen.function.commands._return import Return
@@ -26,6 +28,7 @@ from datagen.utils.minecraft.text import Text
 from datagen.utils.repr.entitytype import EntityType
 from datagen.utils.repr.position3 import Position3
 from datagen.utils.scoreboard.criterion import ObjectiveCriterion
+from datagenpp.extras.betterexecute import BetterExecute
 
 def main():
 
@@ -40,20 +43,42 @@ def main():
     load_tag = FunctionTag(Identifier.of("minecraft:load"), [])
     mc.add_tag(load_tag)
 
-    with Function(ns / "load") as this:
+    with Function(ns / "load") as load:
         ~ Say("Hello, world!")
         ~ Return.int(1)
 
-        load_tag.add_value(this)
+        load_tag.add_value(load)
 
-    with Function(ns / "ride_nearest_cart") as this:
-        with AnonymousFunction(dp) as anon:
+    with Function(ns / "ride_nearest_cart") as ride_nearest_cart:
+        with AnonymousFunction(dp) as lambda1:
             ~ Ride.mount(
                 TargetSelector.SELF, 
                 TargetSelector.nearest(EntityTypes.MINECART)
             )
-            this += RunFunction(anon)
-        
-        ~ Return.int(1)
-
+            ~ Return.int(1)
+            
+            with AnonymousFunction(dp) as lambda2:
+                ~ Return.int(0)
+            
+            ~ BetterExecute() \
+                .ATAS(TargetSelector.SELF) \
+                .CONDITION(
+                    lambda b: b.entity(
+                        TargetSelector.nearest(EntityTypes.MINECART)
+                    ), 
+                    Return.function(lambda1),
+                    Return.function(lambda2)
+                )
+            
+    with Function(ns / "test_ride_nearest_cart") as test_ride_to_nearest_cart:
+        _bossbar = BossBar(ns/"test")
+        ~ _bossbar.add()
+        ~ Return.function(
+            AnonymousFunction(dp)
+                .add_commands(
+                    Execute()
+                        .STORE("result", "bossbar", _bossbar, "value")
+                        .RUN(ride_nearest_cart)
+                )
+        )
     dp.build()
