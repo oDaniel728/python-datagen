@@ -156,11 +156,11 @@ class Execute(Command):
 
     def RUN(self, command: Command | Function | Identifier) -> "Execute":
         if isinstance(command, Command):
-            self.chunks.append(command.raw())
+            self.chunks.append("run " + command.raw())
         elif isinstance(command, Function):
-            self.chunks.append(f"function {command.id}")
+            self.chunks.append(f"run function {command.id}")
         elif isinstance(command, Identifier):
-            self.chunks.append(f"function {command}")
+            self.chunks.append(f"run function {command}")
         else:
             raise ValueError("Invalid command type")
         return self
@@ -169,8 +169,8 @@ class Execute(Command):
         self.chunks.append(f"as {target.to_string()}")
         return self
     
-    def AT(self, pos: Position3) -> "Execute":
-        self.chunks.append(f"at {pos.to_string()}")
+    def AT(self, target: TargetSelector) -> "Execute":
+        self.chunks.append(f"at {target.to_string()}")
         return self
     
     _TAlignAxes = Literal[
