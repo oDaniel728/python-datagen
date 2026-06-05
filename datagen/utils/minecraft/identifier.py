@@ -36,7 +36,7 @@ class Identifier():
         self._path = ''
 
     def __str__(self) -> str:
-        return f"{self._namespace}{~self.namespace_separator}{self._path}"
+        return f"{self._namespace}{~self.namespace_separator}{self._path}".lower()
     
     def __list__(self) -> list[str]:
         return [self._namespace, self._path]
