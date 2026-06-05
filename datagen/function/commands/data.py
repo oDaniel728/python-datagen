@@ -1,7 +1,7 @@
 from typing import Any, Callable, Literal, overload
 
 from datagen.function.commands.customcommand import CustomCommand
-from datagen.function.commands.data.datastorage import DataStorage
+from datagen.function.commands._data.datastorage import DataStorage
 from datagen.utils.minecraft.blockposition import BlockPosition
 from datagen.utils.minecraft.identifier import Identifier
 from datagen.utils.minecraft.targetselector import TargetSelector

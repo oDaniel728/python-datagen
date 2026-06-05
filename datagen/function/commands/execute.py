@@ -2,7 +2,7 @@ from typing import Any, Callable, Literal, Self, overload
 
 from datagen.function.commands.bossbar import BossBar
 from datagen.function.commands.command import Command
-from datagen.function.commands.data.datastorage import DataStorage
+from datagen.function.commands._data.datastorage import DataStorage
 from datagen.function.function import Function
 from datagen.types.util.min import Range
 from datagen.utils.minecraft.blockposition import BlockPosition

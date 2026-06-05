@@ -1,5 +1,5 @@
 from datagen.function.commands.command import Command
-from datagen.function.commands.data.datastorage import DataStorage
+from datagen.function.commands._data.datastorage import DataStorage
 from datagen.function.function import Function
 from datagen.utils.minecraft.identifier import Identifier
 
