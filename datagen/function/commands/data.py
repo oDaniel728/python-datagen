@@ -5,6 +5,7 @@ from datagen.function.commands.data.datastorage import DataStorage
 from datagen.utils.minecraft.blockposition import BlockPosition
 from datagen.utils.minecraft.identifier import Identifier
 from datagen.utils.minecraft.targetselector import TargetSelector
+from datagen.utils.snbtserializer import SNBTSerializer
 
 class Data():
 
@@ -53,3 +54,41 @@ class Data():
             return CustomCommand(f"data get {type} {target} {path} {scale}")
         else:
             return CustomCommand(f"data get {type} {target} {path}")
+
+    @overload
+    @staticmethod
+    def merge(
+        type: Literal["block"],
+        target: BlockPosition,
+        data: dict,
+        /
+    ) -> CustomCommand: ...
+    @overload
+    @staticmethod
+    def merge(
+        type: Literal["entity"],
+        target: TargetSelector,
+        data: dict,
+        /
+    ) -> CustomCommand: ...
+    @overload
+    @staticmethod
+    def merge(
+        type: Literal["storage"],
+        target: DataStorage | Identifier,
+        data: dict,
+        /
+    ) -> CustomCommand: ...
+
+    @staticmethod
+    def merge(
+        type: str,
+        target: Any,
+        data: dict
+    ) -> CustomCommand:
+        if ( isinstance(target, Identifier) and type == "storage" ):
+            target = DataStorage(target)
+
+        _data = SNBTSerializer.serialize(data)
+
+        return CustomCommand(f"data merge {type} {target} {_data}")
