@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import TYPE_CHECKING
 from typing import final
 from uuid import uuid4
 from typing_extensions import Self
@@ -7,6 +8,9 @@ from datagen.function.function import Function
 from datagen.tag.tag import Tag
 from datagen.utils.minecraft.identifier import Identifier
 from datagen.utils.minecraft.logger import Logger
+
+if TYPE_CHECKING:
+    from datagen.predicate.predicate import Predicate
 
 @final
 class Namespace():
@@ -42,17 +46,22 @@ class Namespace():
 
         self.functions = set[Function]()
         self.tags = set[Tag]()
+        self.predicates = set["Predicate"]()
 
     def identifier(self, path: str) -> Identifier:
         return Identifier.from_string(f"{self.name}:{path}")
     
-    def add(self, obj: Function | Tag) -> Self:
+    def add(self, obj: Function | Tag | "Predicate") -> Self:
+        from datagen.predicate.predicate import Predicate
+
         if isinstance(obj, Function):
             return self.add_function(obj)
         elif isinstance(obj, Tag):
             return self.add_tag(obj)
+        elif isinstance(obj, Predicate):
+            return self.add_predicate(obj)
         else:
-            raise TypeError(f"Object of type '{type(obj)}' is not a Function or Tag")
+            raise TypeError(f"Object of type '{type(obj)}' is not a Function, Tag or Predicate")
     
     def add_function(self, function: Function) -> Self:
         self.logger.info(f"Adding function '{function.id._path}' to namespace '{self.name}'")
@@ -64,6 +73,12 @@ class Namespace():
         self.logger.info(f"Adding tag '{tag.id._path}' to namespace '{self.name}'")
         tag.namespace = self
         self.tags.add(tag)
+        return self
+
+    def add_predicate(self, predicate: "Predicate") -> Self:
+        self.logger.info(f"Adding predicate '{predicate.id._path}' to namespace '{self.name}'")
+        predicate.namespace = self
+        self.predicates.add(predicate)
         return self
     
     def build_functions(self, base: Path):
@@ -82,10 +97,19 @@ class Namespace():
             f.build(base)
         Logger.end_task(f"Building tags in namespace '{self.name}'")
 
+    def build_predicates(self, base: Path):
+        Logger.start_task(f"Building predicates in namespace '{self.name}'")
+        for predicate in self.predicates:
+            self.logger.info(f"Building predicate '{predicate.id._path}' in namespace '{self.name}'")
+            f = predicate.to_file()
+            f.build(base)
+        Logger.end_task(f"Building predicates in namespace '{self.name}'")
+
     def build(self, base: Path):
         Logger.start_task(f"Building namespace '{self.name}'")
         self.build_functions(base)
         self.build_tags(base)
+        self.build_predicates(base)
         Logger.end_task(f"Building namespace '{self.name}'")
 
     def __truediv__(self, path: str) -> Identifier:

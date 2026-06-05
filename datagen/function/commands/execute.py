@@ -8,6 +8,7 @@ from datagen.types.util.min import Range
 from datagen.utils.minecraft.blockposition import BlockPosition
 from datagen.utils.minecraft.identifier import Identifier
 from datagen.utils.minecraft.targetselector import TargetSelector
+from datagen.predicate.predicate import Predicate
 from datagen.utils.repr.biome import Biome
 from datagen.utils.repr.block import Block
 from datagen.utils.repr.entitytype import EntityType
@@ -98,8 +99,9 @@ class _ConditionBuilder():
         self._parent._chunks.append(f"{self._prefix} dimension {dimension}")
         return self
 
-    def predicate(self, predicate: Identifier) -> Self:
-        self._parent._chunks.append(f"{self._prefix} predicate {predicate}")
+    def predicate(self, predicate: Identifier | Predicate) -> Self:
+        pred_id = predicate.id if isinstance(predicate, Predicate) else predicate
+        self._parent._chunks.append(f"{self._prefix} predicate {pred_id}")
         return self
 
     def loaded(self, location: BlockPosition) -> Self:
