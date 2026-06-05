@@ -29,6 +29,7 @@ from datagen.utils.repr.entitytype import EntityType
 from datagen.utils.repr.position3 import Position3
 from datagen.utils.scoreboard.criterion import ObjectiveCriterion
 from datagenpp.extras.betterexecute import BetterExecute
+from datagenpp.extras.tags.load import Load
 
 def main():
 
@@ -40,14 +41,11 @@ def main():
     mc = Namespace.minecraft
     dp.add_namespace(mc)
 
-    load_tag = FunctionTag(Identifier.of("minecraft:load"), [])
-    mc.add_tag(load_tag)
-
     with Function(ns / "load") as load:
         ~ Say("Hello, world!")
         ~ Return.int(1)
 
-        load_tag.add_value(load)
+        Load().add_value(load)
 
     with Function(ns / "ride_nearest_cart") as ride_nearest_cart:
         with AnonymousFunction(dp) as lambda1:
@@ -56,29 +54,35 @@ def main():
                 TargetSelector.nearest(EntityTypes.MINECART)
             )
             ~ Return.int(1)
-            
-            with AnonymousFunction(dp) as lambda2:
-                ~ Return.int(0)
-            
-            ~ BetterExecute() \
-                .ATAS(TargetSelector.SELF) \
-                .CONDITION(
-                    lambda b: b.entity(
-                        TargetSelector.nearest(EntityTypes.MINECART)
-                    ), 
-                    Return.function(lambda1),
-                    Return.function(lambda2)
-                )
+        
+        with AnonymousFunction(dp) as lambda2:
+            ~ Return.int(0)
+        
+        ~ BetterExecute() \
+            .ATAS(TargetSelector.SELF) \
+            .CONDITION(
+                lambda b: b.entity(
+                    TargetSelector.nearest(EntityTypes.MINECART)
+                ), 
+                Return.function(lambda1),
+                Return.function(lambda2)
+            )
             
     with Function(ns / "test_ride_nearest_cart") as test_ride_to_nearest_cart:
-        _bossbar = BossBar(ns/"test")
-        ~ _bossbar.add()
+        with AnonymousFunction(dp) as setup_bossbar:
+            _bossbar = BossBar(ns/"test")
+            ~ _bossbar.add()
+            ~ _bossbar.set("visible", True)
+            ~ _bossbar.set("players", TargetSelector.ALL_PLAYERS)
+            ~ _bossbar.set("max", 1)
+            ~ _bossbar.set("value", 0)
+        ~ setup_bossbar.run()
         ~ Return.function(
             AnonymousFunction(dp)
                 .add_commands(
                     Execute()
                         .STORE("result", "bossbar", _bossbar, "value")
-                        .RUN(ride_nearest_cart)
+                        .RUN(Return.function(ride_nearest_cart))
                 )
         )
     dp.build()
