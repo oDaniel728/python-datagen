@@ -24,4 +24,12 @@
     "explorer.fileNesting.patterns": {
         "*.py": "${capture}.pyi, ${capture}.pyc, ${capture}.__pycache__/*",
     },
+    "emeraldwalk.runonsave": {
+        "commands": [
+            {
+                "match": "src/.*\\.py$",
+                "cmd": "python ."
+            }
+        ]
+    }
 }
