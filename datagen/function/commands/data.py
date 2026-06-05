@@ -298,3 +298,39 @@ class Data():
             f"data modify {type} {target} {path} {modify_type} from "
             f"{from_provider} {from_target} {from_path}"
         )
+    
+    @overload
+    @staticmethod
+    def remove(
+        type: Literal["block"],
+        target: BlockPosition,
+        path: str,
+        /
+    ) -> CustomCommand: ...
+    @overload
+    @staticmethod
+    def remove(
+        type: Literal["entity"],
+        target: TargetSelector,
+        path: str,
+        /
+    ) -> CustomCommand: ...
+    @overload
+    @staticmethod
+    def remove(
+        type: Literal["storage"],
+        target: DataStorage | Identifier,
+        path: str,
+        /
+    ) -> CustomCommand: ...
+
+    @staticmethod
+    def remove(
+        type: str,
+        target: Any,
+        path: str
+    ) -> CustomCommand:
+        if isinstance(target, Identifier) and type == "storage":
+            target = DataStorage(target)
+
+        return CustomCommand(f"data remove {type} {target} {path}")
