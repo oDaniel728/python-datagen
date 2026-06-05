@@ -4,3 +4,6 @@ class Holder[T]():
 
     def get(self) -> T:
         return self.value
+    
+    def __str__(self) -> str:
+        return str(self.value)
