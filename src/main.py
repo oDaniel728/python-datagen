@@ -26,8 +26,16 @@ from datagen.utils.minecraft.relativeblockposition import RelativeBlockPosition
 from datagen.utils.minecraft.targetselector import TargetSelector
 from datagen.utils.minecraft.text import Text
 from datagen.utils.repr.entitytype import EntityType
+from datagen.utils.repr.item import Item
 from datagen.utils.repr.position3 import Position3
-from datagen.utils.scoreboard.criterion import ObjectiveCriterion
+from datagen.utils.repr.enchantment import Enchantment
+from datagen.predicate.predicate import Predicate
+from datagen.utils.repr.entitypredicate import EntityPredicate
+from datagen.utils.repr.locationpredicate import LocationPredicate
+from datagen.utils.repr.itempredicate import ItemPredicate
+from datagen.utils.repr.damagesourcepredicate import DamageSourcePredicate
+from datagen.utils.repr.enchantedchance import EnchantedChance
+from datagen.types.util.min import Range
 from datagenpp.extras.betterexecute import BetterExecute
 from datagenpp.extras.tags.load import Load
 
@@ -85,4 +93,71 @@ def main():
                         .RUN(Return.function(ride_nearest_cart))
                 )
         )
+
+    Predicate.use_namespace(ns)
+    # Example predicates and predicate-based logic
+    damage_source_predicate = Predicate.damage_source_properties(
+        DamageSourcePredicate()
+            .with_source_entity(
+                EntityPredicate().with_type(EntityType(Identifier.of("minecraft", "player")))
+            )
+            .with_tag("is_projectile", True)
+    )
+
+    enchantment_active_predicate = Predicate.enchantment_active_check(False)
+
+    table_bonus_predicate = Predicate.table_bonus(
+        Enchantment(Identifier.of("minecraft", "looting")),
+        [0.0, 0.1, 0.25]
+    )
+
+    match_tool_predicate = Predicate.match_tool(
+        ItemPredicate()
+            .with_items(Item(Identifier.of("minecraft", "diamond_sword")))
+            .with_enchantment(
+                Enchantment(Identifier.of("minecraft", "sharpness")),
+                Range.exact(3)
+            )
+    )
+
+    random_bonus_predicate = Predicate.random_chance_with_enchanted_bonus(
+        0.05,
+        EnchantedChance.linear(0.1, 0.02),
+        Enchantment(Identifier.of("minecraft", "looting"))
+    )
+
+    location_predicate = Predicate.location_check(
+        LocationPredicate()
+            .with_dimension("minecraft:overworld")
+            .with_light(Range.range(10, 15)),
+        offset_x=0,
+        offset_y=1,
+        offset_z=0
+    )
+
+    time_predicate = Predicate.time_check(Range.exact(1000), period=24000)
+
+    with Function(ns / "predicate_demo") as predicate_demo:
+        ~ Execute() \
+            .IF(lambda condition: condition.predicate(damage_source_predicate)) \
+            .RUN(Say("Damage source predicate matched"))
+        ~ Execute() \
+            .IF(lambda condition: condition.predicate(match_tool_predicate)) \
+            .RUN(Say("Match tool predicate matched"))
+        ~ Execute() \
+            .IF(lambda condition: condition.predicate(time_predicate)) \
+            .RUN(Say("Time check predicate matched"))
+        ~ Execute() \
+            .IF(lambda condition: condition.predicate(location_predicate)) \
+            .RUN(Say("Location check predicate matched"))
+        ~ Execute() \
+            .IF(lambda condition: condition.predicate(table_bonus_predicate)) \
+            .RUN(Say("Table bonus predicate matched"))
+        ~ Execute() \
+            .IF(lambda condition: condition.predicate(random_bonus_predicate)) \
+            .RUN(Say("Random chance with enchanted bonus predicate matched"))
+        ~ Execute() \
+            .IF(lambda condition: condition.predicate(enchantment_active_predicate)) \
+            .RUN(Say("Enchantment active predicate matched"))
+
     dp.build()
