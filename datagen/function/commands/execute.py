@@ -330,3 +330,7 @@ class Execute(Command):
     def to_string(self) -> str:
         return self.auto_macro("execute " + " ".join(self.chunks))
     
+    def copy(self) -> "Execute":
+        new = Execute()
+        new.chunks = self.chunks.copy()
+        return new
