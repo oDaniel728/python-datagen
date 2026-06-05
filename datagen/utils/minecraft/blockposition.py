@@ -9,3 +9,7 @@ if TYPE_CHECKING:
 class BlockPosition(Position3[int]):
     def __init__(self, x: int, y: int, z: int):
         super().__init__(x, y, z)
+
+    @staticmethod
+    def pos2(x: int, z: int) -> 'BlockPosition':
+        return BlockPosition(x, 0, z)
