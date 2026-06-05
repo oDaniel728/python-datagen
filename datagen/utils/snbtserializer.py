@@ -3,6 +3,8 @@ from __future__ import annotations
 from typing import Any
 import re
 
+from datagen.utils.minecraft.identifier import Identifier
+
 
 # ============================================================
 # NBT ARRAY TYPES
@@ -113,6 +115,13 @@ class SNBTSerializer:
                 )
                 + "]"
             )
+
+        # ----------------------------------------------------
+        # IDENTIFIER
+        # ----------------------------------------------------
+
+        elif isinstance(value, Identifier):
+            return f'"{value.to_string()}"'
 
         # ----------------------------------------------------
         # BOOLEAN
