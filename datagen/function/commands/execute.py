@@ -172,6 +172,9 @@ class Execute(Command):
     def AT(self, target: TargetSelector) -> "Execute":
         self.chunks.append(f"at {target.to_string()}")
         return self
+
+    def ATAS(self, target: TargetSelector) -> "Execute":
+        return self.AT(target).AS(target)
     
     _TAlignAxes = Literal[
         "x", "y", "z", 
