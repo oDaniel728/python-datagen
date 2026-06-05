@@ -1,5 +1,6 @@
 from typing import Any, Callable, Literal, Self, overload
 
+from datagen.function.commands.bossbar import BossBar
 from datagen.function.commands.command import Command
 from datagen.function.commands.data.datastorage import DataStorage
 from datagen.function.function import Function
@@ -313,7 +314,7 @@ class Execute(Command):
     def STORE(self,
         result_type: _TStoreResultType,
         type: Literal["bossbar"],
-        target: Identifier,
+        target: BossBar,
         value: Literal["value", "max"],
         /
     ) -> Self: ...
@@ -335,7 +336,7 @@ class Execute(Command):
             self._chunks.append(f"store {result_type} storage {target_id} {path} {data_type} {scale}")
         elif type == "bossbar":
             _, result_type, _, target, value = args
-            self._chunks.append(f"store {result_type} bossbar {target} {value}")
+            self._chunks.append(f"store {result_type} bossbar {target._id} {value}")
         else:
             raise ValueError("Invalid store type")
         
