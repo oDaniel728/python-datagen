@@ -1,6 +1,7 @@
 from typing import Literal
 
 from datagen.tag.tag import Tag
+from datagen.types.util.min import Range
 from datagen.utils.minecraft.identifier import Identifier
 from datagen.utils.repr.entitytype import EntityType
 
@@ -25,24 +26,24 @@ class TargetSelectorSettings():
         *,
         
         # Position
-        x: int | range | None = None,
-        y: int | range | None = None,
-        z: int | range | None = None,
+        x: int | Range | None = None,
+        y: int | Range | None = None,
+        z: int | Range | None = None,
         
         # Volume
-        dx: int | range | None = None,
-        dy: int | range | None = None,
-        dz: int | range | None = None,
+        dx: int | Range | None = None,
+        dy: int | Range | None = None,
+        dz: int | Range | None = None,
 
         # Distance
-        distance: int | range | None = None,
+        distance: int | Range | None = None,
 
         # Rotation
-        x_rotation: int | range | None = None,
-        y_rotation: int | range | None = None,
+        x_rotation: int | Range | None = None,
+        y_rotation: int | Range | None = None,
 
         # Scores
-        scores: dict[str, int | range] | None = None,
+        scores: dict[str, int | Range] | None = None,
 
         # Tag
         tag: str | None = None,
@@ -59,7 +60,7 @@ class TargetSelectorSettings():
         nbt: dict | None = None,
 
         # Player Data
-        level: int | range | None = None,
+        level: int | Range | None = None,
         gamemode: TargetSelectorSettings.TGamemode | None = None,
         advancements: dict[Identifier, bool] | None = None,
 

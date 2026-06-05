@@ -1,5 +1,7 @@
-from typing import Self
+from typing import TYPE_CHECKING, Self
 
+if TYPE_CHECKING:
+    from datagen.function.commands.runfunction import RunFunction
 from datagen.utils.minecraft.identifier import Identifier
 from datagen.function.commands.command import Command
 from datagen.globals import FUNCTIONS_PATH, DatagenConfig
@@ -113,3 +115,7 @@ class Function():
             func = Function(id)
             Function.__funcs[id] = func
             return func
+
+    def run(self) -> "RunFunction":
+        from datagen.function.commands.runfunction import RunFunction
+        return RunFunction(self)
