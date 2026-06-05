@@ -55,14 +55,14 @@ class Predicate():
         return json.dumps(self.to_dict(), indent=4)
 
     def get_filepath(self) -> Path:
-        return Path(PREDICATES_PATH) / (self.id.get_path().replace(".", "/") + ".json")
+        return Path(PREDICATES_PATH) / (self.id.get_path().replace(".", "/").lower() + ".json")
 
     def to_file(self) -> SimpleFile:
         return SimpleFile(self.get_filepath(), self.to_string())
 
     @staticmethod
     def value_check(value: str, range: Range):
-        return Predicate(Predicate.NAMESPACE / f"value_check_{value}_{range.start}_{range.end}", {
+        return Predicate(Predicate.NAMESPACE / f"valchk_{value}_{range.start}_{range.end}", {
             "condition": "minecraft:value_check",
             "value": value,
             "range": {
@@ -73,14 +73,14 @@ class Predicate():
     
     @staticmethod
     def random_chance(chance: float):
-        return Predicate(Predicate.NAMESPACE / f"random_chance_{str(chance).replace('.', '_')}", {
+        return Predicate(Predicate.NAMESPACE / f"random_{str(chance).replace('.', '_')}", {
             "condition": "minecraft:random_chance",
             "chance": chance
         })
     
     @staticmethod
     def weather_check(raining: bool, thundering: bool):
-        return Predicate(Predicate.NAMESPACE / f"weather_check_r{raining}_t{thundering}", {
+        return Predicate(Predicate.NAMESPACE / f"wthchk_r{raining}_t{thundering}", {
             "condition": "minecraft:weather_check",
             "raining": raining,
             "thundering": thundering
@@ -90,7 +90,7 @@ class Predicate():
     def reference(id: "Identifier | Predicate"):
         if isinstance(id, Predicate):
             id = id.id
-        return Predicate(Predicate.NAMESPACE / f"reference_{id.get_namespace()}_{id.get_path()}", {
+        return Predicate(Predicate.NAMESPACE / f"ref_{id.get_namespace()}_{id.get_path()}", {
             "condition": "minecraft:reference",
             "name": str(id)
         })
@@ -98,7 +98,7 @@ class Predicate():
     _TEntityContext = Literal["this", "attacker", "direct_attacker", "attacking_player"]
     @staticmethod
     def entity_scores(entity: _TEntityContext, scores: dict[str, Range]):
-        return Predicate(Predicate.NAMESPACE / f"entity_scores_{entity}_{'_'.join([f'{k}_{v.start}_{v.end}' for k, v in scores.items()])}", {
+        return Predicate(Predicate.NAMESPACE / f"scores_{entity}_{'_'.join([f'{k}_{v.start}_{v.end}' for k, v in scores.items()])}", {
             "condition": "minecraft:entity_scores",
             "entity": entity,
             "scores": {k: {"min": v.start, "max": v.end} for k, v in scores.items()}
@@ -106,34 +106,34 @@ class Predicate():
     
     @staticmethod
     def inverted(predicate: "Predicate"):
-        return Predicate(Predicate.NAMESPACE / f"inverted_{predicate.id.get_namespace()}_{predicate.id.get_path()}", {
+        return Predicate(Predicate.NAMESPACE / f"inv_{predicate.id.get_namespace()}_{predicate.id.get_path()}", {
             "condition": "minecraft:inverted",
             "predicate": predicate._data
         })
 
     @staticmethod
     def killed_by_player():
-        return Predicate(Predicate.NAMESPACE / "killed_by_player", {
+        return Predicate(Predicate.NAMESPACE / "klld_by_plr", {
             "condition": "minecraft:killed_by_player"
         })
 
     @staticmethod
     def all_of(*predicates: "Predicate"):
-        return Predicate(Predicate.NAMESPACE / f"all_of_{'_'.join([p.id.get_namespace() + '_' + p.id.get_path() for p in predicates])}", {
+        return Predicate(Predicate.NAMESPACE / f"allof_{'_'.join([p.id.get_namespace() + '_' + p.id.get_path() for p in predicates])}", {
             "condition": "minecraft:all_of",
             "terms": [p._data for p in predicates]
         })
     
     @staticmethod
     def any_of(*predicates: "Predicate"):
-        return Predicate(Predicate.NAMESPACE / f"any_of_{'_'.join([p.id.get_namespace() + '_' + p.id.get_path() for p in predicates])}", {
+        return Predicate(Predicate.NAMESPACE / f"anyof_{'_'.join([p.id.get_namespace() + '_' + p.id.get_path() for p in predicates])}", {
             "condition": "minecraft:any_of",
             "terms": [p._data for p in predicates]
         })
     
     @staticmethod
     def block_state_property(block: Block, properties: dict[str, Any]):
-        return Predicate(Predicate.NAMESPACE / f"block_state_property_{block.id.get_namespace()}_{block.id.get_path()}_{'_'.join([f'{k}_{v}' for k, v in properties.items()])}", {
+        return Predicate(Predicate.NAMESPACE / f"bsp_{block.id.get_namespace()}_{block.id.get_path()}_{'_'.join([f'{k}_{v}' for k, v in properties.items()])}", {
             "condition": "minecraft:block_state_property",
             "block": str(block),
             "properties": properties
@@ -142,7 +142,7 @@ class Predicate():
     @staticmethod
     def damage_source_properties(predicate: DamageSourcePredicate):
         predicate_data = PredicateBuilderUtil.to_dict(predicate)
-        return Predicate(Predicate.NAMESPACE / f"damage_source_properties_{PredicateBuilderUtil.id_suffix(predicate_data)}", {
+        return Predicate(Predicate.NAMESPACE / f"dsp_{PredicateBuilderUtil.id_suffix(predicate_data)}", {
             "condition": "minecraft:damage_source_properties",
             "predicate": predicate_data
         })
@@ -154,12 +154,12 @@ class Predicate():
         }
         if not active:
             data["active"] = False
-        return Predicate(Predicate.NAMESPACE / f"enchantment_active_check_{active}", data)
+        return Predicate(Predicate.NAMESPACE / f"eac_{active}", data)
 
     @staticmethod
     def entity_properties(entity: _TEntityContext, predicate: EntityPredicate):
         predicate_data = PredicateBuilderUtil.to_dict(predicate)
-        return Predicate(Predicate.NAMESPACE / f"entity_properties_{PredicateBuilderUtil.id_suffix(entity, predicate_data)}", {
+        return Predicate(Predicate.NAMESPACE / f"eprop_{PredicateBuilderUtil.id_suffix(entity, predicate_data)}", {
             "condition": "minecraft:entity_properties",
             "entity": entity,
             "predicate": predicate_data
@@ -179,12 +179,12 @@ class Predicate():
         if offset_z != 0:
             data["offsetZ"] = offset_z
 
-        return Predicate(Predicate.NAMESPACE / f"location_check_{PredicateBuilderUtil.id_suffix(offset_x, offset_y, offset_z, predicate_data)}", data)
+        return Predicate(Predicate.NAMESPACE / f"locchk_{PredicateBuilderUtil.id_suffix(offset_x, offset_y, offset_z, predicate_data)}", data)
 
     @staticmethod
     def match_tool(predicate: ItemPredicate):
         predicate_data = PredicateBuilderUtil.to_dict(predicate)
-        return Predicate(Predicate.NAMESPACE / f"match_tool_{PredicateBuilderUtil.id_suffix(predicate_data)}", {
+        return Predicate(Predicate.NAMESPACE / f"tool_{PredicateBuilderUtil.id_suffix(predicate_data)}", {
             "condition": "minecraft:match_tool",
             "predicate": predicate_data
         })
@@ -192,7 +192,7 @@ class Predicate():
     @staticmethod
     def random_chance_with_enchanted_bonus(unenchanted_chance: float, enchanted_chance: EnchantedChance, enchantment: Enchantment):
         enchanted_chance_data = PredicateBuilderUtil.to_dict(enchanted_chance)
-        return Predicate(Predicate.NAMESPACE / f"random_chance_with_enchanted_bonus_{PredicateBuilderUtil.id_suffix(unenchanted_chance, enchantment, enchanted_chance_data)}", {
+        return Predicate(Predicate.NAMESPACE / f"rcweb_{PredicateBuilderUtil.id_suffix(unenchanted_chance, enchantment, enchanted_chance_data)}", {
             "condition": "minecraft:random_chance_with_enchanted_bonus",
             "unenchanted_chance": unenchanted_chance,
             "enchanted_chance": enchanted_chance_data,
@@ -201,13 +201,13 @@ class Predicate():
 
     @staticmethod
     def survives_explosion():
-        return Predicate(Predicate.NAMESPACE / "survives_explosion", {
+        return Predicate(Predicate.NAMESPACE / "survexplosion", {
             "condition": "minecraft:survives_explosion"
         })
 
     @staticmethod
     def table_bonus(enchantment: Enchantment, chances: list[float]):
-        return Predicate(Predicate.NAMESPACE / f"table_bonus_{PredicateBuilderUtil.id_suffix(enchantment, *chances)}", {
+        return Predicate(Predicate.NAMESPACE / f"tabbonus_{PredicateBuilderUtil.id_suffix(enchantment, *chances)}", {
             "condition": "minecraft:table_bonus",
             "enchantment": str(enchantment),
             "chances": chances
@@ -225,4 +225,4 @@ class Predicate():
         if period is not None:
             data["period"] = period
 
-        return Predicate(Predicate.NAMESPACE / f"time_check_{PredicateBuilderUtil.id_suffix(value.start, value.end, period)}", data)
+        return Predicate(Predicate.NAMESPACE / f"tmchk_{PredicateBuilderUtil.id_suffix(value.start, value.end, period)}", data)

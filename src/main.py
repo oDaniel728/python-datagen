@@ -49,11 +49,13 @@ def main():
     mc = Namespace.minecraft
     dp.add_namespace(mc)
 
+    load_tag = Load()
+
     with Function(ns / "load") as load:
         ~ Say("Hello, world!")
         ~ Return.int(1)
 
-        Load().add_value(load)
+        load_tag.add_value(load)
 
     with Function(ns / "ride_nearest_cart") as ride_nearest_cart:
         with AnonymousFunction(dp) as lambda1:
@@ -114,10 +116,6 @@ def main():
     match_tool_predicate = Predicate.match_tool(
         ItemPredicate()
             .with_items(Item(Identifier.of("minecraft", "diamond_sword")))
-            .with_enchantment(
-                Enchantment(Identifier.of("minecraft", "sharpness")),
-                Range.exact(3)
-            )
     )
 
     random_bonus_predicate = Predicate.random_chance_with_enchanted_bonus(

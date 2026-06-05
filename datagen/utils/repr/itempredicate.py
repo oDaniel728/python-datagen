@@ -1,3 +1,5 @@
+from typing import Any
+
 from datagen.types.util.min import Range
 from datagen.utils.repr.enchantment import Enchantment
 from datagen.utils.repr.item import Item
@@ -15,20 +17,8 @@ class ItemPredicate():
         self._data["count"] = {"min": count.start, "max": count.end}
         return self
 
-    def with_enchantment(self, enchantment: Enchantment, level: Range | None = None) -> "ItemPredicate":
-        enchantments = self._data.setdefault("enchantments", [])
-        entry: dict = {"enchantment": str(enchantment)}
-        if level is not None:
-            entry["levels"] = {"min": level.start, "max": level.end}
-        enchantments.append(entry)
-        return self
-
-    def with_stored_enchantment(self, enchantment: Enchantment, level: Range | None = None) -> "ItemPredicate":
-        enchantments = self._data.setdefault("stored_enchantments", [])
-        entry: dict = {"enchantment": str(enchantment)}
-        if level is not None:
-            entry["levels"] = {"min": level.start, "max": level.end}
-        enchantments.append(entry)
+    def with_components(self, components: dict[str, Any]) -> "ItemPredicate":
+        self._data["components"] = components
         return self
 
     def set(self, key: str, value) -> "ItemPredicate":
