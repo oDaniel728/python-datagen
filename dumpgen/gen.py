@@ -204,7 +204,7 @@ def dump_gamerules():
         OUTPUT_FILE / "gamerules.py",
         "Gamerules",
         json_list_str_to_custom_class_static_class(
-            "from datagen.utils.repr.gamerule import Gamerule", "Gamerule"
+            "from datagen.utils.repr.gamerule import MCGamerule", "MCGamerule"
         )
     )
 
