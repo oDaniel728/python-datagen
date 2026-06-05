@@ -92,3 +92,209 @@ class Data():
         _data = SNBTSerializer.serialize(data)
 
         return CustomCommand(f"data merge {type} {target} {_data}")
+
+    _TModifyType = Literal["append", "insert", "merge", "prepend", "set"]
+    _TModifyMethods = Literal["from", "string", "value"]
+
+    @overload
+    @staticmethod
+    def modify(
+        type: Literal["block"],
+        target: BlockPosition,
+        path: str,
+        modify_type: Literal["merge"],
+        *,
+        value: Any,
+    ) -> CustomCommand: ...
+
+    @overload
+    @staticmethod
+    def modify(
+        type: Literal["block"],
+        target: BlockPosition,
+        path: str,
+        modify_type: Literal["append", "insert", "prepend", "set"],
+        *,
+        value: Any,
+    ) -> CustomCommand: ...
+
+    @overload
+    @staticmethod
+    def modify(
+        type: Literal["block"],
+        target: BlockPosition,
+        path: str,
+        modify_type: Literal["append", "insert", "prepend", "set"],
+        *,
+        from_provider: _TDataProvider,
+        from_target: Any,
+        from_path: str,
+    ) -> CustomCommand: ...
+
+    @overload
+    @staticmethod
+    def modify(
+        type: Literal["block"],
+        target: BlockPosition,
+        path: str,
+        modify_type: Literal["append", "insert", "prepend", "set"],
+        *,
+        string: Literal[True],
+        from_provider: _TDataProvider,
+        from_target: Any,
+        from_path: str,
+        start: int,
+        end: int,
+    ) -> CustomCommand: ...
+
+    @overload
+    @staticmethod
+    def modify(
+        type: Literal["entity"],
+        target: TargetSelector,
+        path: str,
+        modify_type: Literal["merge"],
+        *,
+        value: Any,
+    ) -> CustomCommand: ...
+
+    @overload
+    @staticmethod
+    def modify(
+        type: Literal["entity"],
+        target: TargetSelector,
+        path: str,
+        modify_type: Literal["append", "insert", "prepend", "set"],
+        *,
+        value: Any,
+    ) -> CustomCommand: ...
+
+    @overload
+    @staticmethod
+    def modify(
+        type: Literal["entity"],
+        target: TargetSelector,
+        path: str,
+        modify_type: Literal["append", "insert", "prepend", "set"],
+        *,
+        from_provider: _TDataProvider,
+        from_target: Any,
+        from_path: str,
+    ) -> CustomCommand: ...
+
+    @overload
+    @staticmethod
+    def modify(
+        type: Literal["entity"],
+        target: TargetSelector,
+        path: str,
+        modify_type: Literal["append", "insert", "prepend", "set"],
+        *,
+        string: Literal[True],
+        from_provider: _TDataProvider,
+        from_target: Any,
+        from_path: str,
+        start: int,
+        end: int,
+    ) -> CustomCommand: ...
+
+    @overload
+    @staticmethod
+    def modify(
+        type: Literal["storage"],
+        target: DataStorage | Identifier,
+        path: str,
+        modify_type: Literal["merge"],
+        *,
+        value: Any,
+    ) -> CustomCommand: ...
+
+    @overload
+    @staticmethod
+    def modify(
+        type: Literal["storage"],
+        target: DataStorage | Identifier,
+        path: str,
+        modify_type: Literal["append", "insert", "prepend", "set"],
+        *,
+        value: Any,
+    ) -> CustomCommand: ...
+
+    @overload
+    @staticmethod
+    def modify(
+        type: Literal["storage"],
+        target: DataStorage | Identifier,
+        path: str,
+        modify_type: Literal["append", "insert", "prepend", "set"],
+        *,
+        from_provider: _TDataProvider,
+        from_target: Any,
+        from_path: str,
+    ) -> CustomCommand: ...
+
+    @overload
+    @staticmethod
+    def modify(
+        type: Literal["storage"],
+        target: DataStorage | Identifier,
+        path: str,
+        modify_type: Literal["append", "insert", "prepend", "set"],
+        *,
+        string: Literal[True],
+        from_provider: _TDataProvider,
+        from_target: Any,
+        from_path: str,
+        start: int,
+        end: int,
+    ) -> CustomCommand: ...
+
+    @staticmethod
+    def modify(
+        type: str,
+        target: Any,
+        path: str,
+        modify_type: str,
+        *,
+        value: Any | None = None,
+        from_provider: str | None = None,
+        from_target: Any | None = None,
+        from_path: str | None = None,
+        string: bool = False,
+        start: int | None = None,
+        end: int | None = None,
+    ) -> CustomCommand:
+        if isinstance(target, Identifier) and type == "storage":
+            target = DataStorage(target)
+
+        if modify_type == "merge":
+            if value is None:
+                raise ValueError("merge requires a value")
+
+            _value = SNBTSerializer._serialize_value(value)
+            return CustomCommand(f"data modify {type} {target} {path} merge {_value}")
+
+        if value is not None:
+            _value = SNBTSerializer._serialize_value(value)
+            return CustomCommand(
+                f"data modify {type} {target} {path} {modify_type} value {_value}"
+            )
+
+        if from_provider is None or from_target is None or from_path is None:
+            raise ValueError(
+                "from_provider, from_target and from_path are required when no value is provided"
+            )
+
+        if string:
+            if start is None or end is None:
+                raise ValueError("string modify requires start and end indexes")
+
+            return CustomCommand(
+                f"data modify {type} {target} {path} {modify_type} string "
+                f"{from_provider} {from_target} {from_path} {start} {end}"
+            )
+
+        return CustomCommand(
+            f"data modify {type} {target} {path} {modify_type} from "
+            f"{from_provider} {from_target} {from_path}"
+        )
