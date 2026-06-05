@@ -1,11 +1,10 @@
 from typing import Self
 
 from datagen.datapack.namespace import Namespace
-from datagen.function.function import Function
-from datagen.tag.tag import Tag
+from datagen.tag.functiontag import FunctionTag
 
 
-class Load(Tag[Function]):
+class Load(FunctionTag):
 
     _instance: Self
     def __new__(cls) -> Self:

@@ -1,11 +1,10 @@
 from typing import Self
 
 from datagen.datapack.namespace import Namespace
-from datagen.function.function import Function
-from datagen.tag.tag import Tag
+from datagen.tag.functiontag import FunctionTag
 
 
-class Tick(Tag[Function]):
+class Tick(FunctionTag):
     _instance: Self
     def __new__(cls) -> Self:
         if not hasattr(cls, "_instance"):

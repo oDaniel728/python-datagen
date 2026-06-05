@@ -29,7 +29,7 @@ class Tag[T]():
     def parent(self) -> str:
         if self.type == Function:
             return "function"
-        return self.namespace.name
+        return self.type.__class__.__name__
     
     def has_value(self, value: T) -> bool:
         return value in self.values
