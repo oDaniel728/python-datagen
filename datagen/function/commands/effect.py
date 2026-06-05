@@ -2,6 +2,7 @@ from typing import Literal, overload
 
 from datagen.function.commands.command import Command
 from datagen.function.commands.customcommand import CustomCommand
+from datagen.types.exceptions.preventionexception import PreventionException
 from datagen.utils.minecraft.targetselector import TargetSelector
 from datagen.utils.repr.status_effect import StatusEffect
 
@@ -64,6 +65,14 @@ class Effect():
         hideParticles: bool = False,
         /,
     ) -> CustomCommand:
+        if amplifier < 0:
+            raise PreventionException("Amplifier must be greater than or equal to 0.")
+        elif amplifier > 255:
+            raise PreventionException("Amplifier must be less than or equal to 255.")
+        
+        if isinstance(seconds, int) and seconds < 0:
+            raise PreventionException("Seconds must be greater than or equal to 0.")
+
         return CustomCommand(
             f"effect give {target} {effect} {seconds} {amplifier} {'true' if hideParticles else 'false'}"
         )
