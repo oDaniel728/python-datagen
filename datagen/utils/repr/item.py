@@ -15,6 +15,8 @@ class __Settings__(ToDict):
 
 class Item[T: __Settings__]():
 
+    instances = dict[Identifier, "Item"]()
+
     class Settings(__Settings__):
         def __init__(self) -> None:
             super().__init__()
@@ -22,6 +24,7 @@ class Item[T: __Settings__]():
     def __init__(self, id: Identifier, components: T | dict = {}) -> None:
         self.id = id
         self.nbt = components if not isinstance(components, dict) else self.Settings()
+        Item.instances[id] = self
 
     def __get_nbt_dict(self) -> dict:
         if not isinstance(self.nbt, dict):
