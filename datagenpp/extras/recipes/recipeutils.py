@@ -1,4 +1,4 @@
-from datagen.recipes.Recipe import Recipe
+from datagen.recipes.recipe import Recipe
 from datagen.tag.tag import Tag
 from datagen.utils.repr.item import Item
 from datagen.utils.repr.itemstack import ItemStack
@@ -145,7 +145,7 @@ class RecipeUtils():
         @staticmethod
         def offer_chain_transformation(crafts: list[tuple[list[Item | Tag[Item]], ItemStack]]) -> list[Recipe]:
             recipes = []
-            for i in range(len(crafts) - 1):
+            for i in range(len(crafts)):
                 ingredients, result = crafts[i]
                 recipe = Recipe.shapeless(
                     ingredients=ingredients,

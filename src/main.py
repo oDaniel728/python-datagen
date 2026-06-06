@@ -14,7 +14,9 @@ from datagen.function.commands.setblock import SetBlock
 from datagen.function.commands.teleport import Teleport
 from datagen.function.commands.tellraw import TellRaw
 from datagen.function.function import Function
+from datagen.recipes.recipe import Recipe
 from datagen.tag.functiontag import FunctionTag
+from datagen.tag.itemtag import ItemTag
 from datagen.tag.tag import Tag
 from datagen.utils.minecraft.blockposition import BlockPosition
 from datagen.utils.minecraft.collections.blocks import Blocks
@@ -50,6 +52,8 @@ def main():
     mc = Namespace.minecraft
     dp.add_namespace(mc)
 
+    coals = ItemTag(ns / "coals", [Items.COAL, Items.CHARCOAL])
+    ns.add_tag(coals)
     load_tag = Load()
 
     with Function(ns / "load") as load:
@@ -106,5 +110,20 @@ def main():
                 ([Items.RAW_COPPER, Items.COAL], Items.COPPER_INGOT.get_stack(1)),
             ])
         )
+    ns.add_recipes(
+        RecipeUtils
+            .crafting
+            .offer_surrounded_core(
+                core=coals,
+                surrounding=ItemTag(Identifier.of("minecraft:logs_that_burn")),
+                result=Items.CHARCOAL.get_stack(8)
+            )
+    )
+    ns.add_recipes(
+        Recipe.shapeless(
+            ingredients=[*[Items.CHARCOAL] * 8, Items.BLACK_DYE],
+            result=Items.COAL.get_stack(8)
+        )
+    )
 
     dp.build()

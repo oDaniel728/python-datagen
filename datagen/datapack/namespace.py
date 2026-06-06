@@ -11,7 +11,7 @@ from datagen.utils.minecraft.logger import Logger
 
 if TYPE_CHECKING:
     from datagen.predicate.predicate import Predicate
-    from datagen.recipes.Recipe import Recipe
+    from datagen.recipes.recipe import Recipe
 
 @final
 class Namespace():

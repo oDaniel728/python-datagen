@@ -30,7 +30,10 @@ class Recipe():
         self.id = id
         self.namespace = Namespace.get(id)
         Recipe.__recipes[id] = self
+    
+    def __invert__(self):
         self.namespace.add_recipe(self)
+        return self
 
     def __hash__(self) -> int:
         return hash(self.id)
@@ -77,7 +80,7 @@ class Recipe():
         return Recipe(Identifier.of("temp", f"shaped_{len(Recipe.__recipes)}"), {
             "type": "minecraft:crafting_shaped",
             "pattern": pattern,
-            "key": {k: v.id.to_string() for k, v in key.items()},
+            "key": {k: {"item" if isinstance(v, Item) else "tag": v.id.to_string()} for k, v in key.items()},
             "result": {
                 "count": result.count,
                 "id": result.item.id.to_string(),

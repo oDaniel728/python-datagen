@@ -55,6 +55,8 @@ class Tag[T]():
                 processed_values.append(str(value.id))
             elif isinstance(value, Tag):
                 processed_values.append(f"#{value.id}")
+            elif isinstance(value, Item):
+                processed_values.append(value.id.to_string())
             else:
                 processed_values.append(str(value))
         return processed_values
