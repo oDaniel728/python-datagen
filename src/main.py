@@ -37,6 +37,7 @@ from datagen.utils.repr.damagesourcepredicate import DamageSourcePredicate
 from datagen.utils.repr.enchantedchance import EnchantedChance
 from datagen.types.util.min import Range
 from datagenpp.extras.betterexecute import BetterExecute
+from datagenpp.extras.recipes.recipeutils import RecipeUtils
 from datagenpp.extras.tags.load import Load
 
 def main():
@@ -96,5 +97,14 @@ def main():
                 )
         )
     
+    ns.add_recipes(
+        *RecipeUtils
+            .crafting
+            .offer_chain_transformation([
+                ([Items.RAW_IRON, Items.COAL], Items.IRON_INGOT.get_stack(1)),
+                ([Items.RAW_GOLD, Items.COAL], Items.GOLD_INGOT.get_stack(1)),
+                ([Items.RAW_COPPER, Items.COAL], Items.COPPER_INGOT.get_stack(1)),
+            ])
+        )
 
     dp.build()

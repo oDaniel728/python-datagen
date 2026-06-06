@@ -1,6 +1,5 @@
 from typing import Literal
 
-from datagen.tag.tag import Tag
 from datagen.types.util.min import Range
 from datagen.utils.minecraft.identifier import Identifier
 from datagen.utils.repr.entitytype import EntityType

@@ -1,3 +1,4 @@
+import json
 from typing import TYPE_CHECKING, Any, Self, Type, overload
 
 from datagen.types.protocols.todict import ToDict
@@ -12,6 +13,9 @@ class __Settings__(ToDict):
 
     def to_dict(self) -> dict:
         return {}
+
+    def to_json(self) -> str:
+        return json.dumps(self.to_dict())
 
 class Item[T: __Settings__]():
 

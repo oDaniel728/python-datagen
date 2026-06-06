@@ -14,6 +14,8 @@ class Block[T: __Settings__](Item[T]):
         def __init__(self) -> None:
             super().__init__()
 
+        def to_dict(self) -> dict[str, Any]:
+            return super().to_dict()
     def __init__(self, id: Identifier, nbt: T | dict = {}) -> None:
         super().__init__(id, nbt)
         Block.instances[id] = self

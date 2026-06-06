@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+from typing import Any
 
 from datagen.globals import RECIPES_PATH
 from datagen.tag.tag import Tag
@@ -38,7 +39,29 @@ class Recipe():
         return isinstance(other, Recipe) and self.id == other.id
 
     def to_dict(self) -> dict:
-        return self._data
+
+        def encode(value: Any) -> Any:
+            if isinstance(value, Item):
+                return value.id.to_string()
+            elif isinstance(value, Tag):
+                return "#" + value.id.to_string()
+            elif isinstance(value, ItemStack):
+                return {
+                    "count": value.count,
+                    "id": value.item.id.to_string(),
+                    "components": value.item.nbt
+                }
+            elif isinstance(value, Item.Settings):
+                return value.to_dict()
+            elif isinstance(value, dict):
+                return {str(k): encode(v) for k, v in value.items()}
+            elif isinstance(value, list):
+                return [encode(v) for v in value]
+            elif isinstance(value, tuple):
+                return tuple(encode(v) for v in value)
+            return value
+
+        return {str(k): encode(v) for k, v in self._data.items()}
 
     def to_string(self) -> str:
         return json.dumps(self.to_dict(), indent=4)
@@ -57,7 +80,7 @@ class Recipe():
             "key": {k: v.id.to_string() for k, v in key.items()},
             "result": {
                 "count": result.count,
-                "item": result.item.id.to_string(),
+                "id": result.item.id.to_string(),
                 "components": result.item.nbt
             }
         })
@@ -66,10 +89,12 @@ class Recipe():
     def shapeless(ingredients: list[Item | Tag[Item]], result: ItemStack) -> "Recipe":
         return Recipe(Identifier.of("temp", f"shapeless_{len(Recipe.__recipes)}"), {
             "type": "minecraft:crafting_shapeless",
-            "ingredients": [ingredient.id.to_string() for ingredient in ingredients],
+            "ingredients": [ {
+                "item" if isinstance(ingredient, Item) else "tag": ingredient.id.to_string()
+            } for ingredient in ingredients ],
             "result": {
                 "count": result.count,
-                "item": result.item.id.to_string(),
+                "id": result.item.id.to_string(),
                 "components": result.item.nbt
             }
         })
@@ -81,7 +106,7 @@ class Recipe():
             "ingredient": ingredient.id.to_string(),
             "result": {
                 "count": result.count,
-                "item": result.item.id.to_string(),
+                "id": result.item.id.to_string(),
                 "components": result.item.nbt
             },
             "experience": experience,
@@ -95,7 +120,7 @@ class Recipe():
             "ingredient": ingredient.id.to_string(),
             "result": {
                 "count": result.count,
-                "item": result.item.id.to_string(),
+                "id": result.item.id.to_string(),
                 "components": result.item.nbt
             },
             "experience": experience,
@@ -109,7 +134,7 @@ class Recipe():
             "ingredient": ingredient.id.to_string(),
             "result": {
                 "count": result.count,
-                "item": result.item.id.to_string(),
+                "id": result.item.id.to_string(),
                 "components": result.item.nbt
             },
             "experience": experience,
@@ -124,7 +149,7 @@ class Recipe():
             "template": template.id.to_string(),
             "result": {
                 "count": result.count,
-                "item": result.item.id.to_string(),
+                "id": result.item.id.to_string(),
                 "components": result.item.nbt
             }
         })
@@ -136,7 +161,7 @@ class Recipe():
             "ingredient": ingredient.id.to_string(),
             "result": {
                 "count": result.count,
-                "item": result.item.id.to_string(),
+                "id": result.item.id.to_string(),
                 "components": result.item.nbt
             }
         })
@@ -148,7 +173,7 @@ class Recipe():
             "ingredient": ingredient.id.to_string(),
             "result": {
                 "count": result.count,
-                "item": result.item.id.to_string(),
+                "id": result.item.id.to_string(),
                 "components": result.item.nbt
             }
         })
@@ -160,7 +185,7 @@ class Recipe():
             "ingredient": ingredient.id.to_string(),
             "result": {
                 "count": result.count,
-                "item": result.item.id.to_string(),
+                "id": result.item.id.to_string(),
                 "components": result.item.nbt
             },
             "experience": experience,
