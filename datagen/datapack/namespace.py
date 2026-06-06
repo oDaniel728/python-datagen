@@ -86,6 +86,7 @@ class Namespace():
     def add_recipe(self, recipe: "Recipe") -> Self:
         self.logger.info(f"Adding recipe '{recipe.id._path}' to namespace '{self.name}'")
         recipe.namespace = self
+        recipe.id._namespace = self.name
         self.recipes.add(recipe)
         return self
     
