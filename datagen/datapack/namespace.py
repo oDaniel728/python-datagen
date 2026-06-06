@@ -89,6 +89,16 @@ class Namespace():
         self.recipes.add(recipe)
         return self
     
+    def add_recipes(self, *recipes: "Recipe") -> Self:
+        for recipe in recipes:
+            self.add_recipe(recipe)
+        return self
+    
+    def add_tags(self, *tags: Tag) -> Self:
+        for tag in tags:
+            self.add_tag(tag)
+        return self
+    
     def build_functions(self, base: Path):
         Logger.start_task(f"Building functions in namespace '{self.name}'")
         for function in self.functions:
