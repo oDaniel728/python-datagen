@@ -140,3 +140,29 @@ class Recipe():
                 "components": result.item.nbt
             }
         })
+
+    @staticmethod
+    def transmute(ingredient: Item | Tag[Item], result: ItemStack) -> "Recipe":
+        return Recipe(Identifier.of("temp", f"transmute_{len(Recipe.__recipes)}"), {
+            "type": "minecraft:transmuting",
+            "ingredient": ingredient.id.to_string(),
+            "result": {
+                "count": result.count,
+                "item": result.item.id.to_string(),
+                "components": result.item.nbt
+            }
+        })
+    
+    @staticmethod
+    def campfire_cooking(ingredient: Item | Tag[Item], result: ItemStack, experience: float = 0.0, cookingtime: int = 100) -> "Recipe":
+        return Recipe(Identifier.of("temp", f"campfire_cooking_{len(Recipe.__recipes)}"), {
+            "type": "minecraft:campfire_cooking",
+            "ingredient": ingredient.id.to_string(),
+            "result": {
+                "count": result.count,
+                "item": result.item.id.to_string(),
+                "components": result.item.nbt
+            },
+            "experience": experience,
+            "cookingtime": cookingtime
+        })
