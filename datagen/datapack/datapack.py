@@ -14,6 +14,7 @@ from datagen.utils.minecraft.logger import Logger
 class DataPack():
 
     __datapacks = set["DataPack"]()
+    __current_datapack: "DataPack | None" = None
 
     def __del__(self):
         self.__datapacks.remove(self)
@@ -36,11 +37,18 @@ class DataPack():
                     return ns
         return Namespace.get(id)
     
+    @staticmethod
+    def get_current_datapack() -> "DataPack":
+        if DataPack.__current_datapack is None:
+            raise ValueError("No datapack is currently being built")
+        return DataPack.__current_datapack
+    
     def __init__(self, name: str, description: str) -> None:
         self.__datapacks.add(self)
         self.name = name
         self.description = description
         self.namespaces = set[Namespace]()
+        self.__current_datapack = self
 
     def add_namespace(self, namespace: Namespace) -> Self:
         self.namespaces.add(namespace)
