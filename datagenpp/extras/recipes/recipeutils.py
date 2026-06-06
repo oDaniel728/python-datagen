@@ -141,6 +141,19 @@ class RecipeUtils():
                 },
                 result=result
             )
+
+        @staticmethod
+        def offer_chain_transformation(crafts: list[tuple[list[Item | Tag[Item]], ItemStack]]) -> list[Recipe]:
+            recipes = []
+            for i in range(len(crafts) - 1):
+                ingredients, result = crafts[i]
+                recipe = Recipe.shapeless(
+                    ingredients=ingredients,
+                    result=result
+                )
+                recipes.append(recipe)
+            return recipes
+
     class smelting():
         @staticmethod
         def offer_all_smelts(
