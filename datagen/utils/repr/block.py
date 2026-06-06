@@ -8,13 +8,15 @@ class __Settings__(Item.Settings):
     def __init__(self) -> None:
         super().__init__()
 
-class Block[T: __Settings__](Item[T]):    
+class Block[T: __Settings__](Item[T]):  
+    instances = dict[Identifier, "Block"]()  
     class Settings(__Settings__):
         def __init__(self) -> None:
             super().__init__()
 
     def __init__(self, id: Identifier, nbt: T | dict = {}) -> None:
         super().__init__(id, nbt)
+        Block.instances[id] = self
 
     def with_settings[U: __Settings__](self, setting: U) -> "Block[U]": # type: ignore
         return Block[U](self.id, setting)
