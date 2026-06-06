@@ -2,6 +2,7 @@ from datagen.datapack.datapack import DataPack
 from datagen.function.anonymousfunction import AnonymousFunction
 from datagen.function.commands.command import Command
 from datagen.function.commands.customcommand import CustomCommand
+from datagen.function.commands.runfunction import RunFunction
 from datagen.function.function import Function
 from datagen.utils.minecraft.targetselector import TargetSelector
 from datagen.utils.minecraft.text import Text
