@@ -11,6 +11,7 @@ from datagen.utils.minecraft.logger import Logger
 
 if TYPE_CHECKING:
     from datagen.predicate.predicate import Predicate
+    from datagen.recipes.Recipe import Recipe
 
 @final
 class Namespace():
@@ -47,6 +48,7 @@ class Namespace():
         self.functions = set[Function]()
         self.tags = set[Tag]()
         self.predicates = set["Predicate"]()
+        self.recipes = set["Recipe"]()
 
     def identifier(self, path: str) -> Identifier:
         return Identifier.from_string(f"{self.name}:{path}")
@@ -80,6 +82,12 @@ class Namespace():
         predicate.namespace = self
         self.predicates.add(predicate)
         return self
+
+    def add_recipe(self, recipe: "Recipe") -> Self:
+        self.logger.info(f"Adding recipe '{recipe.id._path}' to namespace '{self.name}'")
+        recipe.namespace = self
+        self.recipes.add(recipe)
+        return self
     
     def build_functions(self, base: Path):
         Logger.start_task(f"Building functions in namespace '{self.name}'")
@@ -105,11 +113,20 @@ class Namespace():
             f.build(base)
         Logger.end_task(f"Building predicates in namespace '{self.name}'")
 
+    def build_recipes(self, base: Path):
+        Logger.start_task(f"Building recipes in namespace '{self.name}'")
+        for recipe in self.recipes:
+            self.logger.info(f"Building recipe '{recipe.id._path}' in namespace '{self.name}'")
+            f = recipe.to_file()
+            f.build(base)
+        Logger.end_task(f"Building recipes in namespace '{self.name}'")
+
     def build(self, base: Path):
         Logger.start_task(f"Building namespace '{self.name}'")
         self.build_functions(base)
         self.build_tags(base)
         self.build_predicates(base)
+        self.build_recipes(base)
         Logger.end_task(f"Building namespace '{self.name}'")
 
     def __truediv__(self, path: str) -> Identifier:

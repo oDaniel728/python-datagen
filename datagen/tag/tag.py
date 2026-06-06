@@ -5,6 +5,7 @@ from typing import Iterable, Self, Type
 from datagen.function.function import Function
 from datagen.globals import TAGS_PATH
 from datagen.utils.minecraft.identifier import Identifier
+from datagen.utils.repr.item import Item
 from datagen.utils.simplefile import SimpleFile
 
 
@@ -29,6 +30,10 @@ class Tag[T]():
     def parent(self) -> str:
         if self.type == Function:
             return "function"
+        elif self.type == Tag:
+            return "tag"
+        elif self.type == Item:
+            return "item"
         return self.type.__class__.__name__
     
     def has_value(self, value: T) -> bool:

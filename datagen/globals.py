@@ -5,6 +5,7 @@ from typing import TypedDict
 FUNCTIONS_PATH = "function/"
 TAGS_PATH = "tags/"
 PREDICATES_PATH = "predicate/"
+RECIPES_PATH = "recipe/"
 CONFIG_PATH = ".datagenconfig"
 
 class DatagenConfig():
