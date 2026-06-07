@@ -18,6 +18,17 @@ class Namespace():
     minecraft: Namespace
     temp: Namespace
 
+    _current_namespace: Namespace
+    @staticmethod
+    def get_current_namespace() -> "Namespace":
+        if not hasattr(Namespace, "_current_namespace") or Namespace._current_namespace is None:
+            raise ValueError("No namespace is currently being built")
+        return Namespace._current_namespace
+    
+    @staticmethod
+    def set_current_namespace(namespace: "Namespace") -> None:
+        Namespace._current_namespace = namespace
+
     instances = dict[str, "Self"]()
     
     def __new__(cls, name: str) -> Self:
@@ -142,6 +153,14 @@ class Namespace():
 
     def __truediv__(self, path: str) -> Identifier:
         return self.identifier(path)
+    
+    def __enter__(self) -> Self:
+        self._current_namespace = self
+        return self
+    
+    def __exit__(self, exc_type, exc_value, traceback) -> None:
+        self._current_namespace = None # type: ignore
+        pass
 
 Namespace.minecraft = Namespace("minecraft")
 Namespace.temp = Namespace(f"temp")

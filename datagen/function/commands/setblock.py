@@ -13,4 +13,4 @@ class SetBlock(Command):
         self.block = block
 
     def to_string(self) -> str:
-        return self.auto_macro(f"setblock {self.block_pos.to_string()} {self.block.__str__()}")
+        return self.auto_macro(f"setblock {self.block_pos} {self.block}")

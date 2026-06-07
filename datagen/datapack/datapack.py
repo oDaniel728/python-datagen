@@ -91,3 +91,10 @@ class DataPack():
             }
         }, indent=4))       
         Logger.end_task(f"Building datapack '{self.name}'") 
+
+    def __enter__(self) -> Self:
+        self.__current_datapack = self
+        return self
+    
+    def __exit__(self, exc_type, exc, tb):
+        self.__current_datapack = None

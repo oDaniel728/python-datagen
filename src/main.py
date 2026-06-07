@@ -48,6 +48,8 @@ def main():
 
     dp = DataPack("test_datapack", "DataPack created for testing purposes")
     
+    DataPack.__current_datapack = dp
+
     ns = Namespace("test_namespace")
     dp.add_namespace(ns)
 
@@ -128,8 +130,16 @@ def main():
         )
     )
 
-    with Function(ns / "put_hello_world") as put_hello_world:
-        cmd = CommandBlock(CommandBlockSettings("say hello, world!", "up", False, True))
-        ~ SetBlock(RelativeBlockPosition(0, 1, 0), cmd)
+    with Function(ns / "test_command_block_chain") as test_command_block_chain:
+        chain = CommandBlock.create_chain(
+            Say("First command"),
+            Say("Second command"),
+            Say("Third command"),
+            direction="up"
+        )        
+        test_command_block_chain.add_commands(
+            *chain.place(BlockPosition(0, 0, 0)
+            )
+        )
 
     dp.build()

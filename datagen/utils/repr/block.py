@@ -1,8 +1,9 @@
 from abc import ABC, abstractmethod
 import json
-from typing import Any, Literal, override
+from typing import Any, Literal, Self, override
 
 from datagen.types.protocols.todict import ToDict
+from datagen.utils.minecraft.blockposition import BlockPosition
 from datagen.utils.minecraft.identifier import Identifier
 from datagen.utils.repr.item import Item
 
@@ -82,3 +83,7 @@ class Block[T: __Settings__](Item[T]):
         state_str = ",".join(f"{k}={v}" for k, v in self._encode(self.nbt.get_block_state()).items())
         entity_str = ",".join(f"{k}:{v}" for k, v in self._encode(self.nbt.get_block_entity_data()).items())
         return f"{~self.id}[{state_str}]{{{entity_str}}}"
+    
+    def at(self, pos: BlockPosition):
+        from datagen.utils.repr.placeableblock import PlaceableBlock
+        return PlaceableBlock(self.id, self.nbt, pos) # type: ignore
