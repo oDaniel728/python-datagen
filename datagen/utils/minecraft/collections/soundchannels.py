@@ -1,13 +1,13 @@
-from datagen.utils.repr.soundchannel import SoundChannel
+from datagen.utils.repr.soundsource import SoundSource
 
 
-class SoundChannels():
-    MASTER = SoundChannel("master")
-    MUSIC = SoundChannel("music")
-    RECORD = SoundChannel("record")
-    WEATHER = SoundChannel("weather")
-    BLOCK = SoundChannel("block")
-    HOSTILE = SoundChannel("hostile")
-    NEUTRAL = SoundChannel("neutral")
-    PLAYER = SoundChannel("player")
-    AMBIENT = SoundChannel("ambient")
+class SoundSources():
+    MASTER = SoundSource("master")
+    MUSIC = SoundSource("music")
+    RECORD = SoundSource("record")
+    WEATHER = SoundSource("weather")
+    BLOCK = SoundSource("block")
+    HOSTILE = SoundSource("hostile")
+    NEUTRAL = SoundSource("neutral")
+    PLAYER = SoundSource("player")
+    AMBIENT = SoundSource("ambient")

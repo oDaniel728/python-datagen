@@ -3,16 +3,16 @@ from typing import Literal, overload
 from datagen.function.commands.command import Command
 from datagen.utils.minecraft.targetselector import TargetSelector
 from datagen.utils.repr.sound import Sound
-from datagen.utils.repr.soundchannel import SoundChannel
+from datagen.utils.repr.soundsource import SoundSource
 
 
 class StopSound(Command):
     @overload
     def __init__(self, target: TargetSelector) -> None: ...
     @overload
-    def __init__(self, target: TargetSelector, source: SoundChannel | Literal["*"], sound: Sound) -> None: ...
+    def __init__(self, target: TargetSelector, source: SoundSource | Literal["*"], sound: Sound) -> None: ...
     
-    def __init__(self, target: TargetSelector, source: SoundChannel | Literal["*"] | None = None, sound: Sound | None = None):
+    def __init__(self, target: TargetSelector, source: SoundSource | Literal["*"] | None = None, sound: Sound | None = None):
         super().__init__()
         self.target = target
         self.source = source
