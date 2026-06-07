@@ -3,7 +3,7 @@ import json
 from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent))
 
-from typing import Callable
+from typing import Any, Callable
 from datagen.globals import DatagenConfig
 from datagen.utils.minecraft.identifier import Identifier
 
@@ -331,7 +331,42 @@ def dump_sounds():
         )
     )
 
+def dump_item_tags():
+    input, output = INPUT_FILE / "item_tags.json", OUTPUT_FILE / "item_tags.py"
+    data = json.loads(input.read_text())
+    out = str()
+    out += "from datagen.utils.minecraft.identifier import Identifier\n"
+    out += "from datagen.tag.itemtag import ItemTag\n"
+    out += '\n'
+    out += "class ItemTags():\n"
+    for item in data:
+        id = Identifier.of(item["id"])
+        if id.get_namespace() == "minecraft":
+            out += f"    {sanitize_constant_name(id.get_path())} = ItemTag(Identifier.of('{id}'))\n"
+
+    out += '\n'
+
+    output.write_text(out)
+
+def dump_block_tags():
+    input, output = INPUT_FILE / "block_tags.json", OUTPUT_FILE / "block_tags.py"
+    data = json.loads(input.read_text())
+    out = str()
+    out += "from datagen.utils.minecraft.identifier import Identifier\n"
+    out += "from datagen.tag.blocktag import BlockTag\n"
+    out += '\n'
+    out += "class BlockTags():\n"
+    for item in data:
+        id = Identifier.of(item["id"])
+        if id.get_namespace() == "minecraft":
+            out += f"    {sanitize_constant_name(id.get_path())} = BlockTag(Identifier.of('{id}'))\n"
+
+    out += '\n'
+
+    output.write_text(out)
 def dump_all():
+    dump_item_tags()
+    dump_block_tags()
     dump_advancement()
     dump_attributes()
     dump_biomes()
