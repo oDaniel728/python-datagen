@@ -1,7 +1,6 @@
 from typing import Literal
 
 from datagen.function.commands.customcommand import CustomCommand
-from datagen.function.function import Function
 from datagen.utils.minecraft.identifier import Identifier
 from datagen.utils.minecraft.targetselector import TargetSelector
 from datagen.utils.scoreboard.objective import ScoreboardObjective

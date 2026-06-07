@@ -5,7 +5,6 @@ from typing import final
 from typing_extensions import Self
 
 from datagen.datapack.namespace import Namespace
-from datagen.function.function import Function
 from datagen.globals import DatagenConfig
 from datagen.utils.minecraft.identifier import Identifier
 from datagen.utils.minecraft.logger import Logger
