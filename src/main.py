@@ -39,6 +39,8 @@ from datagen.utils.repr.damagesourcepredicate import DamageSourcePredicate
 from datagen.utils.repr.enchantedchance import EnchantedChance
 from datagen.types.util.min import Range
 from datagenpp.extras.betterexecute import BetterExecute
+from datagenpp.extras.item.commandblock import CommandBlock
+from datagenpp.extras.item.settings.commandblocksettings import CommandBlockSettings
 from datagenpp.extras.recipes.recipeutils import RecipeUtils
 from datagenpp.extras.tags.load import Load
 
@@ -125,5 +127,9 @@ def main():
             result=Items.COAL.get_stack(8)
         )
     )
+
+    with Function(ns / "put_hello_world") as put_hello_world:
+        cmd = CommandBlock(CommandBlockSettings("say hello, world!", "up", False, True))
+        ~ SetBlock(RelativeBlockPosition(0, 1, 0), cmd)
 
     dp.build()

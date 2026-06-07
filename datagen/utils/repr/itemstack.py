@@ -17,4 +17,4 @@ class ItemStack[I: Item = Item]():
         }
     
     def __str__(self) -> str:
-        return f"{self.item} {self.count}"
+        return f"{Item.__str__(self.item)} {self.count}"

@@ -1,3 +1,4 @@
+from abc import ABC, abstractmethod
 import json
 from typing import TYPE_CHECKING, Any, Self, Type, overload
 
@@ -7,7 +8,7 @@ from datagen.utils.minecraft.targetselector import TargetSelector
 if TYPE_CHECKING:
     from datagen.utils.repr.itemstack import ItemStack
 
-class __Settings__(ToDict):
+class __Settings__(ToDict, ABC):
     def __init__(self) -> None:
         pass
 
@@ -17,6 +18,9 @@ class __Settings__(ToDict):
     def to_json(self) -> str:
         return json.dumps(self.to_dict())
 
+    @abstractmethod
+    def get_components(self) -> dict: ...
+
 class Item[T: __Settings__]():
 
     instances = dict[Identifier, "Item"]()
@@ -25,9 +29,16 @@ class Item[T: __Settings__]():
         def __init__(self) -> None:
             super().__init__()
 
+    class DefaultSettings(Settings):
+        def __init__(self) -> None:
+            super().__init__()
+
+        def get_components(self) -> dict:
+            return {}
+
     def __init__(self, id: Identifier, components: T | dict = {}) -> None:
         self.id = id
-        self.nbt = components if not isinstance(components, dict) else self.Settings()
+        self.nbt = components if not isinstance(components, dict) else self.DefaultSettings()
         Item.instances[id] = self
 
     def __get_nbt_dict(self) -> dict:
