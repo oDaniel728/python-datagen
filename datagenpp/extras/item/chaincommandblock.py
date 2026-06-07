@@ -6,7 +6,7 @@ from datagen.utils.repr.itemstack import ItemStack
 from datagenpp.extras.item.settings.commandblocksettings import CommandBlockSettings
 
 
-class CommandBlock(Block[CommandBlockSettings]):
+class ChainCommandBlock(Block[CommandBlockSettings]):
     def __init__(self, settings: CommandBlockSettings) -> None:
-        super().__init__(Blocks.COMMAND_BLOCK.id)
+        super().__init__(Blocks.CHAIN_COMMAND_BLOCK.id)
         self.nbt = settings

@@ -6,7 +6,7 @@ from datagen.utils.repr.itemstack import ItemStack
 from datagenpp.extras.item.settings.commandblocksettings import CommandBlockSettings
 
 
-class CommandBlock(Block[CommandBlockSettings]):
+class RepeatingCommandBlock(Block[CommandBlockSettings]):
     def __init__(self, settings: CommandBlockSettings) -> None:
-        super().__init__(Blocks.COMMAND_BLOCK.id)
+        super().__init__(Blocks.REPEATING_COMMAND_BLOCK.id)
         self.nbt = settings
