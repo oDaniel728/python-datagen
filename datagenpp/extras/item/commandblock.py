@@ -41,11 +41,11 @@ class CommandBlock(Block[CommandBlockSettings]):
             print(pos)
             if _is_first:
                 schem += CommandBlock(
-                    CommandBlockSettings(raw, direction, True, False)
+                    CommandBlockSettings(raw, direction, False, False)
                 ).at(RelativeBlockPosition(pos.x, pos.y, pos.z))
             else:
                 schem += ChainCommandBlock(
-                    CommandBlockSettings(raw, direction, False, False)
+                    CommandBlockSettings(raw, direction, False, True)
                 ).at(RelativeBlockPosition(pos.x, pos.y, pos.z))
             move_front()
 
