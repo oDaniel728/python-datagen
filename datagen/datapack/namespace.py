@@ -5,6 +5,7 @@ from uuid import uuid4
 from typing_extensions import Self
 
 from datagen.function.function import Function
+from datagen.tag.functiontag import FunctionTag
 from datagen.tag.tag import Tag
 from datagen.utils.minecraft.identifier import Identifier
 from datagen.utils.minecraft.logger import Logger
@@ -60,6 +61,10 @@ class Namespace():
         self.tags = set[Tag]()
         self.predicates = set["Predicate"]()
         self.recipes = set["Recipe"]()
+
+        self.load = FunctionTag(self / "load", [])
+        self.tick = FunctionTag(self / "tick", [])
+        self.add_tags(self.load, self.tick)
 
     def identifier(self, path: str) -> Identifier:
         return Identifier.from_string(f"{self.name}:{path}")
@@ -123,6 +128,8 @@ class Namespace():
         Logger.start_task(f"Building tags in namespace '{self.name}'")
         for tag in self.tags:
             self.logger.info(f"Building tag '{tag.id._path}' in namespace '{self.name}'")
+            if tag.values.__len__() == 0:
+                continue
             f = tag.to_file()
             f.build(base)
         Logger.end_task(f"Building tags in namespace '{self.name}'")

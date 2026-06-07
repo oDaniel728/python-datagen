@@ -22,8 +22,8 @@ class DataStorage():
     def set_from_block(self, key: TKey, pos: "BlockPosition", path: str) -> CustomCommand:
         return CustomCommand(f"data modify storage {self.id} {key} set from block {pos} {path}")
     
-    def set_from_entity(self, key: TKey, target: TargetSelector, path: str) -> CustomCommand:
-        return CustomCommand(f"data modify storage {self.id} {key} set from entity {target} {path}")
+    def set_from_entity(self, key: TKey, target: TargetSelector, path: str = '') -> CustomCommand:
+        return CustomCommand(f"data modify storage {self.id} {key} set from entity {target}{' ' if path else ''}{path}")
 
     def get(self, key: TKey, *, scale: float | None = None) -> CustomCommand:
         if scale is not None:

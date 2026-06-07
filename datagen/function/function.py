@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING, Self
 
 if TYPE_CHECKING:
     from datagen.function.commands.runfunction import RunFunction
+from datagen.function.commands._data.datastorage import DataStorage
 from datagen.utils.minecraft.identifier import Identifier
 from datagen.function.commands.command import Command
 from datagen.globals import FUNCTIONS_PATH, DatagenConfig
@@ -116,6 +117,6 @@ class Function():
             Function.__funcs[id] = func
             return func
 
-    def run(self) -> "RunFunction":
+    def run(self, args: dict | DataStorage | None = None) -> "RunFunction":
         from datagen.function.commands.runfunction import RunFunction
-        return RunFunction(self)
+        return RunFunction(self, args)

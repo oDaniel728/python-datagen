@@ -43,6 +43,7 @@ from datagenpp.extras.betterexecute import BetterExecute
 from datagenpp.extras.item.commandblock import CommandBlock
 from datagenpp.extras.item.settings.commandblocksettings import CommandBlockSettings
 from datagenpp.extras.recipes.recipeutils import RecipeUtils
+from datagenpp.extras.scripts.scriptbuilder import ScriptBuilder
 from datagenpp.extras.tags.load import Load
 
 def main():
@@ -59,13 +60,12 @@ def main():
 
     coals = ItemTag(ns / "coals", [Items.COAL, Items.CHARCOAL])
     ns.add_tag(coals)
-    load_tag = Load()
 
     with Function(ns / "load") as load:
         ~ Say("Hello, world!")
         ~ Return.int(1)
 
-        load_tag.add_value(load)
+        mc.load.add_value(load)
 
     with Function(ns / "ride_nearest_cart") as ride_nearest_cart:
         with AnonymousFunction(dp) as lambda1:
@@ -142,5 +142,21 @@ def main():
             *chain.place(BlockPosition(0, 0, 0)
             )
         )
+
+    with Function(ns / "on_use_of_carrot_on_stick") as on_use_of_carrot_on_tick:
+        ~ Say("You used a carrot on a stick!")
+        ~ Return.int(1)
+
+    ScriptBuilder.on_use_of_item(
+        Items.CARROT_ON_A_STICK, 
+        on_use_of_carrot_on_tick
+    ).merge(ns)
+    ScriptBuilder.on_jump(
+        AnonymousFunction(dp)
+            .add_commands(
+                Say("You jumped!"),
+                Return.int(1)
+            )
+    ).merge(ns)
 
     dp.build()
