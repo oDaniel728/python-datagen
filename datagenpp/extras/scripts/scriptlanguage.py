@@ -101,6 +101,8 @@ class TT(Enum):
     STAR_EQ    = auto()   # *=
     SLASH_EQ   = auto()   # /=
     PERCENT_EQ = auto()   # %=
+    DOTDOT     = auto()   # ..
+    BLOCK_POS  = auto()   # &(x y z)
     EOF        = auto()
 
 
@@ -126,6 +128,7 @@ _TWO: dict[str, TT] = {
     '<<': TT.LSHIFT, '??': TT.NULLCOAL,
     '+=': TT.PLUS_EQ, '-=': TT.MINUS_EQ,
     '*=': TT.STAR_EQ, '/=': TT.SLASH_EQ, '%=': TT.PERCENT_EQ,
+    '..': TT.DOTDOT,
 }
 
 
@@ -175,6 +178,8 @@ class Tokenizer:
                 self._i += 1
                 tokens.append(self._tok(TT.SCORE, self._namespaced_id())); continue
             if ch == '&':
+                if self._c(1) == '(':
+                    tokens.append(self._block_pos()); continue
                 self._i += 1
                 tokens.append(self._tok(TT.STORAGE, self._namespaced_id())); continue
             if ch == '#':
@@ -282,6 +287,27 @@ class Tokenizer:
             self._i += 1
         return Token(TT.IDENT, self._src[start:self._i], line)
 
+    def _block_pos(self) -> Token:
+        line = self._line
+        self._i += 1  # skip &
+        self._i += 1  # skip (
+        start = self._i
+        depth = 1
+        while self._i < len(self._src) and depth > 0:
+            c = self._c()
+            if c == '(':
+                depth += 1
+            elif c == ')':
+                depth -= 1
+                if depth == 0:
+                    break
+            elif c == '\n':
+                self._line += 1
+            self._i += 1
+        pos = self._src[start:self._i].strip()
+        self._i += 1  # skip closing )
+        return Token(TT.BLOCK_POS, pos, line)
+
 
 # ===========================================================================
 # AST Nodes
@@ -353,8 +379,33 @@ class EffectStmt(Node):
     hide: bool | None
 
 @dataclass
+class ScoreMatchesCond(Node):
+    score: str
+    range_str: str
+
+@dataclass
+class ScoreCompareCond(Node):
+    left: str
+    op: str
+    right: str
+
+@dataclass
+class AndCond(Node):
+    left: Any
+    right: Any
+
+@dataclass
+class OrCond(Node):
+    left: Any
+    right: Any
+
+@dataclass
+class RawCond(Node):
+    tokens: list[Token]
+
+@dataclass
 class IfStmt(Node):
-    condition: list[Token]
+    condition: Any
     body: list[Node]
     else_body: list[Node]
 
@@ -538,18 +589,8 @@ class Parser:
     def _if_stmt(self) -> IfStmt:
         self._adv()  # if
         self._eat(TT.LPAREN)
-        cond: list[Token] = []
-        depth = 0
-        while not self._match(TT.EOF):
-            t = self._peek()
-            if t.type == TT.LPAREN:
-                depth += 1; cond.append(self._adv())
-            elif t.type == TT.RPAREN:
-                if depth == 0:
-                    self._adv(); break
-                depth -= 1; cond.append(self._adv())
-            else:
-                cond.append(self._adv())
+        cond = self._parse_cond_or()
+        self._eat(TT.RPAREN)
         self._eat(TT.LBRACE)
         body = self._fn_body()
         self._eat(TT.RBRACE)
@@ -560,6 +601,75 @@ class Parser:
             else_body = self._fn_body()
             self._eat(TT.RBRACE)
         return IfStmt(cond, body, else_body)
+
+    def _parse_cond_or(self) -> Any:
+        left = self._parse_cond_and()
+        while self._peek().type == TT.IDENT and self._peek().value == 'or':
+            self._adv()
+            right = self._parse_cond_and()
+            left = OrCond(left, right)
+        return left
+
+    def _parse_cond_and(self) -> Any:
+        left = self._parse_cond_term()
+        while self._peek().type == TT.IDENT and self._peek().value == 'and':
+            self._adv()
+            right = self._parse_cond_term()
+            left = AndCond(left, right)
+        return left
+
+    def _parse_cond_term(self) -> Any:
+        t = self._peek()
+        if t.type == TT.LPAREN:
+            self._adv()
+            cond = self._parse_cond_or()
+            self._eat(TT.RPAREN)
+            return cond
+        if t.type == TT.SCORE:
+            score_val = self._adv().value
+            if self._peek().type == TT.IDENT and self._peek().value == 'matches':
+                self._adv()
+                return ScoreMatchesCond(score_val, self._parse_range())
+            _CMP = {TT.EQ: '=', TT.LT: '<', TT.GT: '>', TT.LTEQ: '<=', TT.GTEQ: '>='}
+            if self._peek().type in _CMP:
+                op = _CMP[self._adv().type]
+                if self._peek().type == TT.SCORE:
+                    return ScoreCompareCond(score_val, op, self._adv().value)
+            return self._finish_raw([Token(TT.SCORE, score_val)])
+        return self._finish_raw([])
+
+    def _parse_range(self) -> str:
+        if self._peek().type == TT.DOTDOT:
+            self._adv()
+            if self._peek().type == TT.NUMBER:
+                return f"..{self._adv().value}"
+            return ".."
+        if self._peek().type == TT.NUMBER:
+            n1 = self._adv().value
+            if self._peek().type == TT.DOTDOT:
+                self._adv()
+                if self._peek().type == TT.NUMBER:
+                    return f"{n1}..{self._adv().value}"
+                return f"{n1}.."
+            return n1
+        return self._adv().value
+
+    def _finish_raw(self, initial: list[Token]) -> RawCond:
+        tokens = list(initial)
+        depth = 0
+        while not self._match(TT.EOF):
+            t = self._peek()
+            if t.type == TT.LPAREN:
+                depth += 1; tokens.append(self._adv())
+            elif t.type == TT.RPAREN:
+                if depth == 0:
+                    break
+                depth -= 1; tokens.append(self._adv())
+            elif t.type == TT.IDENT and t.value in ('and', 'or') and depth == 0:
+                break
+            else:
+                tokens.append(self._adv())
+        return RawCond(tokens)
 
     def _wait_stmt(self) -> WaitStmt:
         self._adv()  # wait
@@ -625,6 +735,17 @@ class Parser:
                 self._adv()
                 fallback = int(float(self._eat(TT.NUMBER).value))
             return ('entity', sel, '.'.join(path_parts) if path_parts else None, fallback)
+        if t.type == TT.BLOCK_POS:
+            pos = self._adv().value
+            bp_parts: list[str] = []
+            while self._match(TT.DOT):
+                self._adv()
+                bp_parts.append(self._adv().value)
+            bp_fallback = None
+            if self._match(TT.NULLCOAL):
+                self._adv()
+                bp_fallback = int(float(self._eat(TT.NUMBER).value))
+            return ('block', pos, '.'.join(bp_parts) if bp_parts else None, bp_fallback)
         return ('raw', self._adv().value)
 
     # ---- storage ----
@@ -658,6 +779,13 @@ class Parser:
                 self._adv()
                 path_parts.append(self._adv().value)
             return ('entity', sel, '.'.join(path_parts) if path_parts else None)
+        if t.type == TT.BLOCK_POS:
+            pos = self._adv().value
+            bp_parts: list[str] = []
+            while self._match(TT.DOT):
+                self._adv()
+                bp_parts.append(self._adv().value)
+            return ('block', pos, '.'.join(bp_parts) if bp_parts else None)
         # bare ident — may be minecraft:id
         if t.type == TT.IDENT:
             v = self._adv().value
@@ -933,19 +1061,7 @@ class CodeGenerator:
                 anon.add_command(cmd)
         ns.add_function(anon)
 
-        cond_str = _tokens_to_str(node.condition)
-
-        # simple score match: $obj:holder = N  or  $obj:holder matches N
-        m = re.match(r'\$(\w+):(\w+)\s*(?:=|matches)\s*(-?\d+)$', cond_str.strip())
-        if m:
-            obj_name, holder, val = m.group(1), m.group(2), int(m.group(3))
-            obj = self._objs.get(obj_name) or _dummy_obj(obj_name)
-            player = obj.player(holder)
-            cmd = Execute().IF(
-                lambda b, p=player, v=val: b.score(p, 'matches', Range.exact(v))
-            ).RUN(anon)
-        else:
-            cmd = CustomCommand(f"execute if {cond_str} run function {anon.id}")
+        if_cmds = self._cond_to_commands(node.condition, str(anon.id))
 
         if node.else_body:
             else_fn = Function(self._ns / f"__else_{_ctr}")
@@ -954,11 +1070,55 @@ class CodeGenerator:
                 if c:
                     else_fn.add_command(c)
             ns.add_function(else_fn)
-            return CustomCommand(
-                cmd.to_string() + '\n' +
-                f"execute unless {cond_str} run function {else_fn.id}"
+            else_cmds = self._else_cmds(node.condition, str(else_fn.id))
+            return CustomCommand('\n'.join(if_cmds + else_cmds))
+        return CustomCommand('\n'.join(if_cmds))
+
+    def _cond_to_if_chunks(self, cond: Any) -> list[str]:
+        if isinstance(cond, ScoreMatchesCond):
+            obj_name, holder = cond.score.split(':', 1) if ':' in cond.score else (cond.score, 'value')
+            return [f"score {holder} {obj_name} matches {cond.range_str}"]
+        if isinstance(cond, ScoreCompareCond):
+            lo, lh = cond.left.split(':', 1) if ':' in cond.left else (cond.left, 'value')
+            ro, rh = cond.right.split(':', 1) if ':' in cond.right else (cond.right, 'value')
+            return [f"score {lh} {lo} {cond.op} {rh} {ro}"]
+        if isinstance(cond, AndCond):
+            return self._cond_to_if_chunks(cond.left) + self._cond_to_if_chunks(cond.right)
+        if isinstance(cond, RawCond):
+            return [_tokens_to_str(cond.tokens)]
+        return []
+
+    def _cond_to_commands(self, cond: Any, fn_id: str) -> list[str]:
+        if isinstance(cond, OrCond):
+            return (
+                self._cond_to_commands(cond.left, fn_id) +
+                self._cond_to_commands(cond.right, fn_id)
             )
-        return cmd
+        chunks = self._cond_to_if_chunks(cond)
+        return [f"execute {' '.join(f'if {c}' for c in chunks)} run function {fn_id}"]
+
+    def _else_cmds(self, cond: Any, else_fn_id: str) -> list[str]:
+        if isinstance(cond, OrCond):
+            # !(A || B) = !A && !B  — chain all unless in one execute
+            if not isinstance(cond.left, OrCond) and not isinstance(cond.right, OrCond):
+                all_chunks = self._cond_to_if_chunks(cond.left) + self._cond_to_if_chunks(cond.right)
+                return [f"execute {' '.join(f'unless {c}' for c in all_chunks)} run function {else_fn_id}"]
+            # nested or: recurse
+            return self._else_cmds(cond.left, else_fn_id) + self._else_cmds(cond.right, else_fn_id)
+        if isinstance(cond, AndCond):
+            # !(A && B) = !A || !B
+            # execute unless A run else_fn
+            # execute if A unless B run else_fn
+            lc = self._cond_to_if_chunks(cond.left)
+            rc = self._cond_to_if_chunks(cond.right)
+            unless_left = ' '.join(f'unless {c}' for c in lc)
+            if_left_unless_right = ' '.join(f'if {c}' for c in lc) + ' ' + ' '.join(f'unless {c}' for c in rc)
+            return [
+                f"execute {unless_left} run function {else_fn_id}",
+                f"execute {if_left_unless_right} run function {else_fn_id}",
+            ]
+        chunks = self._cond_to_if_chunks(cond)
+        return [f"execute {' '.join(f'unless {c}' for c in chunks)} run function {else_fn_id}"]
 
     def _wait_stmt(self, node: WaitStmt, ns: Namespace, params: list[str], parent: Function) -> Any:
         assert self._ns is not None
@@ -1002,6 +1162,13 @@ class CodeGenerator:
                     )
                 return CustomCommand(base)
 
+            if kind == 'block':
+                _, pos, path, _ = rhs
+                base = f"execute store result score {holder} {obj_name} run data get block {pos}"
+                if path:
+                    base += f" {path}"
+                return CustomCommand(base)
+
             if kind == 'arith':
                 _, lhs_str, op, rhs2 = rhs
                 o1, h1 = lhs_str.split(':', 1) if ':' in lhs_str else (lhs_str, 'value')
@@ -1041,6 +1208,12 @@ class CodeGenerator:
                 if ent_path:
                     return storage.set_from_entity(target_path, TargetSelector(sel), ent_path)
                 return storage.set_from_entity(target_path, TargetSelector(sel))
+            if kind == 'block':
+                _, pos, block_path = rhs
+                target_path = data_path or 'root'
+                if block_path:
+                    return CustomCommand(f"data modify storage {storage_id} {target_path} set from block {pos} {block_path}")
+                return CustomCommand(f"data modify storage {storage_id} {target_path} set from block {pos}")
             if kind == 'score':
                 o, h = rhs[1].split(':', 1) if ':' in rhs[1] else (rhs[1], 'value')
                 target_path = data_path or 'value'
@@ -1087,6 +1260,10 @@ def _tokens_to_str(tokens: list[Token]) -> str:
             parts.append(t.value)
         elif t.type == TT.STRING:
             parts.append(f'"{t.value}"')
+        elif t.type == TT.DOTDOT:
+            parts.append('..')
+        elif t.type == TT.BLOCK_POS:
+            parts.append(f'&({t.value})')
         else:
             parts.append(t.value)
     return ' '.join(parts)
