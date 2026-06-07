@@ -22,6 +22,7 @@ from datagen.utils.minecraft.blockposition import BlockPosition
 from datagen.utils.minecraft.collections.blocks import Blocks
 from datagen.utils.minecraft.collections.blocksettings import BlockSettings
 from datagen.utils.minecraft.collections.entity_types import EntityTypes
+from datagen.utils.minecraft.collections.item_tags import ItemTags
 from datagen.utils.minecraft.collections.items import Items
 from datagen.utils.minecraft.identifier import Identifier
 from datagen.utils.minecraft.relativeblockposition import RelativeBlockPosition
@@ -119,7 +120,7 @@ def main():
             .crafting
             .offer_surrounded_core(
                 core=coals,
-                surrounding=ItemTag(Identifier.of("minecraft:logs_that_burn")),
+                surrounding=ItemTags.LOGS_THAT_BURN,
                 result=Items.CHARCOAL.get_stack(8)
             )
     )
