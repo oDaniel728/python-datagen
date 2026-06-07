@@ -1,4 +1,4 @@
-from typing import Protocol
+from typing import Any, Protocol
 
 class _TConvertibleToString(Protocol):
     def __str__(self) -> str: ...
@@ -6,6 +6,9 @@ class _TConvertibleToString(Protocol):
 class FunctionMacroArgument[T: _TConvertibleToString]():
     def __init__(self, name: str) -> None:
         self.name = name
+
+    def __getattribute__(self, name: str) -> FunctionMacroArgument[T]:
+        return FunctionMacroArgument(f"{self.name}.{name}")
 
     def __str__(self) -> str:
         return f"$({self.name})"

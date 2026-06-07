@@ -4,6 +4,7 @@ from datagen.function.commands.customcommand import CustomCommand
 from datagen.utils.minecraft.blockposition import BlockPosition
 from datagen.utils.minecraft.identifier import Identifier
 from datagen.utils.minecraft.targetselector import TargetSelector
+from datagen.utils.scoreboard.player import ScoreboardPlayer
 
 class DataStorage():
     TKey: TypeAlias = "str | int | float | bool | Identifier"
@@ -24,6 +25,9 @@ class DataStorage():
     
     def set_from_entity(self, key: TKey, target: TargetSelector, path: str = '') -> CustomCommand:
         return CustomCommand(f"data modify storage {self.id} {key} set from entity {target}{' ' if path else ''}{path}")
+
+    def set_from_score_player(self, key: TKey, player: ScoreboardPlayer) -> CustomCommand:
+        return CustomCommand(f"execute store result storage {self.id} {key} int 1 run scoreboard players get {player.name} {player.objective}")
 
     def get(self, key: TKey, *, scale: float | None = None) -> CustomCommand:
         if scale is not None:

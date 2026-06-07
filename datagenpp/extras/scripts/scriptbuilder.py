@@ -10,6 +10,7 @@ from datagen.function.function import Function
 from datagen.predicate.predicate import Predicate
 from datagen.types.util.counter import Counter
 from datagen.types.util.min import Range
+from datagen.utils.minecraft.collections.entity_types import EntityTypes
 from datagen.utils.minecraft.targetselector import TargetSelector
 from datagen.utils.minecraft.text import Text
 from datagen.utils.repr.block import Block
@@ -70,8 +71,11 @@ class ScriptBuilder:
         me = obj.player(TargetSelector.SELF)
 
         with Function(_tmp / f"__on_killed_by_entity_lambda_{i}") as lambda_func:
+            args = DataStorage(_tmp / f"__on_killed_by_entity_args_{i}")
+            ~ Execute().AS(TargetSelector.SELF).ON("attacker").ATAS(TargetSelector.SELF).RUN(args.set_from_entity("killer", TargetSelector.SELF))
+            ~ args.set_from_entity("self", TargetSelector.SELF)
             ~ me.set(0)
-            ~ Return.function(function)
+            ~ Return.run(function.run(args))
 
         load.add_command(obj.add())
         load.add_command(all_players.set(0))
@@ -83,7 +87,7 @@ class ScriptBuilder:
             .IF(
                 lambda b: b.score(me, "matches", Range.min(1))
             )
-            .RUN(lambda_func.run({"entity": f"{entity.id}"}))
+            .RUN(lambda_func.run())
          )
 
         with Script() as _:
@@ -102,8 +106,10 @@ class ScriptBuilder:
         me = obj.player(TargetSelector.SELF)
 
         with Function(_tmp / f"__on_killed_entity_lambda_{i}") as lambda_func:
+            args = DataStorage(_tmp / f"__on_killed_entity_args_{i}")
+            ~ args.set_from_entity("self", TargetSelector.SELF)
             ~ me.set(0)
-            ~ Return.function(function)
+            ~ Return.run(function.run(args))
 
         load.add_command(obj.add())
         load.add_command(all_players.set(0))
@@ -115,7 +121,7 @@ class ScriptBuilder:
             .IF(
                 lambda b: b.score(me, "matches", Range.min(1))
             )
-            .RUN(lambda_func.run({"entity": f"{entity.id}"}))
+            .RUN(lambda_func.run())
         )
 
         with Script() as _:
@@ -133,13 +139,15 @@ class ScriptBuilder:
         all_players = obj.player(TargetSelector.ALL_PLAYERS)
         me = obj.player(TargetSelector.SELF)
 
-        args = (
-            DataStorage(_tmp / f"__on_item_drop_args_{i}")
-        )
 
         with Function(_tmp / f"__on_item_drop_lambda_{i}") as lambda_func:
+            args = DataStorage(_tmp / f"__on_item_drop_args_{i}")
+            ~ args.set_from_entity("item", TargetSelector.SELF, "SelectedItem")
+            ~ args.set_from_entity("slot", TargetSelector.SELF, "SelectedItemSlot")
+            ~ args.set_from_entity("drop", TargetSelector.nearest(EntityTypes.ITEM))
+            ~ args.set_from_entity("self", TargetSelector.SELF)
             ~ me.set(0)
-            ~ Return.function(function)
+            ~ Return.run(function.run(args))
 
         load.add_command(obj.add())
         load.add_command(all_players.set(0))
@@ -170,8 +178,10 @@ class ScriptBuilder:
         me = obj.player(TargetSelector.SELF)
 
         with Function(_tmp / f"__on_item_pickup_lambda_{i}") as lambda_func:
+            args = DataStorage(_tmp / f"__on_item_pickup_args_{i}")
+            ~ args.set_from_entity("self", TargetSelector.SELF)
             ~ me.set(0)
-            ~ Return.function(function)
+            ~ Return.run(function.run(args))
 
         load.add_command(obj.add())
         load.add_command(all_players.set(0))
@@ -202,8 +212,12 @@ class ScriptBuilder:
         me = obj.player(TargetSelector.SELF)
 
         with Function(_tmp / f"__on_block_mined_lambda_{i}") as lambda_func:
+            args = DataStorage(_tmp / f"__on_block_mined_args_{i}")
+            ~ args.set_from_entity("self", TargetSelector.SELF)
+            ~ args.set_from_entity("item", TargetSelector.SELF, "SelectedItem")
+            ~ args.set_from_entity("slot", TargetSelector.SELF, "SelectedItemSlot")
             ~ me.set(0)
-            ~ Return.function(function)
+            ~ Return.run(function.run(args))
 
         load.add_command(obj.add())
         load.add_command(all_players.set(0))
@@ -234,8 +248,10 @@ class ScriptBuilder:
         me = obj.player(TargetSelector.SELF)
 
         with Function(_tmp / f"__on_block_placed_lambda_{i}") as lambda_func:
+            args = DataStorage(_tmp / f"__on_block_placed_args_{i}")
+            ~ args.set_from_entity("self", TargetSelector.SELF)
             ~ me.set(0)
-            ~ Return.function(function)
+            ~ Return.run(function.run(args))
 
         load.add_command(obj.add())
         load.add_command(all_players.set(0))
@@ -266,8 +282,10 @@ class ScriptBuilder:
         me = obj.player(TargetSelector.SELF)
 
         with Function(_tmp / f"__on_item_craft_lambda_{i}") as lambda_func:
+            args = DataStorage(_tmp / f"__on_item_craft_args_{i}")
+            ~ args.set_from_entity("self", TargetSelector.SELF)
             ~ me.set(0)
-            ~ Return.function(function)
+            ~ Return.run(function.run(args))
 
         load.add_command(obj.add())
         load.add_command(all_players.set(0))
@@ -298,8 +316,10 @@ class ScriptBuilder:
         me = obj.player(TargetSelector.SELF)
 
         with Function(_tmp / f"__on_item_broken_lambda_{i}") as lambda_func:
+            args = DataStorage(_tmp / f"__on_item_broken_args_{i}")
+            ~ args.set_from_entity("self", TargetSelector.SELF)
             ~ me.set(0)
-            ~ Return.function(function)
+            ~ Return.run(function.run(args))
 
         load.add_command(obj.add())
         load.add_command(all_players.set(0))
@@ -330,8 +350,10 @@ class ScriptBuilder:
         me = obj.player(TargetSelector.SELF)
 
         with Function(_tmp / f"__on_jump_lambda_{i}") as lambda_func:
+            args = DataStorage(_tmp / f"__on_jump_args_{i}")
+            ~ args.set_from_entity("self", TargetSelector.SELF)
             ~ me.set(0)
-            ~ Return.function(function)
+            ~ Return.run(function.run(args))
 
         load.add_command(obj.add())
         load.add_command(all_players.set(0))
@@ -362,8 +384,10 @@ class ScriptBuilder:
         me = obj.player(TargetSelector.SELF)
 
         with Function(_tmp / f"__on_walk_lambda_{i}") as lambda_func:
+            args = DataStorage(_tmp / f"__on_walk_args_{i}")
+            ~ args.set_from_entity("self", TargetSelector.SELF)
             ~ me.set(0)
-            ~ Return.function(function)
+            ~ Return.run(function.run(args))
 
         load.add_command(obj.add())
         load.add_command(all_players.set(0))
@@ -394,8 +418,10 @@ class ScriptBuilder:
         me = obj.player(TargetSelector.SELF)
 
         with Function(_tmp / f"__on_crouch_lambda_{i}") as lambda_func:
+            args = DataStorage(_tmp / f"__on_crouch_args_{i}")
+            ~ args.set_from_entity("self", TargetSelector.SELF)
             ~ me.set(0)
-            ~ Return.function(function)
+            ~ Return.run(function.run(args))
 
         load.add_command(obj.add())
         load.add_command(all_players.set(0))
@@ -426,8 +452,12 @@ class ScriptBuilder:
         me = obj.player(TargetSelector.SELF)
 
         with Function(_tmp / f"__on_scoreboard_criteria_value_met_lambda_{i}") as lambda_func:
+            args = DataStorage(_tmp / f"__on_scoreboard_criteria_value_met_args_{i}")
+            ~ args.set_from_entity("self", TargetSelector.SELF)
+            ~ args.set_from_score_player("value", me)
+            ~ args.set("criterion", obj.to_string())
             ~ me.set(0)
-            ~ Return.function(function)
+            ~ Return.run(function.run(args))
 
         load.add_command(obj.add())
         load.add_command(all_players.set(0))
@@ -458,8 +488,10 @@ class ScriptBuilder:
         me = obj.player(TargetSelector.SELF)
 
         with Function(_tmp / f"__on_each_ticks_lambda_{i}") as lambda_func:
+            args = DataStorage(_tmp / f"__on_each_ticks_args_{i}")
+            ~ args.set_from_entity("self", TargetSelector.SELF)
             ~ me.set(0)
-            ~ Return.function(function)
+            ~ Return.run(function.run(args))
 
         load.add_command(obj.add())
         load.add_command(all_players.set(0))
@@ -490,8 +522,10 @@ class ScriptBuilder:
         value = obj.player("value")
 
         with Function(_tmp / f"__on_each_ticks_server_lambda_{i}") as lambda_func:
+            args = DataStorage(_tmp / f"__on_each_ticks_server_args_{i}")
+            ~ args.set("value", value.to_string())
             ~ value.set(0)
-            ~ Return.function(function)
+            ~ Return.run(function.run(args))
 
         load.add_command(obj.add())
         load.add_command(value.set(0))
@@ -517,7 +551,9 @@ class ScriptBuilder:
         tick = Function(_tmp / f"__on_predicate_tick_{i}")
 
         with Function(_tmp / f"__on_predicate_lambda_{i}") as lambda_func:
-            ~ Return.function(function)
+            args = DataStorage(_tmp / f"__on_predicate_args_{i}")
+            ~ args.set_from_entity("self", TargetSelector.SELF)
+            ~ Return.run(function.run(args))
 
         tick.add_command(
             Execute()
