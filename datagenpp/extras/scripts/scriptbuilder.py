@@ -32,11 +32,9 @@ class ScriptBuilder:
         all_players = obj.player(TargetSelector.ALL_PLAYERS)
         me = obj.player(TargetSelector.SELF)
 
-        args = (
-            DataStorage(_tmp / f"__use_of_item_args_{i}")
-        )
 
         with Function(_tmp / f"__on_use_of_item_lambda_{i}") as lambda_func:
+            args = DataStorage(_tmp / f"__use_of_item_args_{i}")
             ~ args.set_from_entity("item", TargetSelector.SELF, "SelectedItem")
             ~ args.set_from_entity("slot", TargetSelector.SELF, "SelectedItemSlot")
             ~ args.set_from_entity("self", TargetSelector.SELF)
