@@ -3,6 +3,19 @@ from typing import Self
 
 
 class Command(ABC):
+    """
+    # Command
+    - See https://minecraft.wiki/w/Commands
+    ## Summary
+    Represents a Minecraft command, which is a single instruction that can be executed in the game.
+    ## Examples
+    - Creating a command
+    ```python
+    with Function(Identifier.of("pack:example")) as f:
+        ~ Say("This is a command!") # Say inherits from Command, 
+        # so it can be added to a function using the ~ operator
+    ```
+    """
 
     silent = False
 
@@ -17,6 +30,7 @@ class Command(ABC):
         pass
 
     def __invert__(self):
+        """Adds the command to the currently active function being built, if there is one and if the command is not set to silent. This allows for a convenient syntax for adding commands to functions using the `~` operator, while also providing the option to create commands that do not automatically add themselves to the current function if desired."""
         from datagen.function.function import Function
         current_function = getattr(Function, "_Function__current_function", None)
         if current_function and not self.silent:
@@ -49,5 +63,6 @@ class Command(ABC):
         return "\n".join(line for line in self.to_string().splitlines() if not line.strip().startswith("#"))
     
     def raw(self) -> str:
+        """Returns the raw string representation of the command, without any macro processing or comments. This can be useful for debugging or for cases where the original command string is needed without any modifications."""
         # removes macro and comments
         return "".join(line for line in self.rem_macro().splitlines() if not line.strip().startswith("#"))
