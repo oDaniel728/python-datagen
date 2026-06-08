@@ -79,3 +79,9 @@ class Tag[T]():
 
     def to_file(self) -> SimpleFile:
         return SimpleFile(Path(TAGS_PATH) / self.parent() / (self.id._path.replace(".", "/") + ".json"), self.to_string())
+
+    def __enter__(self) -> Self:
+        return self
+    
+    def __exit__(self, exc_type, exc, tb):
+        pass
