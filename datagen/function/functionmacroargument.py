@@ -29,6 +29,9 @@ print(arg)  # Output: $(example)
 
     def __getattribute__(self, name: str) -> FunctionMacroArgument[T]:
         return FunctionMacroArgument(f"{self.name}.{name}")
+    
+    def __getitem__(self, key: _TConvertibleToString) -> FunctionMacroArgument[T]:
+        return FunctionMacroArgument(f"{self.name}.{str(key)}")
 
     def __str__(self) -> str:
         return f"$({self.name})"
