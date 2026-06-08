@@ -118,10 +118,8 @@ def main():
     """The tick function tag for the namespace."""
 
     def __new__(cls, name: str) -> Self: 
-        """Creates a new namespace with the given name, or returns an existing namespace if one with the same name already exists. This ensures that there is only one instance of each namespace, and allows for easy retrieval of namespaces by name."""
         ...
     def __init__(self, name: str) -> None: 
-        """Initializes a new namespace with the given name, and initializes its logger, resource sets, and function tags. The namespace is also added to the global set of namespaces."""
         ...
 
     @staticmethod

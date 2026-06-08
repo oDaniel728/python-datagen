@@ -34,9 +34,6 @@ class Identifier():
 
     @deprecated("Use of() method instead")
     def __init__(self):
-        """
-        Initializes a new Identifier instance.
-        """
         self._namespace = ''
         self._path = ''
 

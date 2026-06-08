@@ -32,7 +32,6 @@ class AnonymousFunction(Function):
             return func
 
     def __init__(self, datapack: DataPack):
-        """Initializes a new anonymous function associated with the given datapack. The function is created with a unique identifier based on the number of existing functions in a temporary namespace, and is added to that namespace and the current datapack."""
         super().__init__(Namespace.temp.identifier(f"fun{len(Namespace.temp.functions)}"))
         self.datapack = datapack
         self.datapack.add_namespace(Namespace.temp)
