@@ -23,6 +23,13 @@ class Tag[T]():
         self.values.add(value)
         return self
     
+    def __iadd__(self, other):
+        if isinstance(other, Tag):
+            self.values.update(other.values)
+        else:
+            self.values.add(other)
+        return self
+    
     def remove_value(self, value: T) -> Self:
         self.values.remove(value)
         return self
