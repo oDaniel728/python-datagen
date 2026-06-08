@@ -83,25 +83,25 @@ class Namespace():
     
     def add_function(self, function: Function) -> Self:
         self.logger.info(f"Adding function '{function.id._path}' to namespace '{self.name}'")
-        function.namespace = self
+        function.namespace = self # type: ignore
         self.functions.add(function)
         return self
     
     def add_tag(self, tag: Tag) -> Self:
         self.logger.info(f"Adding tag '{tag.id._path}' to namespace '{self.name}'")
-        tag.namespace = self
+        tag.namespace = self # type: ignore
         self.tags.add(tag)
         return self
 
     def add_predicate(self, predicate: "Predicate") -> Self:
         self.logger.info(f"Adding predicate '{predicate.id._path}' to namespace '{self.name}'")
-        predicate.namespace = self
+        predicate.namespace = self # type: ignore
         self.predicates.add(predicate)
         return self
 
     def add_recipe(self, recipe: "Recipe") -> Self:
         self.logger.info(f"Adding recipe '{recipe.id._path}' to namespace '{self.name}'")
-        recipe.namespace = self
+        recipe.namespace = self # type: ignore
         recipe.id._namespace = self.name
         self.recipes.add(recipe)
         return self
@@ -168,6 +168,9 @@ class Namespace():
     def __exit__(self, exc_type, exc_value, traceback) -> None:
         self._current_namespace = None # type: ignore
         pass
+
+    def __iadd__(self, other: Function | Tag | "Predicate") -> Self:
+        return self.add(other)
 
 Namespace.minecraft = Namespace("minecraft")
 Namespace.temp = Namespace(f"temp")
