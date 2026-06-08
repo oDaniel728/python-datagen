@@ -1,0 +1,110 @@
+# DumpGen
+
+**DumpGen** is a utility that reads raw Minecraft game data (exported as JSON files) and generates Python class files containing constants for every item, block, entity type, sound, enchantment, and more.
+
+These generated files live in `datagen/utils/minecraft/collections/` and are what lets you write `Items.DIAMOND`, `EntityTypes.ZOMBIE`, `Sounds.ENTITY_PLAYER_LEVELUP`, etc. instead of typing `Identifier.of("minecraft:diamond")` everywhere.
+
+---
+
+## When to Regenerate
+
+You need to run DumpGen when:
+
+- You update to a new Minecraft version
+- The game data dumps in `dumpgen/dumps/` have been updated
+- The generated files in `datagen/utils/minecraft/collections/` are out of date or missing
+
+---
+
+## How to Run
+
+From the project root:
+
+```bash
+python dumpgen/gen.py
+```
+
+This reads all JSON files from `dumpgen/dumps/` and writes the generated Python files to `datagen/utils/minecraft/collections/`.
+
+The paths are configured in `.datagenconfig`:
+
+```json
+"dumperSettings": {
+    "source": "dumpgen/dumps/",
+    "output": "datagen/utils/minecraft/collections/"
+}
+```
+
+---
+
+## What Gets Generated
+
+Each JSON dump file becomes one Python file:
+
+| Dump file | Generated file | Class name |
+|-----------|---------------|------------|
+| `items.json` | `items.py` | `Items` |
+| `blocks.json` | `blocks.py` | `Blocks` |
+| `entity_types.json` | `entity_types.py` | `EntityTypes` |
+| `sounds.json` | `sounds.py` | `Sounds` |
+| `enchantment_data.json` | `enchantments.py` | `Enchantments` |
+| `mob_effects.json` | `mob_effects.py` | `MobEffects` |
+| `biomes.json` | `biomes.py` | `Biomes` |
+| `particle_types.json` | `particle_types.py` | `ParticleTypes` |
+| `advancements.json` | `advancements.py` | `Advancements` |
+| `attributes.json` | `attributes.py` | `Attributes` |
+| `dimensions.json` | `dimensions.py` | `Dimensions` |
+| `damage_types.json` | `damage_types.py` | `DamageTypes` |
+| `structures.json` | `structures.py` | `Structures` |
+| `villager_professions.json` | `villager_professions.py` | `VillagerProfessions` |
+| `gamerules.json` | `gamerules.py` | `Gamerules` |
+| ... | ... | ... |
+
+---
+
+## Using the Generated Constants
+
+Once generated, import the class and use it as a namespace of constants:
+
+```python
+from datagen.utils.minecraft.collections.items import Items
+from datagen.utils.minecraft.collections.entity_types import EntityTypes
+from datagen.utils.minecraft.collections.sounds import Sounds
+from datagen.utils.minecraft.collections.enchantments import Enchantments
+from datagen.utils.minecraft.collections.mob_effects import MobEffects
+from datagen.utils.minecraft.collections.blocks import Blocks
+from datagen.utils.minecraft.collections.biomes import Biomes
+
+# Use in commands
+~ Give(TargetSelector.SELF, Items.NETHERITE_SWORD.get_stack(1))
+~ Summon(EntityTypes.ENDER_DRAGON, Position3(0, 64, 0))
+~ Effect.give(TargetSelector.SELF, MobEffects.STRENGTH, 200, 1)
+~ Enchant(TargetSelector.SELF, Enchantments.SHARPNESS, 5)
+~ Sound(Sounds.ENTITY_PLAYER_LEVELUP, "master", TargetSelector.ALL_PLAYERS)
+```
+
+---
+
+## Updating the Dumps
+
+To update to a newer Minecraft version, you need fresh dump files. These are typically produced by running the Minecraft server with a data generator or using a third-party tool.
+
+Once you have the new JSON files, place them in `dumpgen/dumps/` replacing the old ones, then run `python dumpgen/gen.py` again.
+
+---
+
+## How the Generator Works (for contributors)
+
+`dumpgen/gen.py` defines converter functions like:
+
+- `json_list_identifier_str_to_custom_class_static_class` — for lists of identifiers mapped to typed wrapper classes
+- `json_list_identifier_str_to_identifier_static_class` — for plain `Identifier` constants
+- `json_list_enchantment_data_to_enchantment_static_class` — for enchantments with `max_level` data
+
+Each dump file calls `main(input, output, class_name, process)` where `process` is one of these converters. The result is a plain Python file with a class full of static attributes.
+
+---
+
+## Next Steps
+
+- [Configuration →](12-configuration.md)
