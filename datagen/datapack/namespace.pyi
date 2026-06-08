@@ -18,6 +18,7 @@ class Namespace:
     # Namespace
     - See https://wiki.bedrock.dev/concepts/namespaces  
     (to Bedrock devs, but the concept is the same in Java)
+    - See also https://minecraft.wiki/w/Identifier#Namespaces
     ## Summary
     Represents a Minecraft namespace, which is a way to organize and group
     resources in a datapack. Each namespace has a name and can contain
