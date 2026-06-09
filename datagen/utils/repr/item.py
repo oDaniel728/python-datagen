@@ -1,4 +1,4 @@
-from abc import ABC, abstractmethod
+import abc
 import json
 from typing import TYPE_CHECKING, Any, Self, Type, overload
 
@@ -8,17 +8,17 @@ from datagen.utils.minecraft.targetselector import TargetSelector
 if TYPE_CHECKING:
     from datagen.utils.repr.itemstack import ItemStack
 
-class __Settings__(ToDict, ABC):
+class __Settings__(ToDict, abc.ABC):
     def __init__(self) -> None:
         pass
 
     def to_dict(self) -> dict:
-        return {}
+        return self.get_components()
 
     def to_json(self) -> str:
         return json.dumps(self.to_dict())
 
-    @abstractmethod
+    @abc.abstractmethod
     def get_components(self) -> dict: ...
 
 class Item[T: __Settings__]():
@@ -111,7 +111,7 @@ class Item[T: __Settings__]():
 
     def __get_nbt_dict(self) -> dict:
         if not isinstance(self.nbt, dict):
-            return self.nbt.get_components()
+            return self.nbt.to_dict()
         return self.nbt
 
     def __str__(self) -> str:

@@ -19,18 +19,76 @@ class __Settings__(Item.Settings, ABC):
     def to_dict(self) -> dict:
         return {
             "block_state": self.get_block_state(),
-            "block_entity_data": self.get_block_entity_data()
+            "block_entity_data": self.get_block_entity_data(),
+            **self.get_components()
         }
     
     def get_components(self) -> dict:
         return self.to_dict()
 
 class Block[T: __Settings__](Item[T]):  
+    r"""
+    # Block \<T\>
+    - See https://minecraft.wiki/w/Block
+    ## Summary
+    Represents a block in Minecraft. A block is defined by its identifier and its NBT data
 
+    ## Examples
+    - Creating a block with default settings
+    ```python
+    class CustomBlockSettings(Block.Settings):
+        def __init__(self) -> None:
+            super().__init__()
+
+        def get_block_entity_data(self) -> dict:
+            return {}
+        
+        def get_block_state(self) -> dict:
+            return {}
+        
+        def get_components(self) -> dict:
+            return super().get_components() | {
+                "custom_name": "Custom Stone"
+            }
+
+    class CustomBlock(Block[CustomBlockSettings]):
+        def __init__(self) -> None:
+            super().__init__(
+                Identifier.of("minecraft", "stone"),
+                CustomBlockSettings()
+            )
+
+    def main():
+        dp = DataPack("pack", "")
+        ns = Namespace("namespace")
+        dp.add_namespace(ns)
+
+        with Function(ns / "give_custom_block") as func:
+            block = CustomBlock()
+            ~ Return.run(
+                Give(TargetSelector.SELF, block.get_stack())
+            )
+
+        with Function(ns / "set_custom_block") as func:
+            block = CustomBlock()
+            ~ Return.run(
+                SetBlock(RelativeBlockPosition(0, -1, 0), block)
+            )
+
+        ns.add_function(func)
+        dp.build()
+    ```
+    """    
 
     _TDirection = Literal["down", "up", "north", "south", "west", "east"]
     instances = dict[Identifier, "Block"]()  
     class Settings(__Settings__):
+        """
+        # Block.Settings
+        ## Summary
+        Represents the settings for a block, which includes its block state and block entity data. This
+        class is used to define the NBT data for a block, which can include both block state and block entity data.
+        """
         def __init__(self) -> None:
             super().__init__()
 
