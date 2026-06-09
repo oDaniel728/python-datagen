@@ -155,7 +155,7 @@ class Namespace():
 
     def build_advancements(self, base: Path):
         Logger.start_task(f"Building advancements in namespace '{self.name}'")
-        for adv in Advancement.__advancements.values():
+        for adv in Advancement.advancements.values():
             if adv._ns != self:
                 continue
             self.logger.info(f"Building advancement '{adv.id._path}' in namespace '{self.name}'")

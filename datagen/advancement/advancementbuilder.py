@@ -1,18 +1,18 @@
 from typing import TYPE_CHECKING, Any, Literal, Type
 
-from datagen.advancement.criteria import Criteria
-from datagen.function.function import Function
-from datagen.utils.minecraft.identifier import Identifier
-from datagen.utils.minecraft.text import Text
-from datagen.utils.repr.itemstack import ItemStack
 
 if TYPE_CHECKING:
+    from datagen.function.function import Function
+    from datagen.utils.minecraft.identifier import Identifier
+    from datagen.utils.minecraft.text import Text
+    from datagen.utils.repr.itemstack import ItemStack
+    from datagen.advancement.criteria import Criteria
     from datagen.advancement.advancement import Advancement
 
 class AdvancementBuilder():
     def __init__(self, advancement: "Advancement"):
         self.advancement = advancement
-        self.__criterias = set[Criteria]()
+        self.__criterias = set["Criteria"]()
         self.__requirements = set[str]()
         self.__display = {}
         self.__rewards = {}
@@ -76,17 +76,18 @@ class AdvancementBuilder():
         recipe: list[Identifier] | None = None,
     ):
         self.__rewards = {
-            "function": function,
+            "function": function.id if function else None,
             "experience": experience,
             "loot": loot,
             "recipe": recipe
         }
         return self
     
-    def seal(self) -> None:
+    def seal(self):
         self.advancement.data["display"] = self.__display
         self.advancement.data["criteria"] = {
             c.name: c.data for c in self.__criterias
         }
         self.advancement.data["requirements"] = [list(self.__requirements)]
         self.advancement.data["rewards"] = self.__rewards
+        return self.advancement

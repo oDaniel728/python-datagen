@@ -9,12 +9,12 @@ from datagen.utils.simplefile import SimpleFile
 
 
 class Advancement():
-    __advancements = dict[Identifier, "Advancement"]()
+    advancements = dict[Identifier, "Advancement"]()
     __current_advancement = None
 
     @staticmethod
     def get(id: Identifier) -> "Advancement":
-        return Advancement.__advancements.setdefault(id, Advancement(id))
+        return Advancement.advancements.setdefault(id, Advancement(id))
     
     @staticmethod
     def set_current(advancement: "Advancement"):
@@ -29,7 +29,7 @@ class Advancement():
         self._ns = Namespace.get(id)
         self.id = id
         self.data = dict[str, Any]()
-        Advancement.__advancements[id] = self
+        Advancement.advancements[id] = self
 
     def __invert__(self):
         self._ns.add_advancement(self)
@@ -60,7 +60,7 @@ class Advancement():
 
     def to_file(self) -> "SimpleFile":
         return SimpleFile(
-            Path(ADVANCEMENTS_PATH) / self.id._path.replace(".", "/"),
+            Path(ADVANCEMENTS_PATH) / (self.id._path.replace(".", "/") + ".json"),
             self.to_string()
         )
     
