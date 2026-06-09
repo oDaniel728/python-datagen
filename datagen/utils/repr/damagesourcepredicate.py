@@ -18,6 +18,10 @@ class DamageSourcePredicate():
         tags.append({"id": tag, "expected": expected})
         return self
 
+    def with_is_direct(self, value: bool) -> "DamageSourcePredicate":
+        self._data["is_direct"] = value
+        return self
+
     def set(self, key: str, value) -> "DamageSourcePredicate":
         self._data[key] = value
         return self
