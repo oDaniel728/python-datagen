@@ -2,6 +2,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, final
 from typing_extensions import Self
 
+from datagen.advancement.advancement import Advancement
 from datagen.function.function import Function
 from datagen.tag.functiontag import FunctionTag
 from datagen.tag.tag import Tag
@@ -167,6 +168,14 @@ def main():
 
     def add_tags(self, *tags: Tag) -> Self: 
         """Adds multiple tags to the namespace. Each tag's namespace is set to this namespace, and its identifier is updated accordingly. The tags are also added to the set of tags in the namespace."""
+        ...
+
+    def add_advancements(self, *advs: "Advancement") -> Self: 
+        """Adds multiple advancements to the namespace. Each advancement's namespace is set to this namespace, and its identifier is updated accordingly. The advancements are also added to the set of advancements in the namespace."""
+        ...
+    
+    def add_advancement(self, adv: "Advancement") -> Self: 
+        """Adds an advancement to the namespace. The advancement's namespace is set to this namespace, and its identifier is updated accordingly. The advancement is also added to the set of advancements in the namespace."""
         ...
 
     def build_functions(self, base: Path) -> None: 

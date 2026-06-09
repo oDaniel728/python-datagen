@@ -45,7 +45,7 @@ class Summon():
             "Item": {
                 "id": item.item.id,
                 "count": item.count,
-                "components": item.item.nbt if item.item.nbt is not None else {}
+                "components": item.item.settings if item.item.settings is not None else {}
             }
         }
         return CustomCommand(f"summon item {pos} {'' if nbt is None else json.dumps(_nbt)}")

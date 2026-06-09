@@ -106,13 +106,13 @@ class Item[T: __Settings__]():
 
     def __init__(self, id: Identifier, components: T | dict = {}) -> None:
         self.id = id
-        self.nbt = components if not isinstance(components, dict) else self.DefaultSettings()
+        self.settings = components if not isinstance(components, dict) else self.DefaultSettings()
         Item.instances[id] = self
 
     def __get_nbt_dict(self) -> dict:
-        if not isinstance(self.nbt, dict):
-            return self.nbt.to_dict()
-        return self.nbt
+        if not isinstance(self.settings, dict):
+            return self.settings.to_dict()
+        return self.settings
 
     def __str__(self) -> str:
         return f"{~self.id}[{','.join(f'\"{k}\"={v}' for k, v in self.__get_nbt_dict().items())}]"
@@ -152,10 +152,10 @@ class Item[T: __Settings__]():
         Returns:
             Item[T]: A new instance of the item with the same identifier and NBT data.
         """
-        return Item[T](self.id, self.nbt) # type: ignore
+        return Item[T](self.id, self.settings) # type: ignore
 
     def set_nbt(self, nbt: T) -> Self:
-        self.nbt = nbt
+        self.settings = nbt
         return self
     
     def with_settings[U: Settings](self, setting: U) -> "Item[U]":

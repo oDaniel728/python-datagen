@@ -84,7 +84,7 @@ class Recipe():
             "result": {
                 "count": result.count,
                 "id": result.item.id.to_string(),
-                "components": result.item.nbt
+                "components": result.item.settings
             }
         })
 
@@ -98,7 +98,7 @@ class Recipe():
             "result": {
                 "count": result.count,
                 "id": result.item.id.to_string(),
-                "components": result.item.nbt
+                "components": result.item.settings
             }
         })
 
@@ -110,7 +110,7 @@ class Recipe():
             "result": {
                 "count": result.count,
                 "id": result.item.id.to_string(),
-                "components": result.item.nbt
+                "components": result.item.settings
             },
             "experience": experience,
             "cookingtime": cookingtime
@@ -124,7 +124,7 @@ class Recipe():
             "result": {
                 "count": result.count,
                 "id": result.item.id.to_string(),
-                "components": result.item.nbt
+                "components": result.item.settings
             },
             "experience": experience,
             "cookingtime": cookingtime
@@ -138,7 +138,7 @@ class Recipe():
             "result": {
                 "count": result.count,
                 "id": result.item.id.to_string(),
-                "components": result.item.nbt
+                "components": result.item.settings
             },
             "experience": experience,
             "cookingtime": cookingtime
@@ -153,7 +153,7 @@ class Recipe():
             "result": {
                 "count": result.count,
                 "id": result.item.id.to_string(),
-                "components": result.item.nbt
+                "components": result.item.settings
             }
         })
 
@@ -165,7 +165,7 @@ class Recipe():
             "result": {
                 "count": result.count,
                 "id": result.item.id.to_string(),
-                "components": result.item.nbt
+                "components": result.item.settings
             }
         })
 
@@ -177,7 +177,7 @@ class Recipe():
             "result": {
                 "count": result.count,
                 "id": result.item.id.to_string(),
-                "components": result.item.nbt
+                "components": result.item.settings
             }
         })
     
@@ -189,7 +189,7 @@ class Recipe():
             "result": {
                 "count": result.count,
                 "id": result.item.id.to_string(),
-                "components": result.item.nbt
+                "components": result.item.settings
             },
             "experience": experience,
             "cookingtime": cookingtime

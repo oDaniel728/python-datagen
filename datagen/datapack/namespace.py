@@ -4,6 +4,7 @@ from typing import final
 from uuid import uuid4
 from typing_extensions import Self
 
+from datagen.advancement.advancement import Advancement
 from datagen.function.function import Function
 from datagen.tag.functiontag import FunctionTag
 from datagen.tag.tag import Tag
@@ -116,6 +117,16 @@ class Namespace():
             self.add_tag(tag)
         return self
     
+    def add_advancement(self, adv: "Advancement") -> Self:
+        self.logger.info(f"Adding advancement '{adv.id._path}' to namespace '{self.name}'")
+        adv.namespace = self # type: ignore
+        return self
+
+    def add_advancements(self, *advs: "Advancement") -> Self:
+        for adv in advs:
+            self.add_advancement(adv)
+        return self 
+    
     def build_functions(self, base: Path):
         Logger.start_task(f"Building functions in namespace '{self.name}'")
         for function in self.functions:
@@ -142,6 +153,16 @@ class Namespace():
             f.build(base)
         Logger.end_task(f"Building predicates in namespace '{self.name}'")
 
+    def build_advancements(self, base: Path):
+        Logger.start_task(f"Building advancements in namespace '{self.name}'")
+        for adv in Advancement.__advancements.values():
+            if adv._ns != self:
+                continue
+            self.logger.info(f"Building advancement '{adv.id._path}' in namespace '{self.name}'")
+            f = adv.to_file()
+            f.build(base)
+        Logger.end_task(f"Building advancements in namespace '{self.name}'")
+
     def build_recipes(self, base: Path):
         Logger.start_task(f"Building recipes in namespace '{self.name}'")
         for recipe in self.recipes:
@@ -155,6 +176,7 @@ class Namespace():
         self.build_functions(base)
         self.build_tags(base)
         self.build_predicates(base)
+        self.build_advancements(base)
         self.build_recipes(base)
         Logger.end_task(f"Building namespace '{self.name}'")
 
