@@ -91,3 +91,8 @@ class AdvancementBuilder():
         self.advancement.data["requirements"] = [list(self.__requirements)]
         self.advancement.data["rewards"] = self.__rewards
         return self.advancement
+    
+    def __enter__(self):
+        return self
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.seal() 

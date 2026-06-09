@@ -1,7 +1,10 @@
+from datagen.advancement.advancement import Advancement
+from datagen.advancement.criteria import Criteria
 from datagen.datapack.namespace import Namespace
 from datagen.function.anonymousfunction import AnonymousFunction
 from datagen.function.commands._data.datastorage import DataStorage
 from datagen.function.commands._return import Return
+from datagen.function.commands.advancements import Advancements
 from datagen.function.commands.command import Command
 from datagen.function.commands.execute import Execute
 from datagen.function.commands.runfunction import RunFunction
@@ -566,3 +569,18 @@ class ScriptBuilder:
             _.on_tick(tick)
             return _
 
+    @staticmethod
+    def on_criteria(criteria: Criteria, function: Function) -> Script:
+        s = Script()
+
+        adv = Advancement(Namespace.temp / f"__criteria_{_counter.get()}")
+        with adv.open() as a:
+            a.set_criteria(criteria)
+            a.set_rewards(
+                Function(Namespace.temp / f"__criteria_reward_{_counter.get()}")
+                .add_command(function.run())
+                .add_command(Advancements.revoke(TargetSelector.SELF, adv.id))
+            )
+        s.add_advancement(adv)
+
+        return s

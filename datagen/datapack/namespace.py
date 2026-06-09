@@ -15,21 +15,20 @@ if TYPE_CHECKING:
     from datagen.predicate.predicate import Predicate
     from datagen.recipes.recipe import Recipe
 
+_current_namespace: Namespace
 @final
 class Namespace():
     minecraft: Namespace
     temp: Namespace
 
-    _current_namespace: Namespace
     @staticmethod
     def get_current_namespace() -> "Namespace":
-        if not hasattr(Namespace, "_current_namespace") or Namespace._current_namespace is None:
-            raise ValueError("No namespace is currently being built")
-        return Namespace._current_namespace
+        return _current_namespace
     
     @staticmethod
     def set_current_namespace(namespace: "Namespace") -> None:
-        Namespace._current_namespace = namespace
+        global _current_namespace
+        _current_namespace = namespace
 
     instances = dict[str, "Self"]()
     
@@ -119,7 +118,7 @@ class Namespace():
     
     def add_advancement(self, adv: "Advancement") -> Self:
         self.logger.info(f"Adding advancement '{adv.id._path}' to namespace '{self.name}'")
-        adv.namespace = self # type: ignore
+        adv._ns = self # type: ignore
         return self
 
     def add_advancements(self, *advs: "Advancement") -> Self:
@@ -184,11 +183,11 @@ class Namespace():
         return self.identifier(path)
     
     def __enter__(self) -> Self:
-        self._current_namespace = self
+        self.set_current_namespace(self)
         return self
     
     def __exit__(self, exc_type, exc_value, traceback) -> None:
-        self._current_namespace = None # type: ignore
+        self.set_current_namespace(None) # type: ignore
         pass
 
     def __iadd__(self, other: Function | Tag | "Predicate") -> Self:

@@ -10,37 +10,23 @@ from datagen.utils.minecraft.collections.items import Items
 from datagen.utils.minecraft.targetselector import TargetSelector
 from datagen.utils.minecraft.text import Text
 from datagen.utils.repr.itempredicate import ItemPredicate
+from datagenpp.extras.scripts.scriptbuilder import ScriptBuilder
 
 
 def main():
     with DataPack("pack", "a pack") as dp:
         
         with Namespace("pack") as ns:
-            
-            adv = (
-                Advancement(ns / "test").open()
-                .set_display(
-                    icon = Items.BEDROCK.get_stack(),
-                    title = Text.literal("Test Advancement"),
-                    description = Text.literal("This is a test advancement"),
-                    announce_to_chat=False,
-                    show_toast=False,
-                    hidden=True
-                )
-                .set_criteria(
-                    Criteria.consume_item(
-                        ItemPredicate()
-                        .with_items(Items.COOKED_BEEF)
-                    )
-                )
-                .set_rewards(
-                    AnonymousFunction(dp)
-                    .add_command(Say("You have completed the test advancement!"))
-                    .add_command(Advancements.revoke(TargetSelector.SELF, ns / "test"))
-                )
-                .seal()
-            )
-            ns.add_advancement(adv)
+
+            with Function(ns / "on_consume_of_stick") as f:
+                ~ Say("You consumed a stick!")
+
+            ScriptBuilder().on_criteria(
+                Criteria.consume_item(
+                    ItemPredicate()
+                    .with_items(Items.STICK)
+                ), f
+            ).merge(ns)
 
             with Function(ns / "hello") as f:
                 ~ Say("Hello, world!")

@@ -40,12 +40,12 @@ class Advancement():
         if isinstance(data, dict):
             out = dict[str, Any]()
             for k, v in data.items():
-                if v is None: continue
+                if v == "None" or v == None: continue
                 out[k] = Advancement.__get_data_dict(v)
         elif isinstance(data, list):
             out = list()
             for v in data:
-                if v is None: continue
+                if v == "None" or v == None: continue
                 out.append(Advancement.__get_data_dict(v))
         elif isinstance(data, Identifier):
             out = str(data)

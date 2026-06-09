@@ -10,4 +10,4 @@ class PlaceableBlock[S: Block.Settings](Block[S]):
         self.pos = pos
 
     def place(self) -> SetBlock:
-        return SetBlock(self.pos, self)
+        return SetBlock(self.pos, self) # type: ignore
