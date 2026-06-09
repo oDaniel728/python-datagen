@@ -1,26 +1,38 @@
 from datagen.types.util.min import Range
+from datagen.utils._dictify import dictify
 from datagen.utils.repr.biome import Biome
 from datagen.utils.repr.block import Block
+from datagen.utils.snbtserializer import SNBTSerializer
 
 
 class LocationPredicate():
     def __init__(self) -> None:
         self._data: dict = {}
 
-    def with_biome(self, biome: Biome) -> "LocationPredicate":
-        self._data["biomes"] = [str(biome.id)]
+    def with_biomes(self, *biomes: Biome) -> "LocationPredicate":
+        self._data["biomes"] = [str(biome.id) for biome in biomes]
         return self
 
-    def with_block(self, block: Block) -> "LocationPredicate":
-        self._data["block"] = {"blocks": [str(block.id)]}
+    def with_blocks(self, *blocks: Block, state: dict | None = None, nbt: dict | None = None, components: dict | None = None) -> "LocationPredicate":
+        self._data["block"] = {"blocks": [str(block.id) for block in blocks]}
+        if state is not None:
+            self._data["block"]["state"] = dictify(state) # type: ignore
+        if nbt is not None:
+            self._data["block"]["nbt"] = SNBTSerializer.serialize(nbt) # type: ignore
+        if components is not None:
+            self._data["block"]["components"] = dictify(components) # type: ignore
+        
         return self
 
     def with_dimension(self, dimension: str) -> "LocationPredicate":
         self._data["dimension"] = dimension
         return self
 
-    def with_light(self, light: Range) -> "LocationPredicate":
-        self._data["light"] = {"light": {"min": light.start, "max": light.end}}
+    def with_light(self, light: Range | int) -> "LocationPredicate":
+        if isinstance(light, int):
+            self._data["light"] = {"light": light}
+        else:
+            self._data["light"] = {"light": {"min": light.start, "max": light.end}}
         return self
 
     def with_smokey(self, smokey: bool = True) -> "LocationPredicate":
