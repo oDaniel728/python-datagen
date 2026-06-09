@@ -14,6 +14,7 @@ from datagen.predicate.predicate import Predicate
 from datagen.types.util.counter import Counter
 from datagen.types.util.min import Range
 from datagen.utils.minecraft.collections.entity_types import EntityTypes
+from datagen.utils.minecraft.collections.items import Items
 from datagen.utils.minecraft.targetselector import TargetSelector
 from datagen.utils.minecraft.text import Text
 from datagen.utils.repr.block import Block
@@ -575,6 +576,14 @@ class ScriptBuilder:
 
         adv = Advancement(Namespace.temp / f"__criteria_{_counter.get()}")
         with adv.open() as a:
+            a.set_display(
+                Items.BEDROCK.get_stack(1),
+                Text.literal(""),
+                Text.literal(""),
+                show_toast=False,
+                announce_to_chat=False,
+                hidden=True
+            )
             a.set_criteria(criteria)
             a.set_rewards(
                 Function(Namespace.temp / f"__criteria_reward_{_counter.get()}")
