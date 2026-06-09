@@ -1,7 +1,8 @@
+from datagen.types.util.validpredicate import ValidPredicate
 from datagen.utils.repr.entitypredicate import EntityPredicate
 
 
-class DamageSourcePredicate():
+class DamageSourcePredicate(ValidPredicate):
     def __init__(self) -> None:
         self._data: dict = {}
 

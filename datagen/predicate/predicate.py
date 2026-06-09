@@ -7,6 +7,7 @@ from datagen.datapack.namespace import Namespace
 from datagen.globals import PREDICATES_PATH
 from datagen.predicate.builders import PredicateBuilderUtil
 from datagen.types.util.min import Range
+from datagen.types.util.validpredicate import ValidPredicate
 from datagen.utils.minecraft.identifier import Identifier
 from datagen.utils.repr.block import Block
 from datagen.utils.repr.damagesourcepredicate import DamageSourcePredicate
@@ -38,7 +39,7 @@ class SURVIVES_EXPLOSION(PredicateType): pass
 class TABLE_BONUS(PredicateType): pass
 class TIME_CHECK(PredicateType): pass
 
-class Predicate[T]():
+class Predicate[T](ValidPredicate):
     NAMESPACE = Namespace.temp
 
     @staticmethod

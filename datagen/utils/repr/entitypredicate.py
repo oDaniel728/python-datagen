@@ -1,6 +1,7 @@
 from typing import Any, NotRequired, Optional, TypedDict
 
 from datagen.types.util.min import Range
+from datagen.types.util.validpredicate import ValidPredicate
 from datagen.utils.dictfilter import filter_dict
 from datagen.utils.repr.entitytype import EntityType
 from datagen.utils.repr.equipment_slot import EquipmentSlot
@@ -11,7 +12,7 @@ from datagen.utils.repr.status_effect import StatusEffect
 from datagen.utils.repr.typespecificpredicate import TypeSpecificPredicate
 
 # FINISHED
-class EntityPredicate():
+class EntityPredicate(ValidPredicate):
     def __init__(self) -> None:
         self._data: dict = {}
 

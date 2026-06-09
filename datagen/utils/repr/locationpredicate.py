@@ -1,11 +1,12 @@
 from datagen.types.util.min import Range
+from datagen.types.util.validpredicate import ValidPredicate
 from datagen.utils._dictify import dictify
 from datagen.utils.repr.biome import Biome
 from datagen.utils.repr.block import Block
 from datagen.utils.snbtserializer import SNBTSerializer
 
 
-class LocationPredicate():
+class LocationPredicate(ValidPredicate):
     def __init__(self) -> None:
         self._data: dict = {}
 

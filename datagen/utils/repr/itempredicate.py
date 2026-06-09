@@ -1,11 +1,12 @@
 from typing import Any
 
 from datagen.types.util.min import Range
+from datagen.types.util.validpredicate import ValidPredicate
 from datagen.utils.repr.enchantment import Enchantment
 from datagen.utils.repr.item import Item
 
 
-class ItemPredicate():
+class ItemPredicate(ValidPredicate):
     def __init__(self) -> None:
         self._data: dict = {}
 
