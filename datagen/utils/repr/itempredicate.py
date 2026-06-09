@@ -13,8 +13,11 @@ class ItemPredicate():
         self._data["items"] = [str(~item) for item in items]
         return self
 
-    def with_count(self, count: Range) -> "ItemPredicate":
-        self._data["count"] = {"min": count.start, "max": count.end}
+    def with_count(self, count: Range | int) -> "ItemPredicate":
+        if not isinstance(count, int):
+            self._data["count"] = {"min": count.start, "max": count.end}
+        else:
+            self._data["count"] = count
         return self
 
     def with_components(self, components: dict[str, Any]) -> "ItemPredicate":
