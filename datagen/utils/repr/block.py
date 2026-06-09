@@ -26,7 +26,7 @@ class __Settings__(Item.Settings, ABC):
     def get_components(self) -> dict:
         return self.to_dict()
 
-class Block[T: __Settings__](Item[T]):  
+class Block[T: __Settings__ = __Settings__](Item[T]):  
     r"""
     # Block \<T\>
     - See https://minecraft.wiki/w/Block
@@ -107,7 +107,7 @@ class Block[T: __Settings__](Item[T]):
     def __init__(self, id: Identifier, nbt: T | dict = {}) -> None:
         super().__init__(id, nbt)
         self.nbt = nbt if not isinstance(nbt, dict) else self.BlockDefaultSettings()
-        Block.instances[id] = self
+        Block.instances[id] = self # type: ignore
 
     def with_settings[U: __Settings__](self, setting: U) -> "Block[U]": # type: ignore
         return Block[U](self.id, setting)
