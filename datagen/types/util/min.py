@@ -31,3 +31,10 @@ class Range():
         else:
             return "-1"
     
+    def to_dict(self) -> dict:
+        out = {}
+        if self.start is not None:
+            out["min"] = self.start
+        if self.end is not None:
+            out["max"] = self.end
+        return out
