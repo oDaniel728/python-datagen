@@ -34,8 +34,29 @@ class Advancement():
     def __invert__(self):
         self._ns.add_advancement(self)
 
+    @staticmethod    
+    def __get_data_dict(data: Any) -> Any:
+        out = 0
+        if isinstance(data, dict):
+            out = dict[str, Any]()
+            for k, v in data.items():
+                if v is None: continue
+                out[k] = Advancement.__get_data_dict(v)
+        elif isinstance(data, list):
+            out = list()
+            for v in data:
+                if v is None: continue
+                out.append(Advancement.__get_data_dict(v))
+        elif isinstance(data, Identifier):
+            out = str(data)
+        elif isinstance(data, set):
+            out = [Advancement.__get_data_dict(v) for v in data]
+        else:
+            out = data
+        return out
+
     def to_string(self) -> str:
-        return json.dumps(self.data, indent=4)
+        return json.dumps(self.__get_data_dict(self.data), indent=4)
 
     def to_file(self) -> "SimpleFile":
         return SimpleFile(
@@ -46,6 +67,9 @@ class Advancement():
     def do(self, func: Callable[["AdvancementBuilder"], None]) -> "Advancement":
         func(AdvancementBuilder(self))
         return self
+    
+    def open(self) -> "AdvancementBuilder":
+        return AdvancementBuilder(self)
 
     def __enter__(self):
         Advancement.set_current(self)
