@@ -168,3 +168,6 @@ class Item[T: __Settings__]():
             Item[U]: A new instance of the item with the same identifier but with the provided settings.
         """
         return Item[U](self.id, setting)
+    
+    def to_dict(self) -> dict:
+        return self.settings.get_components()
