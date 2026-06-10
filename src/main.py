@@ -13,32 +13,50 @@ from datagen.utils.repr.itempredicate import ItemPredicate
 from datagenpp.extras.scripts.scriptbuilder import ScriptBuilder
 from packitems import StickFood
 
+# EntryPoint of the builder
 def main():
+    # Datapack building example with custom 
+    # item settings and advancements criteria
     with DataPack("pack", "a pack") as dp:
         
+        # Creating a namespace for the pack
         with Namespace("pack") as ns:
 
+            # Creating a function that will be 
+            # called when the player consumes a stick
             with Function(ns / "on_consume_of_stick") as f:
                 ~ Say("You consumed a stick!")
 
+            # Creating an advancement that will be 
+            # granted when the player consumes a stick
             ~ ScriptBuilder().on_criteria(
+                # The criteria is defined as consuming an 
+                # item that matches the predicate of being 
+                # a stick
                 Criteria.consume_item(
                     ItemPredicate()
                     .with_items(Items.STICK)
-                ), f
+                ), 
+                f # The function to run when the criteria is met
             )
 
+            # Creating a function that will give the player a 
+            # stick with custom food settings
             with Function(ns / "hello") as f:
                 ~ Say("Hello, world!")
 
+            # Creating a function that will give the player a 
+            # stick with custom food settings
             with Function(ns / "give_stick") as f:
                 ~ Give(
                     TargetSelector.SELF,
                     StickFood().get_stack()
                 )
 
+        # Adding the namespace to the datapack    
         dp.add_namespace(ns)
 
+    # Building the datapack, which will generate the necessary
     dp.build()
 
 #nd
