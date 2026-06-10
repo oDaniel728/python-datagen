@@ -114,8 +114,17 @@ class Item[T: __Settings__]():
             return self.settings.to_dict()
         return self.settings
 
+    @staticmethod
+    def _remove_nulls(v: Any) -> Any:
+        if isinstance(v, dict):
+            return {k: Item._remove_nulls(vv) for k, vv in v.items() if vv is not None}
+        if isinstance(v, list):
+            return [Item._remove_nulls(vv) for vv in v if vv is not None]
+        return v
+
     def __str__(self) -> str:
-        return f"{~self.id}[{','.join(f'\"{k}\"={v}' for k, v in self.__get_nbt_dict().items())}]"
+        nbt_dict = self._remove_nulls(self.__get_nbt_dict())
+        return f"{~self.id}[{','.join(f'{k}={v}' for k, v in nbt_dict.items())}]" if nbt_dict else f"{~self.id}"
 
     def __invert__(self):
         return self.id

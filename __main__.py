@@ -1,7 +1,12 @@
+from pathlib import Path
 from sys import argv
-
 from datagen.utils.filewatcher import FileWatcher
+
+import sys
+sys.path.append((Path(__file__).parent.absolute().resolve() / "src").__str__())
+
 import src.main
+
 
 if __name__ == "__main__":
     try:

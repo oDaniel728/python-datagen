@@ -47,5 +47,5 @@ class Script():
         pass
 
     def __invert__(self):
-        self.merge(Namespace.get_current_namespace())
+        self.merge(Namespace.temp)
         return self

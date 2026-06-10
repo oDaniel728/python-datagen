@@ -10,6 +10,26 @@ Minecraft uses **JSON text components** to display rich, formatted text in chat 
 from datagen.utils.minecraft.text import Text
 ```
 
+Classes can also be imported directly from their respective submodules:
+
+| Class | Module |
+|-------|--------|
+| `BaseTextSettings`, `BaseText` | `datagen.utils.minecraft.text._base` |
+| `LiteralTextSettings`, `TranslateTextSettings`, `ScoreTextSettings`, `SelectorTextSettings`, `KeybindTextSettings`, `NBTTextSettings` | `datagen.utils.minecraft.text._settings` |
+| `literal`, `translate`, `score`, `selector`, `keybind`, `nbt` | `datagen.utils.minecraft.text._components` |
+
+---
+
+## File Structure
+
+```
+datagen/utils/minecraft/text/
+├── __init__.py       # Text class + re-exports
+├── _base.py          # BaseTextSettings, BaseText
+├── _settings.py      # *TextSettings classes
+└── _components.py    # literal, translate, score, selector, keybind, nbt
+```
+
 ---
 
 ## Text Types

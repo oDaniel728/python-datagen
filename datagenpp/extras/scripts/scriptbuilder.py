@@ -575,6 +575,13 @@ class ScriptBuilder:
         s = Script()
 
         adv = Advancement(Namespace.temp / f"__criteria_{_counter.get()}")
+        with Function(Namespace.temp / f"__criteria_reward_{_counter.get()}") as f:
+            args = DataStorage(Namespace.temp / f"__criteria_reward_args_{_counter.get()}")
+            ~ args.set_from_entity("self", TargetSelector.SELF)
+            ~ Advancements.revoke(TargetSelector.SELF, adv.id)
+            ~ Return.run(function.run(args))
+        s.add_function(f)
+
         with adv.open() as a:
             a.set_display(
                 Items.BEDROCK.get_stack(1),
@@ -585,11 +592,7 @@ class ScriptBuilder:
                 hidden=True
             )
             a.set_criteria(criteria)
-            a.set_rewards(
-                Function(Namespace.temp / f"__criteria_reward_{_counter.get()}")
-                .add_command(function.run())
-                .add_command(Advancements.revoke(TargetSelector.SELF, adv.id))
-            )
+            a.set_rewards(f)
         s.add_advancement(adv)
 
         return s
