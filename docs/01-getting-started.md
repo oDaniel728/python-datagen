@@ -118,6 +118,35 @@ Both styles produce identical output.
 
 ---
 
+## Tip: Rapid Iteration in Your Minecraft World
+
+To test your datapack in-game without manually copying files every time, you have two options:
+
+**Option 1 — Symlink:** Replace the `datapacks/` folder with a symbolic link to your Minecraft world's `datapacks/` folder:
+
+```bash
+rm -rf datapacks/
+ln -s ~/.minecraft/saves/MyWorld/datapacks/ datapacks/
+```
+
+Now every `python .` build writes directly into your world. Use `/reload` in-game to see changes.
+
+**Option 2 — Configure output path:** Set the `output` in `.datagenconfig` to point directly to your world's `datapacks/` folder:
+
+```json
+{
+    "builderSettings": {
+        "source": "src/",
+        "output": "/home/yourname/.minecraft/saves/MyWorld/datapacks/",
+        "indent": 4
+    }
+}
+```
+
+See [Configuration →](12-configuration.md) for more details.
+
+---
+
 ## Next Steps
 
 - [Namespaces & Functions →](02-namespaces-and-functions.md) — learn about organizing your code
