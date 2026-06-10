@@ -1,5 +1,6 @@
 from typing import Literal
 
+from datagen.advancement.advancement import Advancement
 from datagen.types.util.min import Range
 from datagen.utils.minecraft.identifier import Identifier
 from datagen.utils.repr.entitytype import EntityType
@@ -61,7 +62,7 @@ class TargetSelectorSettings():
         # Player Data
         level: int | Range | None = None,
         gamemode: TargetSelectorSettings.TGamemode | None = None,
-        advancements: dict[Identifier, bool] | None = None,
+        advancements: dict[Identifier | Advancement, bool] | None = None,
 
         # Traits
         limit: int | None = None,
@@ -94,7 +95,14 @@ class TargetSelectorSettings():
 
         self.level = level
         self.gamemode = gamemode
-        self.advancements = advancements
+        if advancements:
+            adv = {}
+            for k, v in advancements.items():
+                id = k.id if isinstance(k, Advancement) else k
+                adv[id] = v
+        else:
+            adv = advancements
+        self.advancements = adv
 
         self.limit = limit
         self.sort = sort
