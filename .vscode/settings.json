@@ -31,5 +31,8 @@
                 "cmd": "python ."
             }
         ]
-    }
+    },
+    "problems.visibility": true,
+    "problems.autoReveal": true,
+    "problems.defaultViewMode": "tree",
 }
