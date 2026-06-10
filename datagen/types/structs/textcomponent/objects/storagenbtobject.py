@@ -5,4 +5,4 @@ from datagen.types.structs.textcomponent.objects.nbtobject import NBTObject
 
 
 class StorageNBTObject(NBTObject):
-    storage: Required[str]
+    storage: Required[str] # type: ignore

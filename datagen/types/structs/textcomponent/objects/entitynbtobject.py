@@ -4,4 +4,4 @@ from datagen.types.structs.textcomponent.objects.nbtobject import NBTObject
 
 
 class EntityNBTObject(NBTObject):
-    entity: Required[str]
+    entity: Required[str] # type: ignore
