@@ -2,6 +2,10 @@
 
 Welcome! This guide will walk you through everything you need to know to set up the project and create your first Minecraft datapack using python-datagen.
 
+> **What is a Datapack?**  
+> A datapack is a set of files that modifies Minecraft's behaviour without needing mods. You can add functions, recipes, advancements, tags, and more. Just place the datapack folder in your world's `datapacks/` folder and run `/reload` in-game.  
+> [Learn more about Datapacks on the Minecraft Wiki →](https://minecraft.wiki/w/Data_pack)
+
 ---
 
 ## Prerequisites

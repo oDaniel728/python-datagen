@@ -1,5 +1,9 @@
 # Recipes
 
+> **What are Recipes?**  
+> Recipes define how players can craft items in Minecraft — in the crafting table, furnace, etc. With datapacks, you can add your own recipes, modify existing ones, or create new crafting types.  
+> [Learn more about Recipes on the Minecraft Wiki →](https://minecraft.wiki/w/Recipe)
+
 > **Note:** The recipe system works and produces valid JSON output. However, naming/ID management for recipes is minimal — recipes created with the static helpers get auto-generated temporary IDs. You are expected to set the correct ID before registering them. This area of the library is less polished than the function/command system.
 
 ---

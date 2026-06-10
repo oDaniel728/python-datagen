@@ -1,19 +1,11 @@
 # Predicates
 
+> **What are Predicates?**  
+> Predicates are condition files in Minecraft. They test things like "is the player holding a diamond?", "is the entity on fire?", "is it night?". You use predicates in commands (`/execute if predicate`), loot tables, and advancements.  
+> [Learn more about Predicates on the Minecraft Wiki →](https://minecraft.wiki/w/Predicate)
+
 > ⚠️ **Experimental — use with caution.**
 > The predicate system is functional but incomplete. The builder utilities and ID management are rough, and the API may change significantly in future versions. For complex predicates, passing a raw dict is often more reliable than using the helpers.
-
----
-
-## What are Predicates?
-
-In Minecraft, **predicates** are JSON condition files stored under `data/<namespace>/predicate/`. They are used in:
-
-- Loot tables (`when` conditions)
-- `execute if predicate` commands
-- Advancements
-
-A predicate defines a test — for example, "is the player holding a specific item?" or "is the entity on fire?" — that can be evaluated by the game.
 
 ---
 

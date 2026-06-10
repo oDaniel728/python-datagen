@@ -2,6 +2,10 @@
 
 Every Minecraft command has a corresponding Python class in `datagen/function/commands/`. Each class inherits from `Command` and can be added to a `Function` using the `~` operator.
 
+> **What are Commands?**  
+> Commands are instructions you type in Minecraft's chat with `/`. They can do anything: give items, teleport, summon mobs, change the weather, etc. In datapacks, you write commands inside functions and they run automatically.  
+> [Full list of commands on the Minecraft Wiki →](https://minecraft.wiki/w/Commands)
+
 ---
 
 ## How Commands Work

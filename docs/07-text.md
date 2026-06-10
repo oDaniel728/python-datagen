@@ -2,6 +2,10 @@
 
 Minecraft uses **JSON text components** to display rich, formatted text in chat messages, titles, action bars, signs, and more. python-datagen wraps this system in the `Text` class.
 
+> **What are Text Components?**  
+> In Minecraft, chat messages, titles, and signs can have coloured text, bold, italic, and even show scoreboard values. This is done with **JSON text components** — a special format the game understands. Instead of writing JSON by hand, you use python-datagen's `Text` class.  
+> [Learn more about Text Components on the Minecraft Wiki →](https://minecraft.wiki/w/Text_component)
+
 ---
 
 ## Import

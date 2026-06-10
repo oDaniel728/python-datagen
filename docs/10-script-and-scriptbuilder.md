@@ -2,6 +2,11 @@
 
 `Script` and `ScriptBuilder` are higher-level tools in the `datagenpp` package. They let you hook into common game events without manually writing the scoreboard/execute boilerplate.
 
+> **What are Scripts?**  
+> Minecraft doesn't have a built-in "event" system like "when a player kills a zombie". Everything has to be done manually with scoreboards and `/execute`. `ScriptBuilder` does this tedious work for you: you just say *what* you want to detect (e.g. "when the player mines diamond") and it handles all the internal machinery.  
+> [Learn more about Scoreboards on the Minecraft Wiki →](https://minecraft.wiki/w/Scoreboard)  
+> [Learn more about Functions on the Minecraft Wiki →](https://minecraft.wiki/w/Function_(Java_Edition))
+
 ---
 
 ## Import

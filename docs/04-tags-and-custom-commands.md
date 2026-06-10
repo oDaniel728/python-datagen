@@ -1,5 +1,9 @@
 # Tags & Custom Commands
 
+> **What are Tags?**  
+> Tags are named lists that group items, blocks, or functions together. For example, the tag `#minecraft:logs` contains all wood types. Instead of listing each wood type separately, you use the tag. This is useful in recipes, predicates, and commands.  
+> [Learn more about Tags on the Minecraft Wiki →](https://minecraft.wiki/w/Tag)
+
 ---
 
 ## Tags

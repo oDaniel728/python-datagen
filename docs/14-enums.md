@@ -4,6 +4,11 @@ python-datagen provides pre-built collections for every major Minecraft registry
 
 All collections live under `datagen.utils.minecraft.collections`.
 
+> **What are these Collections?**  
+> These are ready-made lists of everything in Minecraft: items, blocks, entities, biomes, effects, enchantments... Instead of memorising names or typing `Identifier.of("...")` every time, you use `Items.DIAMOND`, `EntityTypes.ZOMBIE`, `Biomes.FOREST`. Your editor shows suggestions as you type.  
+> [See the full item list on the Minecraft Wiki →](https://minecraft.wiki/w/Item)  
+> [See the status effects list on the Minecraft Wiki →](https://minecraft.wiki/w/Effect)
+
 ---
 
 ## Overview

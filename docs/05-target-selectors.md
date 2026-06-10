@@ -2,6 +2,10 @@
 
 A **target selector** tells Minecraft which entities a command should affect. In python-datagen, target selectors are represented by the `TargetSelector` class.
 
+> **What are Target Selectors?**  
+> In Minecraft, `@p` means "nearest player", `@a` means "all players", `@e` means "all entities". Target selectors let you choose *who* or *what* a command affects. You can filter by distance, entity type, team, and much more.  
+> [Learn more about Target Selectors on the Minecraft Wiki →](https://minecraft.wiki/w/Target_selector)
+
 ---
 
 ## Import

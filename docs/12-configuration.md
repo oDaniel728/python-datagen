@@ -2,6 +2,10 @@
 
 The `.datagenconfig` file is a JSON file in the root of your project that controls where the library reads from and writes to. It is loaded automatically when any part of `datagen` is imported.
 
+> **What is Configuration for?**  
+> The `.datagenconfig` file tells python-datagen where your source code is and where generated datapacks should be saved. You can point the output directly to your Minecraft world's `datapacks/` folder for faster testing.  
+> [Learn more about the datapacks folder on the Minecraft Wiki →](https://minecraft.wiki/w/Data_pack)
+
 ---
 
 ## File Location

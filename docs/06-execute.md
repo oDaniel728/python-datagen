@@ -4,6 +4,10 @@ The `execute` command is one of the most powerful in Minecraft. It lets you run 
 
 python-datagen wraps it with a fluent builder so you can chain conditions and modifiers in a readable way.
 
+> **What is the `/execute` command?**  
+> `/execute` is a super-command that runs other commands with conditions and modifiers. Examples: "execute if the player is holding a diamond", "execute as all zombies within 10 blocks", "execute if the block is stone". It's the foundation of almost all complex logic in datapacks.  
+> [Learn more about /execute on the Minecraft Wiki →](https://minecraft.wiki/w/Commands/execute)
+
 ---
 
 ## Import

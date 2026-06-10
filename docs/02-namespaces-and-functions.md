@@ -2,6 +2,11 @@
 
 This page explains how to organize your datapack using Namespaces and Functions.
 
+> **What are Namespaces and Functions?**  
+> In Minecraft, everything you create in a datapack needs a **namespace** (a prefix before the colon, like `mypack:name`). A **function** is a list of commands that the game runs in sequence — like a script. You create `.mcfunction` files and the game reads them.  
+> [Learn more about Functions on the Minecraft Wiki →](https://minecraft.wiki/w/Function_(Java_Edition))  
+> [Learn more about Namespaced IDs on the Minecraft Wiki →](https://minecraft.wiki/w/Namespaced_ID)
+
 ---
 
 ## Namespaces

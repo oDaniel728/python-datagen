@@ -2,6 +2,10 @@
 
 Advancements are in-game achievements that appear in the Advancements menu. python-datagen lets you define them programmatically using `Advancement`, `AdvancementBuilder`, and `Criteria`.
 
+> **What are Advancements?**  
+> Advancements are Minecraft's achievement system — those notifications that pop up in the corner when you do something important. Each advancement has conditions (criteria) the player must meet, and can give rewards like XP, functions, or recipes. With datapacks, you can create your own advancements.  
+> [Learn more about Advancements on the Minecraft Wiki →](https://minecraft.wiki/w/Advancement)
+
 ---
 
 ## Import
