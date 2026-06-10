@@ -61,6 +61,8 @@ The generated datapack will be placed in the folder configured in `.datagenconfi
 | [Script & ScriptBuilder](docs/10-script-and-scriptbuilder.md) | High-level event hooks |
 | [DumpGen](docs/11-dumpgen.md) | Regenerating game data constants |
 | [Configuration](docs/12-configuration.md) | `.datagenconfig` reference |
+| [Advancements](docs/13-advancements.md) | Advancement definitions |
+| [Enums & Collections](docs/14-enums.md) | Minecraft data constants |
 
 ---
 

@@ -163,6 +163,170 @@ script.merge(ns)
 
 ---
 
+### `ScriptBuilder.on_block_mined(block, function)`
+
+Fires when a player **mines** a specific block.
+
+Context data:
+- `self` — the player who mined it
+- `item` — the item held (tool used)
+- `slot` — the slot that item was in
+
+```python
+from datagen.utils.minecraft.collections.blocks import Blocks
+
+with Function(ns / "on_mine_diamond_ore") as handler:
+    ~ Say("You mined diamond ore!")
+
+script = ScriptBuilder.on_block_mined(Blocks.DIAMOND_ORE, handler)
+script.merge(ns)
+```
+
+---
+
+### `ScriptBuilder.on_block_placed(block, function)`
+
+Fires when a player **places** a specific block.
+
+Context data:
+- `self` — the player who placed the block
+
+```python
+with Function(ns / "on_place_tnt") as handler:
+    ~ Say("TNT placed!")
+
+script = ScriptBuilder.on_block_placed(Blocks.TNT, handler)
+script.merge(ns)
+```
+
+---
+
+### `ScriptBuilder.on_item_craft(item, function)`
+
+Fires when a player **crafts** a specific item.
+
+Context data:
+- `self` — the player who crafted
+
+```python
+with Function(ns / "on_craft_bow") as handler:
+    ~ Say("You crafted a bow!")
+
+script = ScriptBuilder.on_item_craft(Items.BOW, handler)
+script.merge(ns)
+```
+
+---
+
+### `ScriptBuilder.on_item_broken(item, function)`
+
+Fires when a player **breaks** (destroys by durability) a specific item.
+
+Context data:
+- `self` — the player whose item broke
+
+```python
+with Function(ns / "on_break_pickaxe") as handler:
+    ~ Say("Your pickaxe broke!")
+
+script = ScriptBuilder.on_item_broken(Items.IRON_PICKAXE, handler)
+script.merge(ns)
+```
+
+---
+
+### `ScriptBuilder.on_jump(function)`
+
+Fires every time a player **jumps**.
+
+Context data:
+- `self` — the player who jumped
+
+```python
+with Function(ns / "on_jump") as handler:
+    ~ Say("Jump!")
+
+script = ScriptBuilder.on_jump(handler)
+script.merge(ns)
+```
+
+---
+
+### `ScriptBuilder.on_walk(cm, function)`
+
+Fires when a player has walked at least `cm` centimetres since the counter was last reset (i.e. since the last trigger). The counter resets after the function fires.
+
+Context data:
+- `self` — the player who walked
+
+```python
+with Function(ns / "on_walk_100") as handler:
+    ~ Say("Walked 100 cm!")
+
+# fires every 100 cm walked
+script = ScriptBuilder.on_walk(100, handler)
+script.merge(ns)
+```
+
+---
+
+### `ScriptBuilder.on_crouch(cm, function)`
+
+Fires when a player has crouched at least `cm` centimetres.
+
+Context data:
+- `self` — the player
+
+```python
+script = ScriptBuilder.on_crouch(50, handler)
+script.merge(ns)
+```
+
+---
+
+### `ScriptBuilder.on_scoreboard_criteria_value_met(criterion, value, function)`
+
+Fires when any player's scoreboard objective (tracked by `criterion`) matches `value`.
+
+Context data:
+- `self` — the player
+- `value` — the actual score value at trigger time
+- `criterion` — the objective name
+
+```python
+from datagen.utils.scoreboard.criterion import ObjectiveCriterion
+from datagen.types.util.min import Range
+
+criterion = ObjectiveCriterion.custom("minecraft.jump")
+value = Range.min(10)
+
+with Function(ns / "on_ten_jumps") as handler:
+    ~ Say("You jumped 10 times!")
+
+script = ScriptBuilder.on_scoreboard_criteria_value_met(criterion, value, handler)
+script.merge(ns)
+```
+
+---
+
+### `ScriptBuilder.on_each_ticks_for_players(ticks, function)`
+
+Fires for each player every `ticks` game ticks.
+
+Context data:
+- `self` — the player
+
+```python
+# fire every 20 ticks (1 second) for each player
+with Function(ns / "each_second") as handler:
+    ~ Say("One second passed!")
+
+script = ScriptBuilder.on_each_ticks_for_players(20, handler)
+script.merge(ns)
+```
+
+---
+
 ## Reading Context Data in the Handler
 
 When a `ScriptBuilder` method calls your function, it passes a `DataStorage` with context data. You can read those values using macro arguments:
@@ -229,4 +393,6 @@ All internal functions are placed in the `temp` namespace with auto-generated na
 ## Next Steps
 
 - [DumpGen →](11-dumpgen.md)
+- [Advancements →](13-advancements.md)
+- [Enums & Collections →](14-enums.md)
 - [Configuration →](12-configuration.md)
