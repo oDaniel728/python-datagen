@@ -1,9 +1,10 @@
-from typing import Any, Protocol
+from typing import Any, Protocol, Type, overload, runtime_checkable
 
+@runtime_checkable
 class _TConvertibleToString(Protocol):
     def __str__(self) -> str: ...
 
-class FunctionMacroArgument[T: _TConvertibleToString]():
+class FunctionMacroArgument[T: _TConvertibleToString = Any]():
     r"""
     # Function Macro Argument \<T\>
     \<T : __str__>
@@ -24,14 +25,22 @@ print(arg)  # Output: $(example)
     ```
 
     """
-    def __init__(self, name: str) -> None:
-        self.name = name
+    def __init__(self, path: str) -> None:
+        self._path = path
 
     def __getattribute__(self, name: str) -> FunctionMacroArgument[T]:
-        return FunctionMacroArgument(f"{self.name}.{name}")
+        return FunctionMacroArgument(f"{self._path}.{name}")
     
-    def __getitem__(self, key: _TConvertibleToString) -> FunctionMacroArgument[T]:
-        return FunctionMacroArgument(f"{self.name}.{str(key)}")
+    @overload
+    def __getitem__[U](self, key: Type[U], /) -> FunctionMacroArgument[U]: ...
+    @overload
+    def __getitem__(self, key: _TConvertibleToString, /) -> FunctionMacroArgument[T]: ...
+
+    def __getitem__(self, key: Any, /) -> Any:
+        if isinstance(key, _TConvertibleToString):
+            return FunctionMacroArgument(f"{self._path}.{str(key)}")
+        else:
+            return FunctionMacroArgument[key](f"{self._path}")
 
     def __str__(self) -> str:
-        return f"$({self.name})"
+        return f"$({self._path})"
