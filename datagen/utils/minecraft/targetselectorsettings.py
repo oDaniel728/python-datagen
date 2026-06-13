@@ -149,74 +149,74 @@ class TargetSelectorSettings():
         }
     
     def with_x(self, value: int | Range | None):
-        """Define a coordenada X."""
+        """Sets the X coordinate."""
         self.x = value
     def with_y(self, value: int | Range | None):
-        """Define a coordenada Y."""
+        """Sets the Y coordinate."""
         self.y = value
     def with_z(self, value: int | Range | None):
-        """Define a coordenada Z."""
+        """Sets the Z coordinate."""
         self.z = value
 
     def with_dx(self, value: int | Range | None):
-        """Define o volume X."""
+        """Sets the X volume."""
         self.dx = value
     def with_dy(self, value: int | Range | None):
-        """Define o volume Y."""
+        """Sets the Y volume."""
         self.dy = value
     def with_dz(self, value: int | Range | None):
-        """Define o volume Z."""
+        """Sets the Z volume."""
         self.dz = value
 
     def with_distance(self, value: int | Range | None):
-        """Define a distância máxima."""
+        """Sets the maximum distance."""
         self.distance = value
     
     def with_x_rotation(self, value: int | Range | None):
-        """Define a rotação X (pitch)."""
+        """Sets the X rotation (pitch)."""
         self.x_rotation = value
     def with_y_rotation(self, value: int | Range | None):
-        """Define a rotação Y (yaw)."""
+        """Sets the Y rotation (yaw)."""
         self.y_rotation = value
 
     def with_scores(self, value: dict[str, int | Range] | None):
-        """Define os scores necessários."""
+        """Sets the required scores."""
         self.scores = value
 
     def with_tag(self, value: str | None):
-        """Define a tag da entidade."""
+        """Sets the entity tag."""
         self.tag = value
 
     def with_team(self, value: str | None):
-        """Define o time da entidade."""
+        """Sets the entity team."""
         self.team = value
 
     def with_name(self, value: str | None):
-        """Define o nome da entidade."""
+        """Sets the entity name."""
         self.name = value
 
     def with_type(self, value: EntityType | str | None):
-        """Define o tipo da entidade."""
+        """Sets the entity type."""
         self.type = value
 
     def with_predicate(self, value: Identifier | None):
-        """Define um predicate customizado."""
+        """Sets a custom predicate."""
         self.predicate = value
 
     def with_nbt(self, value: dict | None):
-        """Define o NBT da entidade."""
+        """Sets the entity NBT."""
         self.nbt = value
 
     def with_level(self, value: int | Range | None):
-        """Define o nível de experiência."""
+        """Sets the experience level."""
         self.level = value
 
     def with_gamemode(self, value: TargetSelectorSettings.TGamemode | None):
-        """Define o modo de jogo."""
+        """Sets the game mode."""
         self.gamemode = value
 
     def with_advancements(self, value: dict[Identifier | Advancement, bool] | None):
-        """Define as advancements necessárias."""
+        """Sets the required advancements."""
         if value:
             adv = {}
             for k, v in value.items():
@@ -227,15 +227,15 @@ class TargetSelectorSettings():
         self.advancements = adv
 
     def with_limit(self, value: int | None):
-        """Define o limite de entidades."""
+        """Sets the entity limit."""
         self.limit = value
 
     def with_sort(self, value: TargetSelectorSettings.TSort | None):
-        """Define a ordenação dos resultados."""
+        """Sets the result sorting order."""
         self.sort = value
 
     def wich_holds(self, item: Item | Identifier | ItemStack):
-        """(escreve) Define o item que o alvo deve estar segurando"""
+        """Sets the item the target must be holding."""
         if isinstance(item, Identifier):
             self.nbt = { 
                 "SelectedItem": { 
