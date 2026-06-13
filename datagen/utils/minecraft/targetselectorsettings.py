@@ -4,6 +4,8 @@ from datagen.advancement.advancement import Advancement
 from datagen.types.util.min import Range
 from datagen.utils.minecraft.identifier import Identifier
 from datagen.utils.repr.entitytype import EntityType
+from datagen.utils.repr.item import Item
+from datagen.utils.repr.itemstack import ItemStack
 
 
 class TargetSelectorSettings():
@@ -231,3 +233,27 @@ class TargetSelectorSettings():
     def with_sort(self, value: TargetSelectorSettings.TSort | None):
         """Define a ordenação dos resultados."""
         self.sort = value
+
+    def wich_holds(self, item: Item | Identifier | ItemStack):
+        """(escreve) Define o item que o alvo deve estar segurando"""
+        if isinstance(item, Identifier):
+            self.nbt = { 
+                "SelectedItem": { 
+                    "id": item 
+                } 
+            }
+        elif isinstance(item, Item):
+            self.nbt = { 
+                "SelectedItem": { 
+                    "id": item.id, 
+                    "components": item.settings.get_components() 
+                }
+            }
+        elif isinstance(item, ItemStack):
+            self.nbt = { 
+                "SelectedItem": {
+                    "id": item.item.id, 
+                    "components": item.item.settings.get_components(), 
+                    "count": item.count 
+                } 
+            }
