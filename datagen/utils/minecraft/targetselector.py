@@ -46,7 +46,8 @@ class TargetSelector():
     def __str__(self) -> str:
         if not self.filters:
             return self._value
-        return f"{self._value}[{','.join(f'{k}={v}' for k, v in self.__format(self.filters).items() if not v is None)}]"
+        return f"{self._value}[{','.join(f'{k}={v}' for k, v in self.__format(self.filters).items() if not v is None)}]" \
+         .replace(", 'components': {}", "")
     
     def __invert__(self):
         return self.__str__()
