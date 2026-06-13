@@ -10,12 +10,15 @@ import src.main
 
 if __name__ == "__main__":
     try:
-        src.main.main()
         if "--watch" in argv or "-w" in argv:
-            @FileWatcher(src.main.__file__).watch
             def _(p):
                 import importlib
                 importlib.reload(src.main)
                 src.main.main()
+
+            for f in Path(src.main.__file__).parent.iterdir():
+                FileWatcher(f).watch(_)
+        else:
+            src.main.main()
     except KeyboardInterrupt:
         print("Exiting...")
