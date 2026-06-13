@@ -234,7 +234,7 @@ class TargetSelectorSettings():
         """Sets the result sorting order."""
         self.sort = value
 
-    def wich_holds(self, item: Item | Identifier | ItemStack):
+    def which_holds(self, item: Item | Identifier | ItemStack):
         """Sets the item the target must be holding."""
         if isinstance(item, Identifier):
             self.nbt = { 
