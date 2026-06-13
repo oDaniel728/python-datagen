@@ -76,7 +76,7 @@ class ScriptBuilder:
 
         with Function(_tmp / f"__on_killed_by_entity_lambda_{i}") as lambda_func:
             args = DataStorage(_tmp / f"__on_killed_by_entity_args_{i}")
-            ~ Execute().AS(TargetSelector.SELF).ON("attacker").ATAS(TargetSelector.SELF).RUN(args.set_from_entity("killer", TargetSelector.SELF))
+            ~ Execute().AS(TargetSelector.SELF).ON("attacker").ASAT(TargetSelector.SELF).RUN(args.set_from_entity("killer", TargetSelector.SELF))
             ~ args.set_from_entity("self", TargetSelector.SELF)
             ~ me.set(0)
             ~ Return.run(function.run(args))
