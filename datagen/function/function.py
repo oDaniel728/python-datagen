@@ -1,4 +1,6 @@
-from typing import TYPE_CHECKING, Self
+from typing import TYPE_CHECKING, Any, Self
+
+from datagen.function.functionmacroargument import FunctionMacroArgument
 
 if TYPE_CHECKING:
     from datagen.function.commands.runfunction import RunFunction
@@ -51,20 +53,20 @@ with Function(Identifier.of("pack:another")) as g:
     ~ RunFunction(f, args)
     ```
     """
-    __current_function: Function | None = None
-    __functions = list["Function"]()
+    current_function: Function | None = None
+    functions = list["Function"]()
 
     @staticmethod
     def get_current_function() -> Function | None:
         """Returns the currently active function being built, or `None` if no function is currently active."""
-        return Function.__current_function
+        return Function.current_function
     
     @staticmethod
     def set_current_function(func: Function | None):
         """Sets the currently active function being built. This is used internally when entering and exiting a function context, and should not be called directly by users."""
-        Function.__current_function = func
+        Function.current_function = func
         if func:
-            Function.__functions.append(func)
+            Function.functions.append(func)
 
     @staticmethod
     def get_back_current_function() -> Function | None:
@@ -72,26 +74,26 @@ with Function(Identifier.of("pack:another")) as g:
         # undoes the current function
         # before: [A, B, C] with current C
         # after: [A, B] with current B
-        if Function.__current_function is not None:
-            func = Function.__current_function
-            Function.__current_function = None
-            if func in Function.__functions:
-                Function.__functions.remove(func)
-            Function.__current_function = Function.__functions[-1] \
-                if len(Function.__functions) > 0 \
+        if Function.current_function is not None:
+            func = Function.current_function
+            Function.current_function = None
+            if func in Function.functions:
+                Function.functions.remove(func)
+            Function.current_function = Function.functions[-1] \
+                if len(Function.functions) > 0 \
                 else None
             return func
         else:
             return None
 
-    __funcs = dict[Identifier, "Self"]()
+    fns = dict[Identifier, "Self"]()
 
     def __new__(cls, id: Identifier) -> Self:
-        if id in cls.__funcs:
-            return cls.__funcs[id]
+        if id in cls.fns:
+            return cls.fns[id]
         else:
             func = super(Function, cls).__new__(cls)
-            cls.__funcs[id] = func
+            cls.fns[id] = func
             return func
 
     def __init__(self, id: Identifier):
@@ -150,10 +152,10 @@ with Function(Identifier.of("pack:another")) as g:
         """Adds a command to the function using the `+=` operator."""
         return self.add_command(command)
     
-    def __enter__(self) -> Self:
+    def __enter__(self) -> "FunctionContext":
         """Enters the context of the function, setting it as the currently active function being built. Returns self for use in `with` statements."""
         Function.set_current_function(self)
-        return self
+        return FunctionContext(self)
     
     def __exit__(self, exc_type, exc_value, traceback):
         """Exits the context of the function, reverting the currently active function to the previous one in the stack."""
@@ -164,14 +166,48 @@ with Function(Identifier.of("pack:another")) as g:
     def of(id: Identifier) -> "Function":
         """Returns the function with the given identifier, creating it if it does not already exist. This is a convenient method for getting or creating functions without needing to manage their instances directly. The function will be associated with the namespace corresponding to the identifier's namespace, and will be stored in a global registry of functions to ensure that each function is unique based on its identifier.
         """
-        if id in Function.__funcs:
-            return Function.__funcs[id]
+        if id in Function.fns:
+            return Function.fns[id]
         else:
             func = Function(id)
-            Function.__funcs[id] = func
+            Function.fns[id] = func
             return func
 
     def run(self, args: dict | DataStorage | None = None) -> "RunFunction":
         """Returns a `RunFunction` command that executes this function with the given arguments. The arguments can be provided as a dictionary of key-value pairs, or as a `DataStorage` object containing the arguments. If no arguments are provided, the function will be executed without any arguments. This method is a convenient way to create a command that runs the function, and can be used in command sequences or other contexts where commands are needed."""
         from datagen.function.commands.runfunction import RunFunction
         return RunFunction(self, args)
+    
+class FunctionContext(Function):
+    def __new__(cls, f: "Function") -> Self:
+        if id in cls.fns:
+            return cls.fns[f.id]
+        else:
+            func = super(Function, cls).__new__(cls)
+            cls.fns[f.id] = func
+            return func
+
+    def __init__(self, f: "Function"):
+        super().__init__(
+            f.id
+        )
+        self.function = f
+
+        self.id = self.function.id
+        self.namespace = self.function.namespace
+        self.commands = self.function.commands
+
+    def __getitem__[T = Any](
+        self, 
+        key: tuple[str, type[T] | T] | str
+    ) -> FunctionMacroArgument[T]:
+        if isinstance(key, tuple):
+            key = key[0]
+        return FunctionMacroArgument(key) # type: ignore
+    
+    def arg[T = Any](
+        self, 
+        key: str, 
+        as_: type[T] | T = Any
+    ) -> FunctionMacroArgument[T]:
+        return self[key, as_]

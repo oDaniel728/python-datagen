@@ -24,11 +24,11 @@ class AnonymousFunction(Function):
 
     def __new__(cls, datapack: DataPack) -> Self:
         id = Namespace.temp.identifier(f"fun{len(Namespace.temp.functions)}")
-        if id in cls._Function__funcs:
-            return cls._Function__funcs[id]
+        if id in cls.fns:
+            return cls.fns[id]
         else:
             func = super(AnonymousFunction, cls).__new__(cls, id)
-            cls._Function__funcs[id] = func
+            cls.fns[id] = func
             return func
 
     def __init__(self, datapack: DataPack):
