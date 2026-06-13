@@ -19,6 +19,9 @@ class TargetSelector():
         self._value = _value
         self.filters = filters if isinstance(filters, dict) else filters.to_dict()
 
+    def with_settings(self, filters: dict | TargetSelectorSettings = {}):
+        self.filters = filters if isinstance(filters, dict) else filters.to_dict()
+
     def __str__(self) -> str:
         if not self.filters:
             return self._value
