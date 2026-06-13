@@ -145,3 +145,89 @@ class TargetSelectorSettings():
             "limit": self.limit,
             "sort": self.sort
         }
+    
+    def with_x(self, value: int | Range | None):
+        """Define a coordenada X."""
+        self.x = value
+    def with_y(self, value: int | Range | None):
+        """Define a coordenada Y."""
+        self.y = value
+    def with_z(self, value: int | Range | None):
+        """Define a coordenada Z."""
+        self.z = value
+
+    def with_dx(self, value: int | Range | None):
+        """Define o volume X."""
+        self.dx = value
+    def with_dy(self, value: int | Range | None):
+        """Define o volume Y."""
+        self.dy = value
+    def with_dz(self, value: int | Range | None):
+        """Define o volume Z."""
+        self.dz = value
+
+    def with_distance(self, value: int | Range | None):
+        """Define a distância máxima."""
+        self.distance = value
+    
+    def with_x_rotation(self, value: int | Range | None):
+        """Define a rotação X (pitch)."""
+        self.x_rotation = value
+    def with_y_rotation(self, value: int | Range | None):
+        """Define a rotação Y (yaw)."""
+        self.y_rotation = value
+
+    def with_scores(self, value: dict[str, int | Range] | None):
+        """Define os scores necessários."""
+        self.scores = value
+
+    def with_tag(self, value: str | None):
+        """Define a tag da entidade."""
+        self.tag = value
+
+    def with_team(self, value: str | None):
+        """Define o time da entidade."""
+        self.team = value
+
+    def with_name(self, value: str | None):
+        """Define o nome da entidade."""
+        self.name = value
+
+    def with_type(self, value: EntityType | str | None):
+        """Define o tipo da entidade."""
+        self.type = value
+
+    def with_predicate(self, value: Identifier | None):
+        """Define um predicate customizado."""
+        self.predicate = value
+
+    def with_nbt(self, value: dict | None):
+        """Define o NBT da entidade."""
+        self.nbt = value
+
+    def with_level(self, value: int | Range | None):
+        """Define o nível de experiência."""
+        self.level = value
+
+    def with_gamemode(self, value: TargetSelectorSettings.TGamemode | None):
+        """Define o modo de jogo."""
+        self.gamemode = value
+
+    def with_advancements(self, value: dict[Identifier | Advancement, bool] | None):
+        """Define as advancements necessárias."""
+        if value:
+            adv = {}
+            for k, v in value.items():
+                id = k.id if isinstance(k, Advancement) else k
+                adv[id] = v
+        else:
+            adv = value
+        self.advancements = adv
+
+    def with_limit(self, value: int | None):
+        """Define o limite de entidades."""
+        self.limit = value
+
+    def with_sort(self, value: TargetSelectorSettings.TSort | None):
+        """Define a ordenação dos resultados."""
+        self.sort = value
