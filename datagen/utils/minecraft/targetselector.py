@@ -20,6 +20,7 @@ class TargetSelector():
 
     def with_settings(self, filters: "dict | TargetSelectorSettings" = {}):
         self.filters = filters if isinstance(filters, dict) else filters.to_dict()
+        return self
 
     def __str__(self) -> str:
         if not self.filters:
