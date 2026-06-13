@@ -32,7 +32,7 @@ class Command(ABC):
     def __invert__(self):
         """Adds the command to the currently active function being built, if there is one and if the command is not set to silent. This allows for a convenient syntax for adding commands to functions using the `~` operator, while also providing the option to create commands that do not automatically add themselves to the current function if desired."""
         from datagen.function.function import Function
-        current_function = getattr(Function, "_Function__current_function", None)
+        current_function = getattr(Function, "current_function", None)
         if current_function and not self.silent:
             current_function.add_command(self)
 
