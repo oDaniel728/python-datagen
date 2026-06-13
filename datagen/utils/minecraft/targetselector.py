@@ -1,7 +1,6 @@
 from datagen.utils.minecraft.targetselectorsettings import TargetSelectorSettings
 from datagen.utils.repr.entitytype import EntityType
 
-
 class TargetSelector():
 
     SELF: TargetSelector
@@ -15,11 +14,11 @@ class TargetSelector():
     RANDOM_PLAYER: TargetSelector
     RANDOM_ENTITY: TargetSelector
 
-    def __init__(self, _value: str, filters: dict | TargetSelectorSettings = {}) -> None:
+    def __init__(self, _value: str, filters: "dict | TargetSelectorSettings" = {}) -> None:
         self._value = _value
         self.filters = filters if isinstance(filters, dict) else filters.to_dict()
 
-    def with_settings(self, filters: dict | TargetSelectorSettings = {}):
+    def with_settings(self, filters: "dict | TargetSelectorSettings" = {}):
         self.filters = filters if isinstance(filters, dict) else filters.to_dict()
 
     def __str__(self) -> str:

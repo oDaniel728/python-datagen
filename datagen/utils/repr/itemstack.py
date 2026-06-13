@@ -1,7 +1,5 @@
 
-from datagen.utils.minecraft.targetselector import TargetSelector
 from datagen.utils.repr.item import Item
-from datagen.utils.repr.position3 import Position3
 
 
 class ItemStack[I: Item = Item]():

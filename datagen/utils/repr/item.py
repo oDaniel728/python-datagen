@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING, Any, Self, Type, overload
 
 from datagen.types.protocols.todict import ToDict
 from datagen.utils.minecraft.identifier import Identifier
-from datagen.utils.minecraft.targetselector import TargetSelector
 if TYPE_CHECKING:
     from datagen.utils.repr.itemstack import ItemStack
 
