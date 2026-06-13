@@ -1,3 +1,6 @@
+from typing import Any, Iterable
+
+from datagen.utils.minecraft.identifier import Identifier
 from datagen.utils.minecraft.targetselectorsettings import TargetSelectorSettings
 from datagen.utils.repr.entitytype import EntityType
 
@@ -22,10 +25,28 @@ class TargetSelector():
         self.filters = filters if isinstance(filters, dict) else filters.to_dict()
         return self
 
+    def __format(self, data: Any, d: int = 0) -> Any:
+        if isinstance(data, Identifier):
+            print(data)
+            return ~data
+        elif isinstance(data, (list, tuple, set)):
+            data = [ self.__format(i, d + 1) for i in data ]
+        elif isinstance(data, dict):
+            data = { 
+                self.__format(k, d + 1): self.__format(v, d + 1) 
+                for k, v in data.items()
+            }
+        elif hasattr(data, "to_dict") and callable(data.to_dict):
+            return data.to_dict()
+        elif hasattr(data, "to_string") and callable(data.to_string):
+            return data.to_string()
+        
+        return data
+
     def __str__(self) -> str:
         if not self.filters:
             return self._value
-        return f"{self._value}[{','.join(f'{k}={v}' for k, v in self.filters.items() if not v is None)}]"
+        return f"{self._value}[{','.join(f'{k}={v}' for k, v in self.__format(self.filters).items() if not v is None)}]"
     
     def __invert__(self):
         return self.__str__()
