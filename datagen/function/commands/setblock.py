@@ -17,11 +17,11 @@ class SetBlock(Command):
     def __get_str_block(self) -> str:
         # <identifier>[<blockstate>]{<nbt>}
         state = list[str]()
-        for k, v in self.block.nbt.get_block_state().items():
+        for k, v in self.block.settings.get_block_state().items():
             state.append(f"\"{k}\"=\"{v}\"")
         state_str = ",".join(state)
         nbt = list[str]()
-        for k, v in self.block.nbt.get_block_entity_data().items():
+        for k, v in self.block.settings.get_block_entity_data().items():
             nbt.append(f"\"{k}\":{SNBTSerializer.serialize(v)}")
         nbt_str = ",".join(nbt)
 

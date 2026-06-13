@@ -106,7 +106,7 @@ class Block[T: __Settings__ = __Settings__](Item[T]):
             return {}
     def __init__(self, id: Identifier, nbt: T | dict = {}) -> None:
         super().__init__(id, nbt)
-        self.nbt = nbt if not isinstance(nbt, dict) else self.BlockDefaultSettings()
+        self.settings = nbt if not isinstance(nbt, dict) else self.BlockDefaultSettings()
         Block.instances[id] = self # type: ignore
 
     def with_settings[U: __Settings__](self, setting: U) -> "Block[U]": # type: ignore
@@ -138,10 +138,10 @@ class Block[T: __Settings__ = __Settings__](Item[T]):
 
     def __str__(self) -> str:
         # <id>[state]{entity}
-        state_str = ",".join(f"{k}={v}" for k, v in self._encode(self.nbt.get_block_state()).items())
-        entity_str = ",".join(f"{k}:{v}" for k, v in self._encode(self.nbt.get_block_entity_data()).items())
+        state_str = ",".join(f"{k}={v}" for k, v in self._encode(self.settings.get_block_state()).items())
+        entity_str = ",".join(f"{k}:{v}" for k, v in self._encode(self.settings.get_block_entity_data()).items())
         return f"{~self.id}[{state_str}]{{{entity_str}}}"
     
     def at(self, pos: BlockPosition):
         from datagen.utils.repr.placeableblock import PlaceableBlock
-        return PlaceableBlock(self.id, self.nbt, pos) # type: ignore
+        return PlaceableBlock(self.id, self.settings, pos) # type: ignore
