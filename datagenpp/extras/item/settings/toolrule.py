@@ -16,7 +16,7 @@ class ToolRule:
         self.default_mining_speed = speed
         return self
 
-    def add_rule(self, blocks: list[Block], correct_for_drops: bool = True, speed: float = 1):
+    def add_rule(self, blocks: list[Block], correct_for_drops: bool | None = None, speed: float | None = None):
         self.rules.append({
             "blocks": [str(block.id) for block in blocks],
             "correct_for_drops": correct_for_drops,
