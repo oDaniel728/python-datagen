@@ -28,16 +28,22 @@ print(arg)  # Output: $(example)
     def __init__(self, path: str) -> None:
         self._path = path
 
-    def __getattr__(self, name: str) -> FunctionMacroArgument[T]:
+    def __getattr__(self, name: str | int) -> FunctionMacroArgument[T]:
+        if isinstance(name, int):
+            return FunctionMacroArgument(f"{self._path}[{name}]")
         return FunctionMacroArgument(f"{self._path}.{name}")
     
     @overload
     def __getitem__[U](self, key: Type[U], /) -> FunctionMacroArgument[U]: ...
     @overload
+    def __getitem__(self, key: int, /) -> FunctionMacroArgument[T]: ...
+    @overload
     def __getitem__(self, key: _TConvertibleToString, /) -> FunctionMacroArgument[T]: ...
 
     def __getitem__(self, key: Any, /) -> Any:
-        if isinstance(key, _TConvertibleToString):
+        if isinstance(key, int):
+            return FunctionMacroArgument(f"{self._path}[{key}]")
+        elif isinstance(key, _TConvertibleToString):
             return FunctionMacroArgument(f"{self._path}.{str(key)}")
         else:
             return FunctionMacroArgument[key](f"{self._path}")
