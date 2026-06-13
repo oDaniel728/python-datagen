@@ -11,7 +11,7 @@ from datagen.utils.minecraft.collections.items import Items
 from datagen.utils.minecraft.targetselector import TargetSelector
 from datagen.utils.repr.itempredicate import ItemPredicate
 from datagenpp.extras.scripts.scriptbuilder import ScriptBuilder
-from packitems import StickFood
+from packitems import StickFood, TestTool
 
 # EntryPoint of the builder
 def main():
@@ -51,6 +51,12 @@ def main():
                 ~ Give(
                     TargetSelector.SELF,
                     StickFood().get_stack()
+                )
+
+            with Function(ns / "give_tool") as f:
+                ~ Give(
+                    TargetSelector.SELF,
+                    TestTool().get_stack()
                 )
 
         # Adding the namespace to the datapack    
