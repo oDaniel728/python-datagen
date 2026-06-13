@@ -151,69 +151,87 @@ class TargetSelectorSettings():
     def with_x(self, value: int | Range | None):
         """Sets the X coordinate."""
         self.x = value
+        return self
     def with_y(self, value: int | Range | None):
         """Sets the Y coordinate."""
         self.y = value
+        return self
     def with_z(self, value: int | Range | None):
         """Sets the Z coordinate."""
         self.z = value
+        return self
 
     def with_dx(self, value: int | Range | None):
         """Sets the X volume."""
         self.dx = value
+        return self
     def with_dy(self, value: int | Range | None):
         """Sets the Y volume."""
         self.dy = value
+        return self
     def with_dz(self, value: int | Range | None):
         """Sets the Z volume."""
         self.dz = value
+        return self
 
     def with_distance(self, value: int | Range | None):
         """Sets the maximum distance."""
         self.distance = value
+        return self
     
     def with_x_rotation(self, value: int | Range | None):
         """Sets the X rotation (pitch)."""
         self.x_rotation = value
+        return self
     def with_y_rotation(self, value: int | Range | None):
         """Sets the Y rotation (yaw)."""
         self.y_rotation = value
+        return self
 
     def with_scores(self, value: dict[str, int | Range] | None):
         """Sets the required scores."""
         self.scores = value
+        return self
 
     def with_tag(self, value: str | None):
         """Sets the entity tag."""
         self.tag = value
+        return self
 
     def with_team(self, value: str | None):
         """Sets the entity team."""
         self.team = value
+        return self
 
     def with_name(self, value: str | None):
         """Sets the entity name."""
         self.name = value
+        return self
 
     def with_type(self, value: EntityType | str | None):
         """Sets the entity type."""
         self.type = value
+        return self
 
     def with_predicate(self, value: Identifier | None):
         """Sets a custom predicate."""
         self.predicate = value
+        return self
 
     def with_nbt(self, value: dict | None):
         """Sets the entity NBT."""
         self.nbt = value
+        return self
 
     def with_level(self, value: int | Range | None):
         """Sets the experience level."""
         self.level = value
+        return self
 
     def with_gamemode(self, value: TargetSelectorSettings.TGamemode | None):
         """Sets the game mode."""
         self.gamemode = value
+        return self
 
     def with_advancements(self, value: dict[Identifier | Advancement, bool] | None):
         """Sets the required advancements."""
@@ -225,14 +243,17 @@ class TargetSelectorSettings():
         else:
             adv = value
         self.advancements = adv
+        return self
 
     def with_limit(self, value: int | None):
         """Sets the entity limit."""
         self.limit = value
+        return self
 
     def with_sort(self, value: TargetSelectorSettings.TSort | None):
         """Sets the result sorting order."""
         self.sort = value
+        return self
 
     def which_holds(self, item: Item | Identifier | ItemStack):
         """Sets the item the target must be holding."""
@@ -257,3 +278,4 @@ class TargetSelectorSettings():
                     "count": item.count 
                 } 
             }
+        return self
