@@ -28,7 +28,7 @@ print(arg)  # Output: $(example)
     def __init__(self, path: str) -> None:
         self._path = path
 
-    def __getattribute__(self, name: str) -> FunctionMacroArgument[T]:
+    def __getattr__(self, name: str) -> FunctionMacroArgument[T]:
         return FunctionMacroArgument(f"{self._path}.{name}")
     
     @overload
