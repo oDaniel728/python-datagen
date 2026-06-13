@@ -103,10 +103,18 @@ class Item[T: __Settings__]():
 
         def get_components(self) -> dict:
             return {}
+        
+    class KWSettings(Settings):
+        def __init__(self, **kw):
+            super().__init__()
+            self.kw = kw
+
+        def get_components(self) -> dict:
+            return self.kw
 
     def __init__(self, id: Identifier, components: T | dict = {}) -> None:
         self.id = id
-        self.settings = components if not isinstance(components, dict) else self.DefaultSettings()
+        self.settings = components if not isinstance(components, dict) else self.KWSettings(**components)
         Item.instances[id] = self
 
     def __get_nbt_dict(self) -> dict:
@@ -115,15 +123,31 @@ class Item[T: __Settings__]():
         return self.settings
 
     @staticmethod
-    def _remove_nulls(v: Any) -> Any:
+    def _remove_nulls(v: Any, depth: int = 0) -> Any:
+        # print(depth, v)
+        c = lambda vv, n = 0: Item._remove_nulls(vv, depth + n)
         if isinstance(v, dict):
-            return {k: Item._remove_nulls(vv) for k, vv in v.items() if vv is not None}
+            return { k1: v1 
+                for k1, v1 in {
+                    k: c(vv, 1)
+                    for k, vv in v.items() 
+                    if vv is not None
+                }.items()
+                if not (depth >= 1 and (v1 == [] or v1 == {}))
+            }
         if isinstance(v, list):
-            return [Item._remove_nulls(vv) for vv in v if vv is not None]
+            return [
+                c(vv, 1)
+                for vv in v 
+                if vv is not None
+            ]
+        if isinstance(v, Identifier):
+            return ~v
         return v
 
     def __str__(self) -> str:
-        nbt_dict = self._remove_nulls(self.__get_nbt_dict())
+        nbt_dict: dict = self._remove_nulls(self.__get_nbt_dict())
+        print(self._remove_nulls(nbt_dict))
         return f"{~self.id}[{','.join(f'{k}={v}' for k, v in nbt_dict.items())}]" if nbt_dict else f"{~self.id}"
 
     def __invert__(self):
