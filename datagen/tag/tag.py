@@ -44,12 +44,17 @@ class Tag[T]():
         self.values.add(value)
         return self
     
-    def __iadd__(self, other):
+    type _TAddition = T | 'Tag[T]'
+    def __iadd__(self, other: "_TAddition | tuple[_TAddition, ...]") -> Self:
         """Adds a value or another tag's values to this tag using the `+=` operator. If the other object is a `Tag`, its values will be merged into this tag's values. If the other object is a single value, it will be added to this tag's values. This operator provides a convenient way to combine tags or add individual values to a tag."""
-        if isinstance(other, Tag):
-            self.values.update(other.values)
+        if isinstance(other, tuple):
+            for item in other:
+                self.__iadd__(item)
         else:
-            self.values.add(other)
+            if isinstance(other, Tag):
+                self.values.update(other.values)
+            else:
+                self.values.add(other)
         return self
     
     def remove_value(self, value: T) -> Self:
