@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import Any, Literal, Self
 
 from datagen.function.commands.customcommand import CustomCommand
 from datagen.utils.minecraft.identifier import Identifier

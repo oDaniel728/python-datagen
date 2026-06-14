@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Literal
+from typing import TYPE_CHECKING, Literal, Self
 
 from datagen.function.commands.customcommand import CustomCommand
 from datagen.utils.minecraft.targetselector import TargetSelector
@@ -107,5 +107,9 @@ class ScoreboardObjective():
     def player(self, name: str | TargetSelector = "value") -> "ScoreboardPlayer":
         from datagen.utils.scoreboard.player import ScoreboardPlayer
         return ScoreboardPlayer(self, name)
+    
+    def __invert__(self) -> "Self":
+        ~ self.add()
+        return self
     
 ScoreboardObjective.TEMP = ScoreboardObjective("temp", Text.literal("Temporary Objective"), ObjectiveCriterion.DUMMY)
