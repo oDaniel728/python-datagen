@@ -48,7 +48,7 @@ class Command(ABC):
         return False
     
     def __str__(self) -> str:
-        if DatagenConfig.config["builderSettings"]["comment"]:
+        if not DatagenConfig.config["builderSettings"]["comment"]:
             return self.auto_macro(self.rem_comments())
         return self.auto_macro(self.to_string())
 
