@@ -210,6 +210,7 @@ def main():
         """Exits the context of the namespace, clearing the currently active namespace being built. This is called automatically at the end of a with block that uses the namespace as a context manager."""
         ...
 
-    def __iadd__(self, other: Function | Tag | "Predicate") -> Self: 
+    type _TAddition = Function | Tag | "Predicate"
+    def __iadd__(self, other: _TAddition | tuple[_TAddition, ...]) -> Self:
         """Adds a resource to the namespace using the `+=` operator."""
         ...

@@ -190,8 +190,14 @@ class Namespace():
         self.set_current_namespace(None) # type: ignore
         pass
 
-    def __iadd__(self, other: Function | Tag | "Predicate") -> Self:
-        return self.add(other)
+    type _TAddition = Function | Tag | "Predicate"
+    def __iadd__(self, other: _TAddition | tuple[_TAddition, ...]) -> Self:
+        if isinstance(other, tuple):
+            for item in other:
+                self += item
+        else:
+            self.add(other)
+        return self
 
 Namespace.minecraft = Namespace("minecraft")
 Namespace.temp = Namespace(f"temp")
