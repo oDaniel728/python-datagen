@@ -1,5 +1,7 @@
 from typing import TYPE_CHECKING, Any, Self
 
+from click import command
+
 from datagen.function.functionmacroargument import FunctionMacroArgument
 
 if TYPE_CHECKING:
@@ -152,13 +154,14 @@ with Function(Identifier.of("pack:another")) as g:
     type _TAddition = "Command | CommandArray"
     def __iadd__(self, command: "_TAddition | tuple[_TAddition, ...]") -> Self:
         """Adds a command to the function using the `+=` operator."""
+        from datagen.function.commands.commandarray import CommandArray
         if isinstance(command, tuple):
             for cmd in command:
                 self += (cmd)
         else:
             if isinstance(command, CommandArray):
                 for cmd in command:
-                    self += (cmd)
+                    self.add_command(cmd)
             else:
                 self.add_command(command)
         return self
