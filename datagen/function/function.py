@@ -192,6 +192,11 @@ with Function(Identifier.of("pack:another")) as g:
         from datagen.function.commands.runfunction import RunFunction
         return RunFunction(self, args)
     
+    def __invert__(self) -> "Self":
+        """Returns the function itself, but with the `~` operator. This is a convenient syntax for quickly creating a function instance without needing to call the constructor directly, and can be used in contexts where a function instance is needed but the identifier is already known."""
+        self.namespace += self
+        return self
+    
 class FunctionContext(Function):
     def __new__(cls, f: "Function") -> Self:
         if id in cls.fns:
