@@ -14,6 +14,7 @@ class DatagenConfig():
         source: str
         output: str
         indent: int
+        comment: bool
     class TDataGenConfigTDumperSettings(TypedDict):
         source: str
         output: str

@@ -2,6 +2,7 @@
     "builderSettings": {
         "source": "src/",
         "output": "datapacks/",
+        "comment": false,
         "indent": 4
     },
     "dumperSettings": {
