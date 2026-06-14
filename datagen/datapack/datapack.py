@@ -99,6 +99,10 @@ class DataPack():
     def __exit__(self, exc_type, exc, tb):
         self.__current_datapack = None
 
-    def __iadd__(self, other: Namespace) -> Self:
-        self.add_namespace(other)
+    def __iadd__(self, other: Namespace | tuple[Namespace, ...]) -> Self:
+        if isinstance(other, Namespace):
+            self.add_namespace(other)
+        else:
+            for i in other:
+                self += i
         return self

@@ -123,6 +123,6 @@ class DataPack:
         """
         ...
 
-    def __iadd__(self, other: Namespace) -> Self: 
+    def __iadd__(self, other: Namespace | tuple[Namespace, ...]) -> Self:
         """Adds a namespace to the datapack using the `+=` operator."""
         ...
