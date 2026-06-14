@@ -142,6 +142,13 @@ with Function(Identifier.of("pack:another")) as g:
                 else:
                     # normalize existing leading whitespace and indent command lines
                     lines.append(indent + line.lstrip())
+        
+        _has_comments = DatagenConfig.config["builderSettings"]["comment"]
+        if not _has_comments:
+            # remove comment lines if comments are disabled
+            lines = [line for line in lines if not line.strip().startswith("#")]
+            # remove indentation
+            lines = [line.lstrip() for line in lines]
         return "\n".join(lines)
     
     def __str__(self) -> str:
