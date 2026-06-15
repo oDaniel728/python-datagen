@@ -181,7 +181,7 @@ with Function(Identifier.of("pack:another")) as g:
     def __exit__(self, exc_type, exc_value, traceback):
         """Exits the context of the function, reverting the currently active function to the previous one in the stack."""
         Function.get_back_current_function()
-        self.namespace.add_function(self)
+        # self.namespace.add_function(self)
 
     @staticmethod
     def of(id: Identifier) -> "Function":
