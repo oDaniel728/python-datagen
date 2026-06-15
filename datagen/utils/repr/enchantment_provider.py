@@ -1,4 +1,4 @@
-from typing import Self
+from typing import Literal, Self
 
 from datagen.types.protocols.todict import ToDict
 from datagen.utils.minecraft.identifier import Identifier
@@ -263,7 +263,10 @@ class EnchantmentProvider(ToDict):
         self._data["anvil_cost"] = cost
         return self
 
-    def with_slots(self, *slots: str) -> Self:
+    _TSlot = Literal[
+        "mainhand", "offhand", "head", "chest", "legs", "feet", "hand", "armor"
+    ]
+    def with_slots(self, *slots: _TSlot) -> Self:
         """
         Sets which equipment slots activate this enchantment's effects.
 
