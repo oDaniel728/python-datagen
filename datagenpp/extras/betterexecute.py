@@ -1,4 +1,4 @@
-from typing import Callable
+from typing import Callable, Self
 
 from typing import overload
 
@@ -17,7 +17,7 @@ class BetterExecute(Execute):
         condition: Callable[[_ConditionBuilder], IDontCare], 
         then: Command | Function,
         /
-    ):
+    ) -> "Self":
         ...
     @overload
     def CONDITION(self, 
@@ -25,7 +25,7 @@ class BetterExecute(Execute):
         then: Command | Function, 
         unless: Command | Function,
         /
-    ):
+    ) -> "Self":
         ...
 
     def CONDITION(self, condition: Callable[[_ConditionBuilder], IDontCare], then: Command | Function, unless: Command | Function | None = None, /):
