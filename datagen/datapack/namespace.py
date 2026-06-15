@@ -14,6 +14,7 @@ from datagen.utils.minecraft.logger import Logger
 if TYPE_CHECKING:
     from datagen.predicate.predicate import Predicate
     from datagen.recipes.recipe import Recipe
+    from datagen.utils.repr.enchantment_provider import EnchantmentProvider
 
 _current_namespace: Namespace
 @final
@@ -61,6 +62,7 @@ class Namespace():
         self.tags = set[Tag]()
         self.predicates = set["Predicate"]()
         self.recipes = set["Recipe"]()
+        self.enchantments = set["EnchantmentProvider"]()
 
         self.load = FunctionTag(self / "load", [])
         self.tick = FunctionTag(self / "tick", [])
@@ -69,7 +71,7 @@ class Namespace():
     def identifier(self, path: str) -> Identifier:
         return Identifier.from_string(f"{self.name}:{path}")
     
-    def add(self, obj: Function | Tag | "Predicate") -> Self:
+    def add(self, obj: Function | Tag | "Predicate" | "EnchantmentProvider") -> Self:
         from datagen.predicate.predicate import Predicate
 
         if isinstance(obj, Function):
@@ -78,6 +80,8 @@ class Namespace():
             return self.add_tag(obj)
         elif isinstance(obj, Predicate):
             return self.add_predicate(obj)
+        elif isinstance(obj, self.enchantments):
+            return self.add_enchantment(obj)
         else:
             raise TypeError(f"Object of type '{type(obj)}' is not a Function, Tag or Predicate")
     
@@ -124,7 +128,18 @@ class Namespace():
     def add_advancements(self, *advs: "Advancement") -> Self:
         for adv in advs:
             self.add_advancement(adv)
-        return self 
+        return self
+
+    def add_enchantment(self, enchantment: "EnchantmentProvider") -> Self:
+        self.logger.info(f"Adding enchantment '{enchantment.id._path}' to namespace '{self.name}'")
+        enchantment.namespace = self
+        self.enchantments.add(enchantment)
+        return self
+
+    def add_enchantments(self, *enchantments: "EnchantmentProvider") -> Self:
+        for e in enchantments:
+            self.add_enchantment(e)
+        return self
     
     def build_functions(self, base: Path):
         Logger.start_task(f"Building functions in namespace '{self.name}'")
@@ -170,6 +185,14 @@ class Namespace():
             f.build(base)
         Logger.end_task(f"Building recipes in namespace '{self.name}'")
 
+    def build_enchantments(self, base: Path):
+        Logger.start_task(f"Building enchantments in namespace '{self.name}'")
+        for enchantment in self.enchantments:
+            self.logger.info(f"Building enchantment '{enchantment.id._path}' in namespace '{self.name}'")
+            f = enchantment.to_file()
+            f.build(base)
+        Logger.end_task(f"Building enchantments in namespace '{self.name}'")
+
     def build(self, base: Path):
         Logger.start_task(f"Building namespace '{self.name}'")
         self.build_functions(base)
@@ -177,6 +200,7 @@ class Namespace():
         self.build_predicates(base)
         self.build_advancements(base)
         self.build_recipes(base)
+        self.build_enchantments(base)
         Logger.end_task(f"Building namespace '{self.name}'")
 
     def __truediv__(self, path: str) -> Identifier:
@@ -190,7 +214,7 @@ class Namespace():
         self.set_current_namespace(None) # type: ignore
         pass
 
-    type _TAddition = Function | Tag | "Predicate"
+    type _TAddition = Function | Tag | "Predicate" | "EnchantmentProvider"
     def __iadd__(self, other: _TAddition | tuple[_TAddition, ...]) -> Self:
         if isinstance(other, tuple):
             for item in other:
