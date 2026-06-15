@@ -4,6 +4,10 @@ class Range():
         self.end = max
 
     @staticmethod
+    def from_string(v: str) -> "Range":
+        return Range(*[int(x) if x else None for x in v.split("..")])
+
+    @staticmethod
     def min(value: int):
         return Range(value, None)
     
