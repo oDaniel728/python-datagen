@@ -1,68 +1,83 @@
-from datagen.advancement.advancement import Advancement
-from datagen.advancement.criteria import Criteria
 from datagen.datapack.datapack import DataPack
 from datagen.datapack.namespace import Namespace
-from datagen.function.anonymousfunction import AnonymousFunction
-from datagen.function.commands.advancements import Advancements
-from datagen.function.commands.give import Give
-from datagen.function.commands.say import Say
-from datagen.function.function import Function
-from datagen.utils.minecraft.collections.items import Items
-from datagen.utils.minecraft.targetselector import TargetSelector
-from datagen.utils.repr.itempredicate import ItemPredicate
-from datagenpp.extras.scripts.scriptbuilder import ScriptBuilder
-from packitems import StickFood, TestTool
+from datagen.utils.minecraft.collections.enchantments import Enchantments
+from datagen.utils.minecraft.collections.enchantment_tags import EnchantmentTags
+from datagen.utils.minecraft.identifier import Identifier
+from datagen.utils.repr.enchantment_provider import EnchantmentProvider
+from datagen.utils.repr.enchantmenteffects import ValueEffect, EntityEffect
+from datagen.utils.repr.levelbasedvalue import LevelBasedValue
+from datagen.utils.minecraft.text import Text
 
-# EntryPoint of the builder
+
 def main():
-    # Datapack building example with custom 
-    # item settings and advancements criteria
-    with DataPack("pack", "a pack") as dp:
-        
-        # Creating a namespace for the pack
-        with Namespace("pack") as ns:
+    dp = DataPack("enchantment_demo", "Demonstrating custom enchantments")
+    ns = Namespace("demo")
+    dp += ns
 
-            # Creating a function that will be 
-            # called when the player consumes a stick
-            with Function(ns / "on_consume_of_stick") as f:
-                ~ Say("You consumed a stick!")
+    # --- Custom enchantment: Thunder ---
+    thunder = EnchantmentProvider(Identifier.of("demo:thunder"))
+    thunder \
+        .with_description(Text.literal("Thunder").to_dict()) \
+        .with_max_level(3) \
+        .with_weight(5) \
+        .with_supported_items("#minecraft:enchantable/sword", "#minecraft:enchantable/axe") \
+        .with_primary_items("#minecraft:enchantable/sword") \
+        .with_anvil_cost(3) \
+        .with_cost(10, 5, 25, 10) \
+        .with_slots("mainhand") \
+        .with_exclusive_set(str(Enchantments.SHARPNESS)) \
+        .with_value_effect(
+            "minecraft:damage",
+            ValueEffect.add(LevelBasedValue.linear(2.0, 1.0))
+        ) \
+        .with_entity_effect(
+            "minecraft:post_attack",
+            EntityEffect.ignite(LevelBasedValue.linear(2, 1)),
+            enchanted="attacker",
+            affected="victim"
+        )
+    ~thunder
 
-            # Creating an advancement that will be 
-            # granted when the player consumes a stick
-            ~ ScriptBuilder().on_criteria(
-                # The criteria is defined as consuming an 
-                # item that matches the predicate of being 
-                # a stick
-                Criteria.consume_item(
-                    ItemPredicate()
-                    .with_items(Items.STICK)
-                ), 
-                f # The function to run when the criteria is met
-            )
+    # --- Custom enchantment: Frost Aura ---
+    frost = EnchantmentProvider(Identifier.of("demo:frost_aura"))
+    frost \
+        .with_description({"text": "Frost Aura", "color": "aqua"}) \
+        .with_max_level(2) \
+        .with_weight(3) \
+        .with_supported_items("#minecraft:enchantable/chest_armor") \
+        .with_anvil_cost(4) \
+        .with_cost(15, 10, 30, 10) \
+        .with_slots("chest") \
+        .with_entity_effect(
+            "minecraft:post_attack",
+            EntityEffect.apply_mob_effect(
+                to_apply=["minecraft:slowness"],
+                min_duration=LevelBasedValue.linear(2, 1),
+                max_duration=LevelBasedValue.linear(4, 2),
+                min_amplifier=0,
+                max_amplifier=1
+            ),
+            enchanted="victim",
+            affected="victim",
+            requirements={
+                "condition": "minecraft:random_chance",
+                "chance": 0.3
+            }
+        )
+    ~frost
 
-            # Creating a function that will give the player a 
-            # stick with custom food settings
-            with Function(ns / "hello") as f:
-                ~ Say("Hello, world!")
+    # --- Using Enchantment in commands ---
+    from datagen.function.commands.enchant import Enchant
+    from datagen.function.commands.give import Give
+    from datagen.function.function import Function
+    from datagen.utils.minecraft.targetselector import TargetSelector
+    from datagen.utils.minecraft.collections.items import Items
 
-            # Creating a function that will give the player a 
-            # stick with custom food settings
-            with Function(ns / "give_stick") as f:
-                ~ Give(
-                    TargetSelector.SELF,
-                    StickFood().get_stack()
-                )
+    with Function(ns / "give_sharpness_sword") as f:
+        ~ Give(TargetSelector.SELF, Items.DIAMOND_SWORD.get_stack())
+        ~ Enchant(TargetSelector.SELF, Enchantments.SHARPNESS, 5)
 
-            with Function(ns / "give_tool") as f:
-                ~ Give(
-                    TargetSelector.SELF,
-                    TestTool().get_stack()
-                )
-
-        # Adding the namespace to the datapack    
-        dp.add_namespace(ns)
-
-    # Building the datapack, which will generate the necessary
     dp.build()
+
 
 #nd
