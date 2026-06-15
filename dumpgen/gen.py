@@ -364,7 +364,25 @@ def dump_block_tags():
     out += '\n'
 
     output.write_text(out)
+def dump_enchantment_tags():
+    input, output = INPUT_FILE / "enchantment_tags.json", OUTPUT_FILE / "enchantment_tags.py"
+    data = json.loads(input.read_text())
+    out = str()
+    out += "from datagen.utils.minecraft.identifier import Identifier\n"
+    out += "from datagen.tag.enchantmenttag import EnchantmentTag\n"
+    out += '\n'
+    out += "class EnchantmentTags():\n"
+    for item in data:
+        id = Identifier.of(item["id"])
+        if id.get_namespace() == "minecraft":
+            out += f"    {sanitize_constant_name(id.get_path())} = EnchantmentTag(Identifier.of('{id}'))\n"
+
+    out += '\n'
+
+    output.write_text(out)
+
 def dump_all():
+    dump_enchantment_tags()
     dump_item_tags()
     dump_block_tags()
     dump_advancement()
