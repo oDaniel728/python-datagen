@@ -17,7 +17,7 @@ def main():
     # --- Custom enchantment: Thunder ---
     thunder = EnchantmentProvider(Identifier.of("demo:thunder"))
     thunder \
-        .with_description(Text.literal("Thunder").to_dict()) \
+        .with_description(Text.literal("Thunder")) \
         .with_max_level(3) \
         .with_weight(5) \
         .with_supported_items("minecraft:diamond_sword", "minecraft:netherite_sword", "minecraft:iron_axe") \
@@ -41,7 +41,7 @@ def main():
     # --- Custom enchantment: Frost Aura ---
     frost = EnchantmentProvider(Identifier.of("demo:frost_aura"))
     frost \
-        .with_description({"text": "Frost Aura", "color": "aqua"}) \
+        .with_description(Text.literal("Frost Aura", Text.LiteralTextSettings(color="aqua"))) \
         .with_max_level(2) \
         .with_weight(3) \
         .with_supported_items("minecraft:diamond_chestplate", "minecraft:netherite_chestplate") \
