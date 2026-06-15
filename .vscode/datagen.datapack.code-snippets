@@ -1,0 +1,12 @@
+{
+    "new datapack": {
+        "prefix": "newdp",
+        "body": [
+            "dp = DataPack(\"${1:name}\", \"${2:description}\")",
+            "$0",
+            "dp.build()"
+        ],
+        "description": "Creates a new datapack",
+        "include": "*.py"
+    }
+}

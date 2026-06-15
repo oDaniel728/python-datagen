@@ -1,0 +1,46 @@
+{
+    "template": {
+        "prefix": "!hello",
+        "body": [
+            "from datagen.datapack.datapack import DataPack",
+            "from datagen.datapack.namespace import Namespace",
+            "from datagen.function.commands.say import Say",
+            "from datagen.function.function import Function",
+            "",
+            "",
+            "def main():",
+            "\tdp = DataPack(\"${1:pack_name}\", \"${2:description}\")",
+            "\tns = Namespace(\"${3:namespace}\")",
+            "\tdp += ns",
+            "",
+            "\twith ~ Function(ns / \"hello\") as hello:",
+            "\t\t~ Say(\"Hello world!\")",
+            "",
+            "\tdp.build()"
+        ],
+        "description": "Hello world template",
+        "include": "*.py"
+    },
+    "advancement template": {
+        "prefix": "!adv",
+        "body": [
+            "adv_${1:name} = ~ (",
+            "\tAdvancement(ns / \"${1:name}\")",
+            "\t.open()",
+            "\t\t.set_criteria(Criteria.impossible())",
+            "\t\t.set_display(",
+            "\t\t\tItems.BEDROCK.get_stack(),",
+            "\t\t\tLiteralText(\"${1:name}\"),",
+            "\t\t\tLiteralText.EMPTY,",
+            "\t\t\tshow_toast=False,",
+            "\t\t\tannounce_to_chat=False,",
+            "\t\t\thidden=True",
+            "\t\t)",
+            "\t\t.set_rewards()",
+            "\t.seal()",
+            ")"
+        ],
+        "description": "Advancement template",
+        "include": "*.py"
+    }
+}

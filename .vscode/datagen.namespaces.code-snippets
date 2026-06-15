@@ -1,0 +1,22 @@
+{
+    "new namespace": {
+        "prefix": "newns",
+        "body": [
+            "ns = Namespace(\"${1:name}\")",
+            "dp += ns",
+            "$0"
+        ],
+        "description": "Creates a new namespace and adds it to the datapack",
+        "include": "*.py"
+    },
+    "get minecraft": {
+        "prefix": "nsmc",
+        "body": [
+            "mc = Namespace.minecraft",
+            "LOAD = mc.load",
+            "TICK = mc.tick",
+        ],
+        "description": "Gets the minecraft namespace",
+        "include": "*.py"
+    }
+}

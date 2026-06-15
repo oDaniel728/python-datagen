@@ -1,0 +1,11 @@
+{
+    "function": {
+        "prefix": "wifn",
+        "body": [
+            "with ~ Function(ns / \"${1:name}\") as ${1:name}:",
+            "\t$0"
+        ],
+        "description": "Creates a new function",
+        "include": "*.py"
+    }
+}
