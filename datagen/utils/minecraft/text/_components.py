@@ -11,6 +11,7 @@ if TYPE_CHECKING:
 
 
 class LiteralText(BaseText):
+    EMPTY: "LiteralText"
     def __init__(self, value: str, settings: BaseTextSettings | None = None) -> None:
         self.value = value
         self.settings = settings
@@ -21,7 +22,7 @@ class LiteralText(BaseText):
             if self.settings
             else {"text": self.value}
         )
-
+LiteralText.EMPTY = LiteralText("")
 
 class TranslatableText(BaseText):
     def __init__(self, value: Identifier, settings: BaseTextSettings | None = None) -> None:
