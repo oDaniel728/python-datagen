@@ -20,8 +20,8 @@ def main():
         .with_description(Text.literal("Thunder").to_dict()) \
         .with_max_level(3) \
         .with_weight(5) \
-        .with_supported_items("#minecraft:enchantable/sword", "#minecraft:enchantable/axe") \
-        .with_primary_items("#minecraft:enchantable/sword") \
+        .with_supported_items("minecraft:diamond_sword", "minecraft:netherite_sword", "minecraft:iron_axe") \
+        .with_primary_items("minecraft:diamond_sword") \
         .with_anvil_cost(3) \
         .with_cost(10, 5, 25, 10) \
         .with_slots("mainhand") \
@@ -44,7 +44,7 @@ def main():
         .with_description({"text": "Frost Aura", "color": "aqua"}) \
         .with_max_level(2) \
         .with_weight(3) \
-        .with_supported_items("#minecraft:enchantable/chest_armor") \
+        .with_supported_items("minecraft:diamond_chestplate", "minecraft:netherite_chestplate") \
         .with_anvil_cost(4) \
         .with_cost(15, 10, 30, 10) \
         .with_slots("chest") \
@@ -79,5 +79,7 @@ def main():
 
     dp.build()
 
+
+main()
 
 #nd
