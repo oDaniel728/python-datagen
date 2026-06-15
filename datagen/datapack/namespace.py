@@ -73,6 +73,7 @@ class Namespace():
     
     def add(self, obj: Function | Tag | "Predicate" | "EnchantmentProvider") -> Self:
         from datagen.predicate.predicate import Predicate
+        from datagen.utils.repr.enchantment_provider import EnchantmentProvider as EP
 
         if isinstance(obj, Function):
             return self.add_function(obj)
@@ -80,7 +81,7 @@ class Namespace():
             return self.add_tag(obj)
         elif isinstance(obj, Predicate):
             return self.add_predicate(obj)
-        elif isinstance(obj, self.enchantments):
+        elif isinstance(obj, EP):
             return self.add_enchantment(obj)
         else:
             raise TypeError(f"Object of type '{type(obj)}' is not a Function, Tag or Predicate")
