@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from datagen.utils.scoreboard.player import ScoreboardPlayer
 
 
-class literal(BaseText):
+class LiteralText(BaseText):
     def __init__(self, value: str, settings: BaseTextSettings | None = None) -> None:
         self.value = value
         self.settings = settings
@@ -23,7 +23,7 @@ class literal(BaseText):
         )
 
 
-class translate(BaseText):
+class TranslatableText(BaseText):
     def __init__(self, value: Identifier, settings: BaseTextSettings | None = None) -> None:
         self.value = value
         self.settings = settings
@@ -36,7 +36,7 @@ class translate(BaseText):
         )
 
 
-class score(BaseText):
+class ScoreText(BaseText):
     def __init__(self, player: 'ScoreboardPlayer', settings: BaseTextSettings | None = None) -> None:
         self.player = player
         self.settings = settings
@@ -49,7 +49,7 @@ class score(BaseText):
         )
 
 
-class selector(BaseText):
+class SelectorText(BaseText):
     def __init__(self, selector: TargetSelector, settings: BaseTextSettings | None = None) -> None:
         self.selector = selector
         self.settings = settings
@@ -62,7 +62,7 @@ class selector(BaseText):
         )
 
 
-class keybind(BaseText):
+class KeybindText(BaseText):
     def __init__(self, keybind: KeyBind, settings: BaseTextSettings | None = None) -> None:
         self.keybind = keybind
         self.settings = settings
@@ -75,7 +75,7 @@ class keybind(BaseText):
         )
 
 
-class nbt(BaseText):
+class NBTText(BaseText):
     def __init__(self, nbt: str, source: NBTTextSettings.TSource = "block", settings: BaseTextSettings | None = None) -> None:
         self.nbt = nbt
         self.source = source

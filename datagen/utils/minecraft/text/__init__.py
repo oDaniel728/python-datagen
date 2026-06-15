@@ -11,12 +11,12 @@ from datagen.utils.minecraft.text._settings import (
     TranslateTextSettings,
 )
 from datagen.utils.minecraft.text._components import (
-    keybind,
-    literal,
-    nbt,
-    score,
-    selector,
-    translate,
+    KeybindText,
+    LiteralText,
+    NBTText,
+    ScoreText,
+    SelectorText,
+    TranslatableText,
 )
 
 
@@ -45,51 +45,51 @@ class Text:
     NBTTextSettings = NBTTextSettings
 
     BaseText = BaseText
-    literal = literal
-    translate = translate
-    score = score
-    selector = selector
-    keybind = keybind
-    nbt = nbt
+    literal = LiteralText
+    translate = TranslatableText
+    score = ScoreText
+    selector = SelectorText
+    keybind = KeybindText
+    nbt = NBTText
 
     @overload
     @staticmethod
-    def of(settings: LiteralTextSettings) -> literal: ...
+    def of(settings: LiteralTextSettings) -> LiteralText: ...
 
     @overload
     @staticmethod
-    def of(settings: TranslateTextSettings) -> translate: ...
+    def of(settings: TranslateTextSettings) -> TranslatableText: ...
 
     @overload
     @staticmethod
-    def of(settings: ScoreTextSettings) -> score: ...
+    def of(settings: ScoreTextSettings) -> ScoreText: ...
 
     @overload
     @staticmethod
-    def of(settings: SelectorTextSettings) -> selector: ...
+    def of(settings: SelectorTextSettings) -> SelectorText: ...
 
     @overload
     @staticmethod
-    def of(settings: KeybindTextSettings) -> keybind: ...
+    def of(settings: KeybindTextSettings) -> KeybindText: ...
 
     @overload
     @staticmethod
-    def of(settings: NBTTextSettings) -> nbt: ...
+    def of(settings: NBTTextSettings) -> NBTText: ...
 
     @staticmethod
     def of(settings: BaseTextSettings):
         if isinstance(settings, LiteralTextSettings):
-            return literal(settings.text, settings)
+            return LiteralText(settings.text, settings)
         elif isinstance(settings, TranslateTextSettings):
-            return translate(_unNull @ settings.translate, settings)
+            return TranslatableText(_unNull @ settings.translate, settings)
         elif isinstance(settings, ScoreTextSettings):
-            return score(settings.player, settings)
+            return ScoreText(settings.player, settings)
         elif isinstance(settings, SelectorTextSettings):
-            return selector(_unNull @ settings.selector, settings)
+            return SelectorText(_unNull @ settings.selector, settings)
         elif isinstance(settings, KeybindTextSettings):
-            return keybind(_unNull @ settings.keybind, settings)
+            return KeybindText(_unNull @ settings.keybind, settings)
         elif isinstance(settings, NBTTextSettings):
-            return nbt(settings.nbt, settings.source, settings)
+            return NBTText(settings.nbt, settings.source, settings)
         raise ValueError(f"Invalid settings type: {type(settings)}")
 
 
@@ -103,10 +103,10 @@ __all__ = [
     "SelectorTextSettings",
     "KeybindTextSettings",
     "NBTTextSettings",
-    "literal",
-    "translate",
-    "score",
-    "selector",
-    "keybind",
-    "nbt",
+    "LiteralText",
+    "TranslatableText",
+    "ScoreText",
+    "SelectorText",
+    "KeybindText",
+    "NBTText",
 ]
