@@ -69,11 +69,18 @@ class BaseTextSettings(ToDict):
     def to_string(self) -> str:
         return json.dumps(self.to_dict())
 
+def _remove_nulls[T](d: T) -> T:
+    if isinstance(d, dict):
+        return {k: _remove_nulls(v) for k, v in d.items() if v is not None} # type: ignore
+    elif isinstance(d, list):
+        return [_remove_nulls(v) for v in d if v is not None] # type: ignore
+    else:
+        return d
 
 class BaseText(ToString, ToDict):
     def to_string(self) -> str:
-        return json.dumps({k: v for k, v in self.to_dict().items() if v is not None})
-
+        return json.dumps(_remove_nulls(self.to_dict()))
+    
     @staticmethod
     def components(*components: 'BaseText') -> 'list[BaseText]':
         return list(components)
