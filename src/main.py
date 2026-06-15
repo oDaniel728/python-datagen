@@ -3,6 +3,8 @@ from datagen.datapack.namespace import Namespace
 from datagen.utils.minecraft.collections.enchantments import Enchantments
 from datagen.utils.minecraft.collections.enchantment_tags import EnchantmentTags
 from datagen.utils.minecraft.identifier import Identifier
+from datagen.utils.minecraft.text._components import LiteralText
+from datagen.utils.minecraft.text._settings import LiteralTextSettings
 from datagen.utils.repr.enchantment_provider import EnchantmentProvider
 from datagen.utils.repr.enchantmenteffects import ValueEffect, EntityEffect
 from datagen.utils.repr.levelbasedvalue import LevelBasedValue
@@ -41,7 +43,12 @@ def main():
     # --- Custom enchantment: Frost Aura ---
     frost = EnchantmentProvider(Identifier.of("demo:frost_aura"))
     frost \
-        .with_description(Text.literal("Frost Aura", Text.LiteralTextSettings(color="aqua"))) \
+        .with_description(
+            LiteralText(
+                "Frost Aura", 
+                LiteralTextSettings(color="aqua")
+            )
+        ) \
         .with_max_level(2) \
         .with_weight(3) \
         .with_supported_items("minecraft:diamond_chestplate", "minecraft:netherite_chestplate") \
