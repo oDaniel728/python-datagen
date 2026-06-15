@@ -330,7 +330,8 @@ class EnchantmentProvider(ToDict):
         from datagen.utils.repr.enchantmenteffects import EffectComponent
         return self.with_effect(component_id, EffectComponent.value_component(effect, requirements, enchanted))
 
-    def with_entity_effect(self, component_id: str, effect: ToDict, enchanted: str, affected: str, requirements: dict | None = None) -> Self:
+    _TWeakTarget = Literal["attacker", "victim", "this", "damager"]
+    def with_entity_effect(self, component_id: str, effect: ToDict, enchanted: _TWeakTarget, affected: _TWeakTarget, requirements: dict | None = None) -> Self:
         """
         Adds an entity effect to the enchantment.
 
