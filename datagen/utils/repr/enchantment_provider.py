@@ -14,8 +14,11 @@ class EnchantmentProvider(ToDict):
 
     # --- Basic properties ---
 
-    def with_description(self, description: str | dict) -> Self:
-        self._data["description"] = description
+    def with_description(self, description: str | dict | ToDict) -> Self:
+        if hasattr(description, "to_dict"):
+            self._data["description"] = description.to_dict()
+        else:
+            self._data["description"] = description
         return self
 
     def with_exclusive_set(self, *enchantments: str | Identifier) -> Self:
