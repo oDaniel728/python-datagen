@@ -2,6 +2,7 @@ from typing import Self
 
 from datagen.types.protocols.todict import ToDict
 from datagen.utils.minecraft.identifier import Identifier
+from datagen.utils.minecraft.text._base import BaseText
 from datagen.utils.simplefile import SimpleFile
 
 
@@ -14,8 +15,8 @@ class EnchantmentProvider(ToDict):
 
     # --- Basic properties ---
 
-    def with_description(self, description: str | dict | ToDict) -> Self:
-        if hasattr(description, "to_dict"):
+    def with_description(self, description: str | BaseText) -> Self:
+        if isinstance(description, BaseText):
             self._data["description"] = description.to_dict()
         else:
             self._data["description"] = description

@@ -206,6 +206,8 @@ with Function(Identifier.of("pack:another")) as g:
     
 class FunctionContext(Function):
     def __new__(cls, f: "Function") -> Self:
+        if isinstance(f, Identifier):
+            f = Function.of(f)
         if id in cls.fns:
             return cls.fns[f.id]
         else:
@@ -214,6 +216,8 @@ class FunctionContext(Function):
             return func
 
     def __init__(self, f: "Function"):
+        if isinstance(f, Identifier):
+            f = Function.of(f)
         super().__init__(
             f.id
         )
