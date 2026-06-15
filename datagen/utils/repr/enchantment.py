@@ -8,3 +8,9 @@ class Enchantment():
 
     def __str__(self) -> str:
         return str(self.id)
+
+    def __invert__(self) -> str:
+        return str(self.id)
+
+    def to_dict(self) -> dict:
+        return {"id": str(self.id), "max_level": self.max_level}
