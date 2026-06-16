@@ -1,15 +1,15 @@
 from typing import TYPE_CHECKING, TypeAlias
 
 from datagen.function.commands.customcommand import CustomCommand
+from datagen.function.functionmacroargument import FunctionMacroArgument
 from datagen.utils.minecraft.blockposition import BlockPosition
 from datagen.utils.minecraft.identifier import Identifier
 from datagen.utils.minecraft.targetselector import TargetSelector
 from datagen.utils.scoreboard.player import ScoreboardPlayer
 
 class DataStorage():
-    TKey: TypeAlias = "str | int | float | bool | Identifier"
-    TAny: TypeAlias = "str | int | float | bool | Identifier | list[TAny] | dict[TKey, TAny] | None"
-
+    TKey: TypeAlias = "str | int | float | bool | Identifier | FunctionMacroArgument"
+    TAny: TypeAlias = "str | int | float | bool | Identifier | list[TAny] | dict[TKey, TAny] | None | FunctionMacroArgument"
 
     def __init__(self, id: Identifier):
         self.id = id
