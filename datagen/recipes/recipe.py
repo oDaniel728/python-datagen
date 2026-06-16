@@ -5,6 +5,7 @@ from typing import Any
 from datagen.globals import RECIPES_PATH
 from datagen.tag.tag import Tag
 from datagen.utils.minecraft.identifier import Identifier
+from datagen.utils.obfuscator import Obfuscator
 from datagen.utils.repr.item import Item
 from datagen.utils.repr.itemstack import ItemStack
 from datagen.utils.simplefile import SimpleFile
@@ -70,7 +71,8 @@ class Recipe():
         return json.dumps(self.to_dict(), indent=4)
 
     def get_filepath(self) -> Path:
-        return Path(RECIPES_PATH) / (self.id.get_path().replace(".", "/").lower() + ".json")
+        path = Obfuscator.obfuscate_path(self.id.get_namespace(), self.id.get_path())
+        return Path(RECIPES_PATH) / (path.replace(".", "/").lower() + ".json")
 
     def to_file(self) -> SimpleFile:
         return SimpleFile(self.get_filepath(), self.to_string())

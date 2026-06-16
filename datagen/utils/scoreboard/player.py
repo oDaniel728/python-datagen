@@ -6,6 +6,7 @@ if TYPE_CHECKING:
 from datagen.function.functionmacroargument import FunctionMacroArgument
 from datagen.utils.minecraft.identifier import Identifier
 from datagen.utils.minecraft.targetselector import TargetSelector
+from datagen.utils.obfuscator import Obfuscator
 from datagen.utils.scoreboard.objective import ScoreboardObjective
 
 
@@ -17,7 +18,10 @@ class ScoreboardPlayer():
     def to_identiifer(self) -> Identifier:
         return Identifier.of(self.objective.name, str(self.name).replace("@", "at_").replace("\n#", "hs_"))
 
-    def __str__(self) -> str: return str(self.name)
+    def __str__(self) -> str:
+        if isinstance(self.name, str):
+            return Obfuscator.obfuscate(self.name)
+        return str(self.name)
     def to_string(self) -> str: return str(self)
 
     def add(self, score: "int | ScoreboardPlayer | FunctionMacroArgument"):

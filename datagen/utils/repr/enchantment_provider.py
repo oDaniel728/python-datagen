@@ -3,6 +3,7 @@ from typing import Literal, Self
 from datagen.types.protocols.todict import ToDict
 from datagen.utils.minecraft.identifier import Identifier
 from datagen.utils.minecraft.text._base import BaseText, _remove_nulls
+from datagen.utils.obfuscator import Obfuscator
 from datagen.utils.simplefile import SimpleFile
 
 
@@ -510,7 +511,7 @@ class EnchantmentProvider(ToDict):
         The path is relative to the namespace data directory, in the
         `enchantment/` folder (e.g. `data/mypack/enchantment/thunder.json`).
         """
-        return f"enchantment/{self.id._path}.json"
+        return f"enchantment/{Obfuscator.obfuscate_path(self.id.get_namespace(), self.id._path)}.json"
 
     def to_dict(self) -> dict:
         """

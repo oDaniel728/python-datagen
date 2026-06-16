@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING, Literal, Self
 from datagen.function.commands.customcommand import CustomCommand
 from datagen.utils.minecraft.targetselector import TargetSelector
 from datagen.utils.minecraft.text import Text
+from datagen.utils.obfuscator import Obfuscator
 from datagen.utils.scoreboard.criterion import ObjectiveCriterion
 if TYPE_CHECKING:
     from datagen.utils.scoreboard.player import ScoreboardPlayer
@@ -43,7 +44,7 @@ class ScoreboardObjective():
         self.display_name = display_name
         self.criterion = criterion
 
-    def __str__(self) -> str: return self.name
+    def __str__(self) -> str: return Obfuscator.obfuscate(self.name)
     def to_string(self) -> str: return str(self)
 
     # Command Generators
@@ -51,7 +52,7 @@ class ScoreboardObjective():
     def add(self):
         return CustomCommand(
             "scoreboard objectives add", 
-            self.name, 
+            str(self),
             self.criterion.to_string(),
             self.display_name.to_string()
         )
@@ -59,14 +60,14 @@ class ScoreboardObjective():
     def remove(self):
         return CustomCommand(
             "scoreboard objectives remove", 
-            self.name
+            str(self)
         )
     
     def set_display(self, slot: TDisplaySlot):
         return CustomCommand(
             "scoreboard objectives setdisplay", 
             slot, 
-            self.name
+            str(self)
         )
     
     @staticmethod
@@ -83,7 +84,7 @@ class ScoreboardObjective():
     def modify_display_name(self, display_name: Text.BaseText):
         return CustomCommand(
             "scoreboard objectives modify", 
-            self.name, 
+            str(self),
             "displayname", 
             display_name.to_string()
         )
@@ -91,7 +92,7 @@ class ScoreboardObjective():
     def modify_display_auto_update(self, value: bool):
         return CustomCommand(
             "scoreboard objectives modify", 
-            self.name, 
+            str(self),
             "displayauto", 
             "true" if value else "false"
         )
@@ -99,7 +100,7 @@ class ScoreboardObjective():
     def modify_render_type(self, render_type: Literal["integer", "hearts"]):
         return CustomCommand(
             "scoreboard objectives modify", 
-            self.name, 
+            str(self),
             "rendertype", 
             render_type
         )

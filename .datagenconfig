@@ -4,6 +4,7 @@
         "output": "datapacks/",
         "comment": false,
         "allowEmptyLines": false,
+        "obfuscate": false,
         "indent": 4
     },
     "dumperSettings": {

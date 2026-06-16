@@ -8,6 +8,7 @@ from datagen.datapack.namespace import Namespace
 from datagen.globals import DatagenConfig
 from datagen.utils.minecraft.identifier import Identifier
 from datagen.utils.minecraft.logger import Logger
+from datagen.utils.obfuscator import Obfuscator
 
 @final
 class DataPack:
@@ -137,6 +138,7 @@ class DataPack:
         """
         if not output:
             output = DatagenConfig.config["builderSettings"]["output"]
+        Obfuscator.reset()
         Logger.start_task(f"Building datapack '{self.name}'")
         out = Path(output) / self.name
         self.__clear(out)

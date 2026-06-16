@@ -6,6 +6,7 @@ from typing import Any, Literal
 from datagen.datapack.namespace import Namespace
 from datagen.globals import PREDICATES_PATH
 from datagen.predicate.builders import PredicateBuilderUtil
+from datagen.utils.obfuscator import Obfuscator
 from datagen.types.util.min import Range
 from datagen.types.util.validpredicate import ValidPredicate
 from datagen.utils.minecraft.identifier import Identifier
@@ -77,7 +78,8 @@ class Predicate[T](ValidPredicate):
         return json.dumps(self.to_dict(), indent=4)
 
     def get_filepath(self) -> Path:
-        return Path(PREDICATES_PATH) / (self.id.get_path().replace(".", "/").lower() + ".json")
+        path = Obfuscator.obfuscate_path(self.id.get_namespace(), self.id.get_path())
+        return Path(PREDICATES_PATH) / (path.replace(".", "/").lower() + ".json")
 
     def to_file(self) -> SimpleFile:
         return SimpleFile(self.get_filepath(), self.to_string())
