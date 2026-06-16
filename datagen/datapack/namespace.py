@@ -348,5 +348,11 @@ def main():
             self.add(other)
         return self
 
+    def __invert__(self):
+        from datagen.datapack.datapack import DataPack
+        dp = DataPack.get_current_datapack()
+        dp += self
+        return self
+
 Namespace.minecraft = Namespace("minecraft")
 Namespace.temp = Namespace(f"temp")
