@@ -50,3 +50,10 @@ print(arg)  # Output: $(example)
 
     def __str__(self) -> str:
         return f"$({self._path})"
+
+    def to_score(self, set: bool = False):
+        from datagen.utils.scoreboard.objective import ScoreboardObjective
+        plr = (~ ScoreboardObjective.TEMP)["__" + self._path]
+        if set:
+            ~ plr.set(self)
+        return plr
