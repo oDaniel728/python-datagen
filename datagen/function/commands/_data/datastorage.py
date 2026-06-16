@@ -1,6 +1,8 @@
 from typing import TYPE_CHECKING, TypeAlias
 
 from datagen.function.commands.customcommand import CustomCommand
+if TYPE_CHECKING:
+    from datagen.function.function import Function
 from datagen.function.functionmacroargument import FunctionMacroArgument
 from datagen.utils.minecraft.blockposition import BlockPosition
 from datagen.utils.minecraft.identifier import Identifier
@@ -28,6 +30,9 @@ class DataStorage():
 
     def set_from_score_player(self, key: TKey, player: ScoreboardPlayer) -> CustomCommand:
         return CustomCommand(f"execute store result storage {self.id} {key} int 1 run scoreboard players get {player.name} {player.objective}")
+
+    def set_from_function_return(self, key: TKey, function: "Identifier | Function") -> CustomCommand:
+        return CustomCommand(f"execute store result storage {self.id} {key} int 1 run function {function}")
 
     def get(self, key: TKey, *, scale: float | None = None) -> CustomCommand:
         if scale is not None:
