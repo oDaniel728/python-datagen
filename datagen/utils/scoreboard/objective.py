@@ -112,4 +112,10 @@ class ScoreboardObjective():
         ~ self.add()
         return self
     
+    def __getitem__(self, key: str) -> "ScoreboardPlayer":
+        return self.player(key)
+    
+    def __setitem__(self, key: str, value: int):
+        return self.player(key).set(value)
+    
 ScoreboardObjective.TEMP = ScoreboardObjective("temp", Text.literal("Temporary Objective"), ObjectiveCriterion.DUMMY)

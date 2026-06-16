@@ -1,6 +1,7 @@
 from typing import Any, Literal, Self
 
 from datagen.function.commands.customcommand import CustomCommand
+from datagen.function.functionmacroargument import FunctionMacroArgument
 from datagen.utils.minecraft.identifier import Identifier
 from datagen.utils.minecraft.targetselector import TargetSelector
 from datagen.utils.scoreboard.objective import ScoreboardObjective
@@ -17,8 +18,8 @@ class ScoreboardPlayer():
     def __str__(self) -> str: return str(self.name)
     def to_string(self) -> str: return str(self)
 
-    def add(self, score: "int | ScoreboardPlayer"):
-        if isinstance(score, int):
+    def add(self, score: "int | ScoreboardPlayer | FunctionMacroArgument"):
+        if isinstance(score, (int, FunctionMacroArgument)):
             return CustomCommand(
                 f"\n# add {~self.to_identiifer()} {score}\n",
                 "\tscoreboard players add", 
@@ -29,8 +30,8 @@ class ScoreboardPlayer():
         else:
             return self.operation(score, "+=")
     
-    def remove(self, score: "int | ScoreboardPlayer"):
-        if isinstance(score, int):
+    def remove(self, score: "int | ScoreboardPlayer | FunctionMacroArgument"):
+        if isinstance(score, (int, FunctionMacroArgument)):
             return CustomCommand(
                 f"\n# remove {~self.to_identiifer()} {score}\n",
                 "\tscoreboard players remove", 
@@ -41,8 +42,8 @@ class ScoreboardPlayer():
         else:
             return self.operation(score, "-=")
 
-    def set(self, score: "int | ScoreboardPlayer"):
-        if isinstance(score, int):
+    def set(self, score: "int | ScoreboardPlayer | FunctionMacroArgument"):
+        if isinstance(score, (int, FunctionMacroArgument)):
             return CustomCommand(
                 f"\n# set {~self.to_identiifer()} {score}\n",
                 "\tscoreboard players set", 
@@ -53,7 +54,7 @@ class ScoreboardPlayer():
         else:
             return self.operation(score, "=")
         
-    def multiply(self, score: "int | ScoreboardPlayer") -> "CustomCommand":
+    def multiply(self, score: "int | ScoreboardPlayer | FunctionMacroArgument") -> "CustomCommand":
         from datagen.utils.minecraft.text import Text
         out = CustomCommand()
         # 1. score add temp
@@ -76,7 +77,7 @@ class ScoreboardPlayer():
             Function._Function__current_function = current_function # type: ignore
         return out
     
-    def divide(self, score: "int | ScoreboardPlayer"):
+    def divide(self, score: "int | ScoreboardPlayer | FunctionMacroArgument"):
         from datagen.utils.minecraft.text import Text
         out = CustomCommand()
         # 1. score add temp
@@ -100,7 +101,7 @@ class ScoreboardPlayer():
             Function._Function__current_function = current_function # type: ignore
         return out
     
-    def modulus(self, score: "int | ScoreboardPlayer"):
+    def modulus(self, score: "int | ScoreboardPlayer | FunctionMacroArgument"):
         from datagen.utils.minecraft.text import Text
         out = CustomCommand()
         # 1. score add temp
