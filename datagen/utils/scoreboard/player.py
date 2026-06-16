@@ -1,6 +1,8 @@
-from typing import Any, Literal, Self
+from typing import TYPE_CHECKING, Any, Literal, Self
 
 from datagen.function.commands.customcommand import CustomCommand
+if TYPE_CHECKING:
+    from datagen.function.function import Function
 from datagen.function.functionmacroargument import FunctionMacroArgument
 from datagen.utils.minecraft.identifier import Identifier
 from datagen.utils.minecraft.targetselector import TargetSelector
@@ -42,13 +44,23 @@ class ScoreboardPlayer():
         else:
             return self.operation(score, "-=")
 
-    def set(self, score: "int | ScoreboardPlayer | FunctionMacroArgument"):
+    def set(self, score: "int | ScoreboardPlayer | FunctionMacroArgument | Function"):
+        from datagen.function.function import Function
         if isinstance(score, (int, FunctionMacroArgument)):
             return CustomCommand(
                 f"\n# set {~self.to_identiifer()} {score}\n",
                 "\tscoreboard players set", 
                 str(self), 
                 str(self.objective), 
+                str(score)
+            )
+        elif isinstance(score, Function):
+            return CustomCommand(
+                f"\n# set {~self.to_identiifer()} {score}\n",
+                "execute store result score", 
+                str(self), 
+                str(self.objective), 
+                "int 1 run function", 
                 str(score)
             )
         else:
