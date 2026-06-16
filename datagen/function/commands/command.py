@@ -2,6 +2,9 @@ from abc import ABC, abstractmethod
 import re
 from typing import Final
 
+from datagen.types.util.counter import Counter
+
+_C = Counter()
 
 class Command(ABC):
     """
@@ -73,3 +76,11 @@ class Command(ABC):
         """Returns the raw string representation of the command, without any macro processing or comments. This can be useful for debugging or for cases where the original command string is needed without any modifications."""
         # removes macro and comments
         return "".join(line for line in self.rem_macro().splitlines() if not line.strip().startswith("#"))
+
+    def encapsulate(self):
+        """Encapsulates the command in a function, which allows for the command to be executed as a single unit. This is useful for commands that need to be executed together or for commands that need to be stored and reused later. The encapsulated function is given a unique name based on a counter to avoid naming conflicts."""
+        from datagen.function.function import Function
+        from datagen.datapack.namespace import Namespace
+        with Function(Namespace.temp / f"__encaps{_C}") as f:
+            ~ self
+        return f
