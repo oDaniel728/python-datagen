@@ -16,4 +16,4 @@ class Schedule():
         delay: int, unit: Time._TUnit,
         mode: Literal["append", "replace"] = "append"
     ) -> CustomCommand:
-        return CustomCommand(f"schedule function {func.id} {delay} {unit} {mode}")
+        return CustomCommand(f"schedule function {func.id} {delay}{unit[0]} {mode}")
