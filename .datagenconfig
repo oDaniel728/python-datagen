@@ -3,6 +3,7 @@
         "source": "src/",
         "output": "datapacks/",
         "comment": false,
+        "allowEmptyLines": false,
         "indent": 4
     },
     "dumperSettings": {

@@ -15,6 +15,7 @@ class DatagenConfig():
         output: str
         indent: int
         comment: bool
+        allowEmptyLines: bool
     class TDataGenConfigTDumperSettings(TypedDict):
         source: str
         output: str

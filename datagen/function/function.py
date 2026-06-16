@@ -149,6 +149,8 @@ with Function(Identifier.of("pack:another")) as g:
             lines = [line for line in lines if not line.strip().startswith("#")]
             # remove indentation
             lines = [line.lstrip() for line in lines]
+        if not DatagenConfig.config["builderSettings"].get("allowEmptyLines", True):
+            lines = [line for line in lines if line.strip() != ""]
         return "\n".join(lines)
     
     def __str__(self) -> str:
