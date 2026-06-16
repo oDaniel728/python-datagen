@@ -77,10 +77,9 @@ class Command(ABC):
         # removes macro and comments
         return "".join(line for line in self.rem_macro().splitlines() if not line.strip().startswith("#"))
 
-    def encapsulate(self):
+    def encapsulate(self, name: str | None = None):
         """Encapsulates the command in a function, which allows for the command to be executed as a single unit. This is useful for commands that need to be executed together or for commands that need to be stored and reused later. The encapsulated function is given a unique name based on a counter to avoid naming conflicts."""
         from datagen.function.function import Function
         from datagen.datapack.namespace import Namespace
-        with Function(Namespace.temp / f"__encaps{_C}") as f:
-            ~ self
+        f = Function(Namespace.temp / (name or f"__encaps{_C}")).add_command(self)
         return f
