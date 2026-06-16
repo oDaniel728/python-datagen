@@ -52,12 +52,11 @@ class Command(ABC):
         return self.auto_macro(self.to_string())
 
     def to_macro(self, command: str) -> str:
-        if (self.is_macro(command)):
-            # ____scoreboard
-            # ____$scoreboard
-            _c = re.sub(r"(\s*)([\w][^#])(.*)", r"\1$\2\3", command)
-            return _c
-        return command
+        lines = command.splitlines(keepends=True)
+        for i, line in enumerate(lines):
+            if self.is_macro(line) and not line.lstrip().startswith("$"):
+                lines[i] = re.sub(r"(\s*)([\w][^#])(.*)", r"\1$\2\3", line)
+        return "".join(lines)
 
     def auto_macro(self, command: str) -> str:
         if self.is_macro(command):
