@@ -278,7 +278,7 @@ class Execute(Command):
         self._chunks.append(f"rotated as {target.to_string()}")
         return self
 
-    _TStoreType = Literal["block", "entity", "storage", "bossbar"]
+    _TStoreType = Literal["block", "entity", "storage", "bossbar", "score"]
     _TStoreResultType = Literal["result", "success"]
     _TStoreDataType = Literal["int", "float", "long", "short", "byte", "double"]
 
@@ -319,7 +319,14 @@ class Execute(Command):
         target: BossBar,
         value: Literal["value", "max"],
         /
-    ) -> Self: ...
+    ) -> Self: [...]
+    @overload
+    def STORE(self,
+        result_type: _TStoreResultType,
+        type: Literal["score"],
+        target: ScoreboardPlayer,
+        /
+    ) -> Self: [...]
 
     def STORE(self, *args) -> Self:
         self._check_seal()
@@ -339,6 +346,9 @@ class Execute(Command):
         elif type == "bossbar":
             result_type, _, target, value = args
             self._chunks.append(f"store {result_type} bossbar {target._id} {value}")
+        elif type == "score":
+            _, result_type, _, target = args
+            self._chunks.append(f"store {result_type} score {target} {target.objective}")
         else:
             raise ValueError("Invalid store type")
         
