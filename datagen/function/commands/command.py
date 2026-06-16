@@ -1,4 +1,6 @@
 from abc import ABC, abstractmethod
+import re
+from typing import Final
 
 
 class Command(ABC):
@@ -38,9 +40,11 @@ class Command(ABC):
     @abstractmethod
     def to_string(self) -> str: ...
 
+    _LMACRO_EXPR: Final[str] = r"\$\(\w+\)"
+    _LMACRO_START: Final[str] = r"\$"
     def is_macro(self, *args: str):
         for arg in args:
-            if '$' in arg:
+            if re.search(self._LMACRO_EXPR, arg):
                 return True
         return False
     
@@ -49,14 +53,19 @@ class Command(ABC):
 
     def to_macro(self, command: str) -> str:
         if (self.is_macro(command)):
-            return ("\n"+command).replace("\n", "\n$").replace("$#", "#")
+            # ____scoreboard
+            # ____$scoreboard
+            _c = re.sub(r"(\s*)([\w][^#])(.*)", r"\1$\2\3", command)
+            return _c
         return command
 
     def auto_macro(self, command: str) -> str:
-        return self.to_macro(command) if self.is_macro(command) else command
+        if self.is_macro(command):
+            return self.to_macro(command)
+        return command
     
     def rem_macro(self) -> str:
-        return self.to_string().replace("$", "", 1) if not self.is_macro(self.to_string()) else self.to_string()
+        return self.to_string().strip().replace("$", "", 1) if not self.is_macro(self.to_string()) else self.to_string()
     
     def rem_comments(self) -> str:
         return "\n".join(line for line in self.to_string().splitlines() if not line.strip().startswith("#"))

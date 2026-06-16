@@ -25,7 +25,7 @@ class CustomCommand(Command):
         self.prefix = prefix
 
     def to_string(self) -> str:
-        return self.command
+        return self.auto_macro(self.command)
     
     def __add__(self, other: "Command | str") -> "CustomCommand":
         if isinstance(other, str):
