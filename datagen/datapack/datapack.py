@@ -177,3 +177,7 @@ class DataPack:
             for i in other:
                 self += i
         return self
+
+    def __invert__(self):
+        DataPack.__current_datapack = self
+        return self
