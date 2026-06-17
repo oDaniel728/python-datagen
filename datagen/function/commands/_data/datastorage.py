@@ -26,6 +26,10 @@ class DataStorage():
         return f"{namespace}:{Obfuscator.obfuscate_path(namespace, path)}".lower()
 
     def set(self, key: TKey, value: TAny) -> CustomCommand:
+        if isinstance(value, FunctionMacroArgument):
+            return CustomCommand(f'data modify storage {self._id_str()} {key} set value "{value}"')
+        if isinstance(value, str):
+            return CustomCommand(f'data modify storage {self._id_str()} {key} set value "{value}"')
         return CustomCommand(f"data modify storage {self._id_str()} {key} set value {value}")
     
     def set_from_block(self, key: TKey, pos: "BlockPosition", path: str) -> CustomCommand:

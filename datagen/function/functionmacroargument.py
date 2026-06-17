@@ -60,3 +60,6 @@ print(arg)  # Output: $(example)
         if set:
             ~ plr.set(self)
         return plr
+
+    def cast[U](self, type: Type[U] | U) -> U:
+        return self # type: ignore
