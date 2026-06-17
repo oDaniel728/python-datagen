@@ -48,6 +48,9 @@ print(arg)  # Output: $(example)
         else:
             return FunctionMacroArgument[key](f"{self._path}")
 
+    def __contains__(self, item: object) -> bool:
+        return str(item) in str(self)
+    
     def __str__(self) -> str:
         return f"$({self._path})"
 

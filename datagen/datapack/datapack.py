@@ -60,21 +60,21 @@ class DataPack:
             dp.build()
     ```
     """
-    __datapacks = set["DataPack"]()
-    __current_datapack: "DataPack | None" = None
+    _datapacks = set["DataPack"]()
+    _current_datapack: "DataPack | None" = None
 
     def __del__(self):
-        self.__datapacks.remove(self)
+        self._datapacks.remove(self)
 
     @staticmethod
     def get_datapacks() -> set["DataPack"]:
         """Returns a set of all datapacks that have been created."""
-        return DataPack.__datapacks
+        return DataPack._datapacks
 
     @staticmethod
     def get_datapack_by_name(name: str) -> "DataPack":
         """Returns the datapack with the given name, or raises a ValueError if no such datapack exists."""
-        for dp in DataPack.__datapacks:
+        for dp in DataPack._datapacks:
             if dp.name == name:
                 return dp
         raise ValueError(f"Datapack with name '{name}' not found")
@@ -82,7 +82,7 @@ class DataPack:
     @staticmethod
     def get_namespace_by_identifier(id: Identifier) -> Namespace:
         """Returns the namespace with the given identifier, or raises a ValueError if no such namespace exists."""
-        for dp in DataPack.__datapacks:
+        for dp in DataPack._datapacks:
             for ns in dp.namespaces:
                 if ns.name == id._namespace:
                     return ns
@@ -91,18 +91,18 @@ class DataPack:
     @staticmethod
     def get_current_datapack() -> "DataPack":
         """Returns the currently active datapack being built, or raises a ValueError if no datapack is currently being built."""
-        if DataPack.__current_datapack is None:
+        if DataPack._current_datapack is None:
             raise ValueError("No datapack is currently being built")
-        return DataPack.__current_datapack
+        return DataPack._current_datapack
 
     def __init__(self, name: str, description: str) -> None:
         """Initializes a new datapack with the given name and description, and adds it to the global set of datapacks."""
-        self.__datapacks.add(self)
+        self._datapacks.add(self)
         self.name = name
         self.description = description
         self.namespaces = set[Namespace]()
         self.namespaces.add(Namespace.temp())
-        self.__current_datapack = self
+        DataPack._current_datapack = self
 
     def add_namespace(self, namespace: Namespace) -> Self:
         """Adds a namespace to the datapack and returns the datapack for chaining."""
@@ -162,12 +162,12 @@ class DataPack:
 
     def __enter__(self) -> Self:
         """Enters the context of the datapack, setting it as the currently active datapack being built. Returns self for use in `with` statements."""
-        self.__current_datapack = self
+        DataPack._current_datapack = self
         return self
 
     def __exit__(self, exc_type: object, exc: object, tb: object) -> None:
         """Exits the context of the datapack, clearing the currently active datapack being built."""
-        self.__current_datapack = None
+        DataPack._current_datapack = None
 
     def __iadd__(self, other: Namespace | tuple[Namespace, ...]) -> Self:
         """Adds a namespace to the datapack using the `+=` operator."""
@@ -179,5 +179,5 @@ class DataPack:
         return self
 
     def __invert__(self):
-        DataPack.__current_datapack = self
+        DataPack._current_datapack = self
         return self

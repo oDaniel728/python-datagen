@@ -328,8 +328,12 @@ def main():
         """Returns the default Minecraft namespace, which contains all of the vanilla resources."""
         return Namespace('minecraft')
     
+    _TEMP: "Namespace | None" = None
+
     @staticmethod
     def temp() -> "Namespace":
         """Returns a temporary namespace that can be used for resources that don't need to be organized into a specific namespace."""
-        return Namespace(f"temp")
+        if Namespace._TEMP is None:
+            Namespace._TEMP = Namespace("temp")
+        return Namespace._TEMP
     

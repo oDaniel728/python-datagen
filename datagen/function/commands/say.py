@@ -7,4 +7,5 @@ class Say(Command):
         self.message = message
 
     def to_string(self) -> str:
-        return f'{"$" if "$" in self.message else ""}say {self.message}'
+        msg = str(self.message)
+        return self.auto_macro("say " + msg)

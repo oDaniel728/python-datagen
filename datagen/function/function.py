@@ -205,7 +205,18 @@ with Function(Identifier.of("pack:another")) as g:
     
     def __invert__(self) -> "Self":
         """Returns the function itself, but with the `~` operator. This is a convenient syntax for quickly creating a function instance without needing to call the constructor directly, and can be used in contexts where a function instance is needed but the identifier is already known."""
-        self.namespace += self
+        from datagen.datapack.datapack import DataPack
+        from datagen.datapack.namespace import Namespace
+        ns_name = self.id.get_namespace()
+        ns = None
+        dp = DataPack.get_current_datapack()
+        for n in dp.namespaces:
+            if n.name == ns_name:
+                ns = n
+                break
+        if ns is None:
+            ns = Namespace.temp()
+        ns += self
         return self
     
 class FunctionContext(Function):
