@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING, Any, Literal, Self
 
+from datagen.function.commands._data.datastorage import DataStorageValue
 from datagen.function.commands.customcommand import CustomCommand
 if TYPE_CHECKING:
     from datagen.function.function import Function
@@ -48,7 +49,7 @@ class ScoreboardPlayer():
         else:
             return self.operation(score, "-=")
 
-    def set(self, score: "int | ScoreboardPlayer | FunctionMacroArgument | Function"):
+    def set(self, score: "int | ScoreboardPlayer | FunctionMacroArgument | Function | DataStorageValue"):
         from datagen.function.function import Function
         if isinstance(score, (int, FunctionMacroArgument)):
             return CustomCommand(
@@ -66,6 +67,16 @@ class ScoreboardPlayer():
                 str(self.objective), 
                 "int 1 run function", 
                 str(score)
+            )
+        elif isinstance(score, DataStorageValue):
+            return CustomCommand(
+                f"\n# set {~self.to_identiifer()} {score}\n",
+                "execute store result score", 
+                str(self), 
+                str(self.objective), 
+                "int 1 run data get storage", 
+                str(score.storage), 
+                str(score.key)
             )
         else:
             return self.operation(score, "=")

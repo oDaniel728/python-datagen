@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING, Literal, Self
 
 from datagen.function.commands.customcommand import CustomCommand
+from datagen.function.functionmacroargument import FunctionMacroArgument
 from datagen.utils.minecraft.targetselector import TargetSelector
 from datagen.utils.minecraft.text import Text
 from datagen.utils.obfuscator import Obfuscator
