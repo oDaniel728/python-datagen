@@ -19,7 +19,7 @@ class BoolUtils():
 
     def prepare(self) -> None: 
         self.ns = Namespace("bool_utils")
-        self.mc = Namespace.minecraft
+        self.mc = Namespace.minecraft()
 
     def register(self) -> None: 
         self.dp += self.ns, self.mc

@@ -35,7 +35,7 @@ class FuncUtils():
 
     def prepare(self) -> None: 
         self.ns = ~ Namespace(self.dp.name)
-        self.mc = ~ Namespace.minecraft
+        self.mc = ~ Namespace.minecraft()
 
     def register(self) -> None: 
         ns, mc = self.ns, self.mc
