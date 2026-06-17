@@ -61,7 +61,7 @@ class Predicate[T](ValidPredicate):
     def __init__(self, id: Identifier, data: dict):
         self._data = data
         self.id = id
-        self.namespace = Namespace.get(id)
+        self.namespace = Namespace.temp()
         Predicate.__predicates[id] = self
         self.namespace.add_predicate(self)
 

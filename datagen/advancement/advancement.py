@@ -27,7 +27,7 @@ class Advancement():
 
     def __init__(self, id: Identifier):
         from datagen.datapack.namespace import Namespace
-        self._ns = Namespace.get(id)
+        self._ns = Namespace.temp()
         self.id = id
         self.data = dict[str, Any]()
         Advancement.advancements[id] = self

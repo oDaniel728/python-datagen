@@ -29,7 +29,7 @@ class Recipe():
 
         self._data = data
         self.id = id
-        self.namespace = Namespace.get(id)
+        self.namespace = Namespace.temp()
         Recipe.__recipes[id] = self
     
     def __invert__(self):

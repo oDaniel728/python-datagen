@@ -105,7 +105,7 @@ class EnchantmentProvider(ToDict):
         """
         from datagen.datapack.namespace import Namespace
         self.id = id
-        self.namespace: Namespace = Namespace.get(id)
+        self.namespace: Namespace = Namespace.temp()
         self._data: dict = {}
 
     # --- Basic properties ---

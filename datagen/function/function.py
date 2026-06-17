@@ -103,7 +103,7 @@ with Function(Identifier.of("pack:another")) as g:
     def __init__(self, id: Identifier):
         from datagen.datapack.namespace import Namespace
         self.id = id
-        self.namespace: Namespace = Namespace.get(id)
+        self.namespace: Namespace = Namespace.temp()
 
         self.commands = list[Command]()
 
