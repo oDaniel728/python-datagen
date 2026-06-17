@@ -23,7 +23,7 @@ from datagen.utils.repr.item import Item
 from datagen.utils.scoreboard.criterion import ObjectiveCriterion
 from datagenpp.extras.scripts.script import Script
 
-_tmp = Namespace.temp
+_tmp = Namespace.temp()
 _counter = Counter()
 class ScriptBuilder:
     @staticmethod
@@ -574,9 +574,9 @@ class ScriptBuilder:
     def on_criteria(criteria: Criteria, function: Function) -> Script:
         s = Script()
 
-        adv = Advancement(Namespace.temp / f"__criteria_{_counter.get()}")
-        with Function(Namespace.temp / f"__criteria_reward_{_counter.get()}") as f:
-            args = DataStorage(Namespace.temp / f"__criteria_reward_args_{_counter.get()}")
+        adv = Advancement(Namespace.temp() / f"__criteria_{_counter.get()}")
+        with Function(Namespace.temp() / f"__criteria_reward_{_counter.get()}") as f:
+            args = DataStorage(Namespace.temp() / f"__criteria_reward_args_{_counter.get()}")
             ~ args.set_from_entity("self", TargetSelector.SELF)
             ~ Advancements.revoke(TargetSelector.SELF, adv.id)
             ~ Return.run(function.run(args))

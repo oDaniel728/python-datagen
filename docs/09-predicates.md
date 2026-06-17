@@ -54,7 +54,7 @@ Execute().IF(lambda b: b.predicate(on_fire)).RUN(Say("You are on fire!"))
 
 ## Default Namespace
 
-By default, newly created `Predicate` objects register themselves into `Namespace.temp`. To change this, call:
+By default, newly created `Predicate` objects register themselves into `Namespace.temp()`. To change this, call:
 
 ```python
 Predicate.use_namespace(ns)

@@ -56,7 +56,7 @@ class Item[T: __Settings__]():
         ns = Namespace("namespace")
         dp.add_namespace(ns)
 
-        mc = Namespace.minecraft
+        mc = Namespace.minecraft()
         dp.add_namespace(mc)
 
         with Function(ns / "give_custom_item") as func:

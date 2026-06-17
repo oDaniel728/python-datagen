@@ -47,5 +47,5 @@ class Script():
         pass
 
     def __invert__(self):
-        self.merge(Namespace.temp)
+        self.merge(Namespace.temp())
         return self

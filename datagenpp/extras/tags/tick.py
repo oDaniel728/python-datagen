@@ -11,5 +11,5 @@ class Tick(FunctionTag):
             cls._instance = super().__new__(cls)
         return cls._instance
     def __init__(self):
-        super().__init__(Namespace.minecraft / "tick", [])
-        Namespace.minecraft.add_tag(self)
+        super().__init__(Namespace.minecraft() / "tick", [])
+        Namespace.minecraft().add_tag(self)

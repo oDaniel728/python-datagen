@@ -12,7 +12,7 @@
     "get minecraft": {
         "prefix": "nsmc",
         "body": [
-            "mc = Namespace.minecraft",
+            "mc = Namespace.minecraft()",
             "LOAD = mc.load",
             "TICK = mc.tick",
         ],

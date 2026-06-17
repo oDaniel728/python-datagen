@@ -81,5 +81,5 @@ class Command(ABC):
         """Encapsulates the command in a function, which allows for the command to be executed as a single unit. This is useful for commands that need to be executed together or for commands that need to be stored and reused later. The encapsulated function is given a unique name based on a counter to avoid naming conflicts."""
         from datagen.function.function import Function
         from datagen.datapack.namespace import Namespace
-        f = Function(Namespace.temp / (name or f"__encaps{_C}")).add_command(self)
+        f = Function(Namespace.temp() / (name or f"__encaps{_C}")).add_command(self)
         return f

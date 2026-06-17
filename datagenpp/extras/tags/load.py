@@ -13,5 +13,5 @@ class Load(FunctionTag):
         return cls._instance
 
     def __init__(self):
-        super().__init__(Namespace.minecraft / "load", [])
-        Namespace.minecraft.add_tag(self)
+        super().__init__(Namespace.minecraft() / "load", [])
+        Namespace.minecraft().add_tag(self)

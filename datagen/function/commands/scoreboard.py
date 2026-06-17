@@ -12,6 +12,7 @@ from datagen.utils.minecraft.targetselector import TargetSelector
 from datagen.utils.minecraft.text import Text
 from datagen.utils.scoreboard.criterion import ObjectiveCriterion
 from datagen.utils.scoreboard.objective import ScoreboardObjective
+from datagen.utils.scoreboard.player import ScoreboardPlayer
 
 class Scoreboard():
     @staticmethod
@@ -25,3 +26,9 @@ class Scoreboard():
     @staticmethod
     def player(objective: ScoreboardObjective, name: str | TargetSelector):
         return objective.player(name)
+    
+    @staticmethod
+    def literal(value: int) -> "ScoreboardPlayer":
+        p = (~ ScoreboardObjective.TEMP)[f"__literal_{value}"]
+        ~ p.set(value)
+        return p

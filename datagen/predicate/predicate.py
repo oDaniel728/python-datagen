@@ -41,7 +41,7 @@ class TABLE_BONUS(PredicateType): pass
 class TIME_CHECK(PredicateType): pass
 
 class Predicate[T](ValidPredicate):
-    NAMESPACE = Namespace.temp
+    NAMESPACE = Namespace.temp()
 
     @staticmethod
     def use_namespace(namespace: Namespace):

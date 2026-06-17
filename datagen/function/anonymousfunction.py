@@ -23,7 +23,7 @@ class AnonymousFunction(Function):
     """
 
     def __new__(cls, datapack: DataPack | None = None) -> Self:
-        id = Namespace.temp.identifier(f"fun{len(Namespace.temp.functions)}")
+        id = Namespace.temp().identifier(f"fun{len(Namespace.temp().functions)}")
         if id in cls.fns:
             return cls.fns[id]
         else:
@@ -32,7 +32,7 @@ class AnonymousFunction(Function):
             return func
 
     def __init__(self, datapack: DataPack | None = None):
-        super().__init__(Namespace.temp.identifier(f"fun{len(Namespace.temp.functions)}"))
+        super().__init__(Namespace.temp().identifier(f"fun{len(Namespace.temp().functions)}"))
         self.datapack = datapack or DataPack.get_current_datapack()
-        self.datapack.add_namespace(Namespace.temp)
-        Namespace.temp.add(self)
+        self.datapack.add_namespace(Namespace.temp())
+        Namespace.temp().add(self)

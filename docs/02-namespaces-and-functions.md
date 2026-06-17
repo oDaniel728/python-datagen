@@ -29,8 +29,8 @@ Two namespaces are always available as class attributes:
 
 | Attribute | Namespace name | Purpose |
 |-----------|---------------|---------|
-| `Namespace.minecraft` | `minecraft` | Used to register to `minecraft:load` and `minecraft:tick` |
-| `Namespace.temp` | `temp` | Internal scratch namespace used by helpers |
+| `Namespace.minecraft()` | `minecraft` | Used to register to `minecraft:load` and `minecraft:tick` |
+| `Namespace.temp()` | `temp` | Internal scratch namespace used by helpers |
 
 ### The `load` and `tick` Tags
 

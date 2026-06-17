@@ -86,7 +86,7 @@ class DataPack:
             for ns in dp.namespaces:
                 if ns.name == id._namespace:
                     return ns
-        return Namespace.get(id)
+        return None # type: ignore
 
     @staticmethod
     def get_current_datapack() -> "DataPack":
@@ -101,7 +101,7 @@ class DataPack:
         self.name = name
         self.description = description
         self.namespaces = set[Namespace]()
-        self.namespaces.add(Namespace.temp)
+        self.namespaces.add(Namespace.temp())
         self.__current_datapack = self
 
     def add_namespace(self, namespace: Namespace) -> Self:

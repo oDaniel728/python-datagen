@@ -54,7 +54,7 @@ def main():
     ns = Namespace("pack")
 
     # Gets the minecraft namespace for adding resources to it
-    mc = Namespace.minecraft
+    mc = Namespace.minecraft()
 
     # Create a new function with the identifier "pack:hello"
     with Function(ns / "hello") as f:
@@ -88,15 +88,6 @@ def main():
 ```
 
     """
-
-    minecraft: "Namespace"
-    """The default Minecraft namespace, which contains all of the vanilla resources."""
-
-    temp: "Namespace"
-    """A temporary namespace that can be used for resources that don't need to be organized into a specific namespace."""
-
-    instances: dict[str, "Namespace"]
-    """A global dictionary of all namespace instances, keyed by their name. This allows for easy retrieval of namespaces by name."""
 
     name: str
     """The name of the namespace. This is used in resource identifiers and should be unique among all namespaces."""
@@ -133,28 +124,6 @@ def main():
         global _current_namespace
         _current_namespace = namespace
 
-    instances = dict[str, "Self"]()
-
-    def __new__(cls, name: str) -> Self:
-        if name in cls.instances:
-            return cls.instances[name]
-        else:
-            ns = super().__new__(cls)
-            cls.instances[name] = ns
-            return ns
-
-    @staticmethod
-    def get(name: str | Identifier) -> "Namespace":
-        """Returns the namespace with the given name or identifier. If no such namespace exists, creates a new namespace with the given name and returns it."""
-        if isinstance(name, Identifier):
-            name = name._namespace
-
-        if name in Namespace.instances:
-            return Namespace.instances[name]
-        else:
-            ns = Namespace(name)
-            Namespace.instances[name] = ns
-            return ns
 
     def __init__(self, name: str) -> None:
         self.name = name
@@ -354,5 +323,13 @@ def main():
         dp += self
         return self
 
-Namespace.minecraft = Namespace("minecraft")
-Namespace.temp = Namespace(f"temp")
+    @staticmethod
+    def minecraft() -> "Namespace":
+        """Returns the default Minecraft namespace, which contains all of the vanilla resources."""
+        return Namespace('minecraft')
+    
+    @staticmethod
+    def temp() -> "Namespace":
+        """Returns a temporary namespace that can be used for resources that don't need to be organized into a specific namespace."""
+        return Namespace(f"temp")
+    

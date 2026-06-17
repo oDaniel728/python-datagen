@@ -16,7 +16,7 @@ def main():
     ns = Namespace("pack")
 
     # Gets the minecraft namespace for adding resources to it
-    mc = Namespace.minecraft
+    mc = Namespace.minecraft()
 
     # Create a new function with the identifier "pack:hello"
     with Function(ns / "hello") as f:
