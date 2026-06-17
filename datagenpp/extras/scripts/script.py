@@ -22,15 +22,15 @@ class Script():
     def on_tick(self, function: Function) -> None:
         self.tick.add(function)
 
-    def merge(self, namespace: Namespace) -> None:
+    def merge(self, namespace: Namespace, minecraft: Namespace) -> None:
         for function in self.load:
             function.id._namespace = namespace.name
             namespace.add_function(function)
-            namespace.minecraft.load.add_value(function)
+            minecraft.load.add_value(function)
         for function in self.tick:
             function.id._namespace = namespace.name
             namespace.add_function(function)
-            namespace.minecraft.tick.add_value(function)
+            minecraft.tick.add_value(function)
 
         for function in self.functions:
             function.id._namespace = namespace.name
@@ -47,5 +47,5 @@ class Script():
         pass
 
     def __invert__(self):
-        self.merge(Namespace.temp())
+        self.merge(Namespace.temp(), Namespace.minecraft())
         return self
