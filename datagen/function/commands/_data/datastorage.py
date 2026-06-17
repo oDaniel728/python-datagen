@@ -72,10 +72,15 @@ class DataStorage():
     def of(id: Identifier) -> "DataStorage":
         return DataStorage(id)
 
-    def rset(self, d: dict[str, TAny]) -> CommandArray:
+    def rset(self, d: dict[str, TAny | ScoreboardPlayer | (Function | Identifier)]) -> CommandArray:
         cmds = CommandArray([])
         for k, v in d.items():
-            cmds += self.set(k, v)
+            if isinstance(v, ScoreboardPlayer):
+                cmds += self.set_from_score_player(k, v)
+            elif isinstance(v, (Function, Identifier)):
+                cmds += self.set_from_function_return(k, v)
+            else:
+                cmds += self.set(k, v)
         return cmds
 
     def __getitem__(self, key: TKey) -> DataStorageValue:

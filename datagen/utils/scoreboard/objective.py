@@ -1,7 +1,13 @@
 from typing import TYPE_CHECKING, Literal, Self
 
+from datagen.function.commands._data.datastorage import DataStorageValue
+from datagen.function.commands.command import Command
+from datagen.function.commands.commandarray import CommandArray
 from datagen.function.commands.customcommand import CustomCommand
+from datagen.function.commands.execute import Execute
+from datagen.function.function import Function
 from datagen.function.functionmacroargument import FunctionMacroArgument
+from datagen.utils.minecraft.identifier import Identifier
 from datagen.utils.minecraft.targetselector import TargetSelector
 from datagen.utils.minecraft.text import Text
 from datagen.utils.obfuscator import Obfuscator
@@ -119,5 +125,32 @@ class ScoreboardObjective():
     
     def __setitem__(self, key: str, value: int):
         return self.player(key).set(value)
+    
+    def rset(
+        self, 
+        d: dict[
+            str, "int | bool | (Function | Identifier | Command) | FunctionMacroArgument | DataStorageValue | ScoreboardPlayer"
+        ]
+    ) -> CommandArray:
+        from datagen.function.commands.execute import Execute
+        arr = CommandArray([])
+        for k, v in d.items():
+            if isinstance(v, (bool, int, str)):
+                arr += (self.player(k).set(int(v)))
+            elif isinstance(v, (FunctionMacroArgument, DataStorageValue)):
+                arr += (self.player(k).set(v))
+            elif isinstance(v, (Function, Identifier, Command)):
+                arr += ((Execute()
+                    .STORE("result", "score", self[k])
+                    .RUN(v)
+                ))
+            elif isinstance(v, ScoreboardPlayer):
+                arr += ((Execute()
+                    .STORE("result", "score", self[k])
+                    .RUN(v.get())
+                ))
+            else:
+                raise ValueError(f"Invalid value type: {type(v)} for key: {k}")
+        return arr
     
 ScoreboardObjective.TEMP = ScoreboardObjective("temp", Text.literal("Temporary Objective"), ObjectiveCriterion.DUMMY)
