@@ -33,9 +33,8 @@ class Tag[T]():
     ```
     """
     def __init__(self, id: Identifier, values: Iterable[T], replace: bool = False):
-        from datagen.datapack.namespace import Namespace
         self.id = id
-        self.namespace = Namespace.temp()
+        self.namespace = None
 
         self.values = set(values)
         self.replace = replace
