@@ -7,11 +7,11 @@ from datagen.utils.obfuscator import Obfuscator
 from datagen.utils.scoreboard.objective import ScoreboardObjective
 if TYPE_CHECKING:
     from datagen.function.function import Function
+    from datagen.utils.scoreboard.player import ScoreboardPlayer
 from datagen.function.functionmacroargument import FunctionMacroArgument
 from datagen.utils.minecraft.blockposition import BlockPosition
 from datagen.utils.minecraft.identifier import Identifier
 from datagen.utils.minecraft.targetselector import TargetSelector
-from datagen.utils.scoreboard.player import ScoreboardPlayer
 
 class DataStorage():
     type TKey = "str | int | float | bool | Identifier | FunctionMacroArgument"
@@ -41,7 +41,7 @@ class DataStorage():
     def set_from_entity(self, key: TKey, target: TargetSelector, path: str = '') -> CustomCommand:
         return CustomCommand(f"data modify storage {self._id_str()} {key} set from entity {target}{' ' if path else ''}{path}")
 
-    def set_from_score_player(self, key: TKey, player: ScoreboardPlayer) -> CustomCommand:
+    def set_from_score_player(self, key: TKey, player: "ScoreboardPlayer") -> CustomCommand:
         return CustomCommand(f"execute store result storage {self._id_str()} {key} int 1 run scoreboard players get {player} {player.objective}")
 
     def set_from_function_return(self, key: TKey, function: "Identifier | Function") -> CustomCommand:
@@ -91,6 +91,7 @@ class DataStorageValue[T: DataStorage.TAny]():
         self.key = key
 
     def set(self, value: "DataStorageValue.TAny") -> Command:
+        from datagen.utils.scoreboard.player import ScoreboardPlayer
         if isinstance(value, DataStorageValue):
             from datagen.function.commands.execute import Execute
             # /execute store result storage ns:id path int 1 run data get storage ns2:id2 path2 1
@@ -113,7 +114,7 @@ class DataStorageValue[T: DataStorage.TAny]():
     def remove(self) -> CustomCommand:
         return self.storage.remove(self.key)
 
-    def to_score(self, set: bool = False) -> ScoreboardPlayer:
+    def to_score(self, set: bool = False) -> "ScoreboardPlayer":
         from datagen.function.commands.execute import Execute
         plr = (~ ScoreboardObjective.TEMP)["__" + self.storage._id_str() + "." + str(self.key)]
         if set:
@@ -124,5 +125,5 @@ class DataStorageValue[T: DataStorage.TAny]():
             )
         return plr
 
-    def from_score(self, player: ScoreboardPlayer) -> CustomCommand:
+    def from_score(self, player: "ScoreboardPlayer") -> CustomCommand:
         return CustomCommand(f"execute store result storage {self.storage._id_str()} {self.key} int 1 run scoreboard players get {player} {player.objective}")
