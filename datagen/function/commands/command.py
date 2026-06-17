@@ -67,7 +67,7 @@ class Command(ABC):
         return command
     
     def rem_macro(self) -> str:
-        return self.to_string().strip().replace("$", "", 1) if not self.is_macro(self.to_string()) else self.to_string()
+        return self.to_string().strip().replace("$", "", 1)
     
     def rem_comments(self) -> str:
         return "\n".join(line for line in self.to_string().splitlines() if not line.strip().startswith("#"))

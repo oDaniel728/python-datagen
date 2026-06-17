@@ -132,14 +132,14 @@ with Function(Identifier.of("pack:another")) as g:
         lines.append("# " + Obfuscator.obfuscate_path(self.id.get_namespace(), self.id._path))
         indent = " " * DatagenConfig.config["builderSettings"]["indent"]
         for command in self.commands:
-            cmd_str = command.to_string()
+            cmd_str = str(command)
             # remove only leading newlines to avoid accidental empty first line
             cmd_str = cmd_str.lstrip("\n")
             for line in cmd_str.splitlines():
                 if line.strip() == "":
                     lines.append("")
-                elif line.lstrip().startswith("#"):
-                    # keep comment lines unindented
+                elif line.lstrip().startswith(("#", "$")):
+                    # keep comment and macro lines unindented
                     lines.append(line.lstrip())
                 else:
                     # normalize existing leading whitespace and indent command lines
