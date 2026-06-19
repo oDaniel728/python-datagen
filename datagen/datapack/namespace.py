@@ -333,7 +333,5 @@ def main():
     @staticmethod
     def temp() -> "Namespace":
         """Returns a temporary namespace that can be used for resources that don't need to be organized into a specific namespace."""
-        if Namespace._TEMP is None:
-            Namespace._TEMP = Namespace("temp")
-        return Namespace._TEMP
+        return Namespace("temp")
     
