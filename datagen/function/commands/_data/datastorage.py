@@ -133,3 +133,11 @@ class DataStorageValue[T: DataStorage.TAny]():
 
     def from_score(self, player: "ScoreboardPlayer") -> CustomCommand:
         return CustomCommand(f"execute store result storage {self.storage._id_str()} {self.key} int 1 run scoreboard players get {player} {player.objective}")
+
+    def to_data(self, into: "DataStorageValue",  scale: float = 1) -> CustomCommand:
+        return CustomCommand(f"execute store result storage {into.storage._id_str()} {into.key} int {scale} run data get storage {self.storage._id_str()} {self.key}")
+
+    def from_data(self, from_: "DataStorageValue", scale: float = 1) -> CustomCommand:
+        return CustomCommand(f"execute store result storage {self.storage._id_str()} {self.key} int {scale} run data get storage {from_.storage._id_str()} {from_.key}")
+
+    
