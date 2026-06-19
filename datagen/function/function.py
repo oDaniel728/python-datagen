@@ -92,14 +92,6 @@ with Function(Identifier.of("pack:another")) as g:
 
     fns = dict[Identifier, "Self"]()
 
-    def __new__(cls, id: Identifier) -> Self:
-        if id in cls.fns:
-            return cls.fns[id]
-        else:
-            func = super(Function, cls).__new__(cls)
-            cls.fns[id] = func
-            return func
-
     def __init__(self, id: Identifier):
         from datagen.datapack.namespace import Namespace
         self.id = id
@@ -221,7 +213,7 @@ with Function(Identifier.of("pack:another")) as g:
 
     def __call__(self, *a: P.args, **k: P.kwargs) -> "RunFunction":
         """Allows the function to be called like a regular Python function, returning a `RunFunction` command that executes this function with the given arguments. The arguments can be provided as positional or keyword arguments, and will be passed to the `run` method to create the appropriate command. This syntax is a convenient way to create a command that runs the function with specific arguments, and can be used in command sequences or other contexts where commands are needed."""
-        args = k | {i: ag for i, ag in enumerate(a)}
+        args = k | {str(i): ag for i, ag in enumerate(a)}
         return self.run(args)
     
     def __getitem__[T = Any](
