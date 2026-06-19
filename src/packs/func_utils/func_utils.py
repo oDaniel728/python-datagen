@@ -46,16 +46,34 @@ class FuncUtils():
             int_to_charmap = DataStorage(ns / "utils/int_to_character_map")
             char_to_intmap = DataStorage(ns / "utils/character_to_int_map")
 
-            for i, char in self.get_mapped_chars().items():
-                ~ int_to_charmap.set(i, char)
-            for i, char in self.get_mapped_chars().items():
-                ~ char_to_intmap.set(char, i)
+            rmap = {
+                "\n": "\\n",
+                "\\": "\\\\",
+                "\"": "\\\"",
+            }
+            def _rpl(t: str) -> str:
+                for k, v in rmap.items():
+                    t = t.replace(k, v)
+                return t
+            def _getmapped() -> dict[int, str]:
+                return {
+                    i: _rpl(char) 
+                    for i, char in self.get_mapped_chars().items()
+                }
+            ~ int_to_charmap.rset({
+                f"{i}": char 
+                for i, char in _getmapped().items()
+            })
+            ~ char_to_intmap.rset({
+                f"\"{_rpl(char)}\"": i
+                for i, char in _getmapped().items()
+            })
+
         with~ Function(ns / "char/load") as load:
             ~ load_chars.run()
             mc.load += load
 
         with~ Function(ns / "char/to_int") as char_to_int:
-            # d = 3, a = 0, z = 25, A = 26, Z = 51, 0 = 52, 9 = 61
             _0 = char_to_int['0', str]
             ~ Return.run(char_to_intmap.get(_0))
 

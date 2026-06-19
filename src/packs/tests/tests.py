@@ -58,7 +58,7 @@ class Tests():
             })
 
             args = DataStorage(ns / "loop/step/args")
-            ~ args.set("function", _3)
+            ~ args["function"].set(_3)
             
             ~ RunFunction(ns / "loop/step", args)
 
