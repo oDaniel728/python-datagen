@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, TypeAlias
+from typing import TYPE_CHECKING, _TypedDict, TypeAlias, TypedDict
 
 from datagen.function.commands.command import Command
 from datagen.function.commands.commandarray import CommandArray
@@ -12,7 +12,7 @@ from datagen.utils.minecraft.blockposition import BlockPosition
 from datagen.utils.minecraft.identifier import Identifier
 from datagen.utils.minecraft.targetselector import TargetSelector
 
-class DataStorage():
+class DataStorage[D: dict | _TypedDict]():
     type TKey = "str | int | float | bool | Identifier | FunctionMacroArgument"
     type TAny = "str | int | float | bool | Identifier | list[TAny] | dict[TKey, TAny] | None | FunctionMacroArgument"
 
@@ -71,16 +71,11 @@ class DataStorage():
     def of(id: Identifier) -> "DataStorage":
         return DataStorage(id)
 
-    def rset(self, d: dict[str, TAny | ScoreboardPlayer | (Function | Identifier)]) -> CommandArray:
+    def rset(self, d: dict[str, "DataStorageValue.TAny"]) -> CommandArray:
         from datagen.utils.scoreboard.player import ScoreboardPlayer
         cmds = CommandArray([])
         for k, v in d.items():
-            if isinstance(v, ScoreboardPlayer):
-                cmds += self.set_from_score_player(k, v)
-            elif isinstance(v, (Function, Identifier)):
-                cmds += self.set_from_function_return(k, v)
-            else:
-                cmds += self.set(k, v)
+            cmds += self[k].set(v)
         return cmds
 
     def __getitem__(self, key: TKey) -> DataStorageValue:
@@ -90,7 +85,7 @@ class DataStorage():
         return self[key].set(value)
 
 class DataStorageValue[T: DataStorage.TAny]():
-    type TAny = "T | FunctionMacroArgument | Identifier | Function | ScoreboardPlayer | DataStorageValue"
+    type TAny = "T | FunctionMacroArgument | Identifier | Function | ScoreboardPlayer | DataStorageValue | DataStorage"
     def __init__(self, storage: DataStorage, key: DataStorage.TKey):
         self.storage = storage
         self.key = key
@@ -99,15 +94,19 @@ class DataStorageValue[T: DataStorage.TAny]():
         from datagen.function.function import Function
         from datagen.utils.scoreboard.player import ScoreboardPlayer
         if isinstance(value, DataStorageValue):
-            from datagen.function.commands.execute import Execute
-            # /execute store result storage ns:id path int 1 run data get storage ns2:id2 path2 1
-            return Execute().STORE("result", "storage", self.storage, str(self.key), "int", 1).RUN(value.get(scale=1))
+            # from datagen.function.commands.execute import Execute
+            # # /execute store result storage ns:id path int 1 run data get storage ns2:id2 path2 1
+            # return Execute().STORE("result", "storage", self.storage, str(self.key), "int", 1).RUN(value.get(scale=1))
+            # /data modify storage ns:name path set from storage ns2:name2 path2
+            return CustomCommand(f"data modify storage {self.storage._id_str()} {self.key} set from storage {value.storage._id_str()} {value.key}")
         elif isinstance(value, (Function, Identifier)):
             return self.storage.set_from_function_return(str(self.key), value)
         elif isinstance(value, ScoreboardPlayer):
             return self.storage.set_from_score_player(str(self.key), value)
         elif isinstance(value, FunctionMacroArgument):
             return self.storage.set(str(self.key), value)
+        elif isinstance(value, DataStorage):
+            return CustomCommand(f"data modify storage {self.storage._id_str()} {self.key} set from storage {value._id_str()}")
         else:
             return self.storage.set(self.key, value)
     
