@@ -19,6 +19,7 @@ type TInteger = (
     | ScoreboardPlayer
     | BossBar
 )
+
 type TFloat = (
     float
     | str
@@ -86,3 +87,5 @@ type TAny = (
     | TEntity
     | DataStorageValue[TAny]
 )
+
+type TPath = ( TString )
