@@ -4,7 +4,6 @@ from datagen.function.commands._data.datastorage import DataStorageValue
 from datagen.function.commands.command import Command
 from datagen.function.commands.commandarray import CommandArray
 from datagen.function.commands.customcommand import CustomCommand
-from datagen.function.commands.execute import Execute
 from datagen.function.function import Function
 from datagen.function.functionmacroargument import FunctionMacroArgument
 from datagen.utils.minecraft.identifier import Identifier
@@ -132,6 +131,7 @@ class ScoreboardObjective():
             str, "int | bool | (Function | Identifier | Command) | FunctionMacroArgument | DataStorageValue | ScoreboardPlayer"
         ]
     ) -> CommandArray:
+        from datagen.utils.scoreboard.player import ScoreboardPlayer
         from datagen.function.commands.execute import Execute
         arr = CommandArray([])
         for k, v in d.items():

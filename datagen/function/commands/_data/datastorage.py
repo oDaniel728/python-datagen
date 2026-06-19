@@ -4,7 +4,6 @@ from datagen.function.commands.command import Command
 from datagen.function.commands.commandarray import CommandArray
 from datagen.function.commands.customcommand import CustomCommand
 from datagen.utils.obfuscator import Obfuscator
-from datagen.utils.scoreboard.objective import ScoreboardObjective
 if TYPE_CHECKING:
     from datagen.function.function import Function
     from datagen.utils.scoreboard.player import ScoreboardPlayer
@@ -73,6 +72,7 @@ class DataStorage():
         return DataStorage(id)
 
     def rset(self, d: dict[str, TAny | ScoreboardPlayer | (Function | Identifier)]) -> CommandArray:
+        from datagen.utils.scoreboard.player import ScoreboardPlayer
         cmds = CommandArray([])
         for k, v in d.items():
             if isinstance(v, ScoreboardPlayer):
@@ -96,6 +96,7 @@ class DataStorageValue[T: DataStorage.TAny]():
         self.key = key
 
     def set(self, value: "DataStorageValue.TAny") -> Command:
+        from datagen.function.function import Function
         from datagen.utils.scoreboard.player import ScoreboardPlayer
         if isinstance(value, DataStorageValue):
             from datagen.function.commands.execute import Execute
@@ -119,8 +120,9 @@ class DataStorageValue[T: DataStorage.TAny]():
     def remove(self) -> CustomCommand:
         return self.storage.remove(self.key)
 
-    def to_score(self, set: bool = False) -> "ScoreboardPlayer":
+    def to_score(self, set: bool = False):
         from datagen.function.commands.execute import Execute
+        from datagen.utils.scoreboard.objective import ScoreboardObjective
         plr = (~ ScoreboardObjective.TEMP)["__" + self.storage._id_str() + "." + str(self.key)]
         if set:
             ~ (
