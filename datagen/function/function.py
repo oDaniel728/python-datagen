@@ -224,6 +224,21 @@ with Function(Identifier.of("pack:another")) as g:
         args = k | {i: ag for i, ag in enumerate(a)}
         return self.run(args)
     
+    def __getitem__[T = Any](
+        self, 
+        key: tuple[str, type[T] | T] | str
+    ) -> FunctionMacroArgument[T]:
+        if isinstance(key, tuple):
+            key = key[0]
+        return FunctionMacroArgument(key) # type: ignore
+    
+    def arg[T = Any](
+        self, 
+        key: str, 
+        as_: type[T] | T = Any
+    ) -> FunctionMacroArgument[T]:
+        return self[key, as_]
+    
 class FunctionContext(Function):
     def __new__(cls, f: "Function") -> Self:
         if isinstance(f, Identifier):
@@ -246,18 +261,3 @@ class FunctionContext(Function):
         self.id = self.function.id
         self.namespace = self.function.namespace
         self.commands = self.function.commands
-
-    def __getitem__[T = Any](
-        self, 
-        key: tuple[str, type[T] | T] | str
-    ) -> FunctionMacroArgument[T]:
-        if isinstance(key, tuple):
-            key = key[0]
-        return FunctionMacroArgument(key) # type: ignore
-    
-    def arg[T = Any](
-        self, 
-        key: str, 
-        as_: type[T] | T = Any
-    ) -> FunctionMacroArgument[T]:
-        return self[key, as_]
