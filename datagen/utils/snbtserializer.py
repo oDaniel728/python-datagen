@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from symtable import Function
 from typing import Any
 import re
 
@@ -163,6 +164,14 @@ class SNBTSerializer:
 
         elif value is None:
             return "null"
+
+        # ----------------------------------------------------------
+        # OTHERS
+        # ----------------------------------------------------------
+
+        from datagen.function.function import Function
+        if isinstance(value, Function):
+            return f'"{value.id}"'
 
         raise TypeError(
             f"Unsupported type: {type(value)}"

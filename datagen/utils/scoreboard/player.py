@@ -22,7 +22,11 @@ class ScoreboardPlayer():
     def __str__(self) -> str:
         if isinstance(self.name, str):
             return Obfuscator.obfuscate(self.name)
-        return str(self.name)
+        return f"{self.name}"
+
+    def get_full_name(self) -> str:
+        return f"{self} {self.objective}"
+
     def to_string(self) -> str: return str(self)
 
     def add(self, score: "int | ScoreboardPlayer | FunctionMacroArgument"):

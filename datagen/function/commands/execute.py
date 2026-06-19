@@ -1,3 +1,4 @@
+import builtins
 from typing import Any, Callable, Literal, Self, overload
 
 from datagen.function.commands.bossbar import BossBar
@@ -334,29 +335,27 @@ class Execute(Command):
         type: str = args[1]
 
         if type == "block":
-            result_type, pos, path, data_type, scale = args
+            result_type, _, pos, path, data_type, scale = args
             self._chunks.append(f"store {result_type} block {pos} {path} {data_type} {scale}")
         elif type == "entity":
-            result_type, target, path, data_type, scale = args
+            result_type, _, target, path, data_type, scale = args
             self._chunks.append(f"store {result_type} entity {target} {path} {data_type} {scale}")
         elif type == "storage":
-            result_type, target, path, data_type, scale = args
+            result_type, _, target, path, data_type, scale = args
             target_id = target.id if isinstance(target, DataStorage) else target
             self._chunks.append(f"store {result_type} storage {target_id} {path} {data_type} {scale}")
         elif type == "bossbar":
-            result_type, target, value = args
+            result_type, _, target, value = args
             self._chunks.append(f"store {result_type} bossbar {target._id} {value}")
         elif type == "score":
-            result_type, target, *_ = args
+            result_type, _, target, *_ = args
             if isinstance(target, ScoreboardPlayer):
-                target_str = f"{target.name} {target.objective}"
-            elif isinstance(target, (str, Identifier)):
-                target_str = f"{str(target).replace(':', ' ')}"
+                target_str = target.get_full_name()
             else:
-                raise ValueError("Invalid target type for score store")
+                raise ValueError(f"Invalid target type for score store: {builtins.type(target)}")
             self._chunks.append(f"store {result_type} score {target_str}")
         else:
-            raise ValueError("Invalid store type")
+            raise ValueError(f"Invalid store type")
         
         return self
     

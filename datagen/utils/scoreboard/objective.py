@@ -141,12 +141,12 @@ class ScoreboardObjective():
                 arr += (self.player(k).set(v))
             elif isinstance(v, (Function, Identifier, Command)):
                 arr += ((Execute()
-                    .STORE("result", "score", self[k])
+                    .STORE("result", "score", self.player(k))
                     .RUN(v)
                 ))
             elif isinstance(v, ScoreboardPlayer):
                 arr += ((Execute()
-                    .STORE("result", "score", self[k])
+                    .STORE("result", "score", self.player(k))
                     .RUN(v.get())
                 ))
             else:
