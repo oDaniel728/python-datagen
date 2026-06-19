@@ -15,7 +15,7 @@ from datagen.utils.obfuscator import Obfuscator
 from datagen.utils.simplefile import SimpleFile
 
 
-class Function[A: DataStorage]():
+class Function[**P]():
     """
     # Function
     - See https://minecraft.wiki/w/Function_(Java_Edition)
@@ -198,7 +198,7 @@ with Function(Identifier.of("pack:another")) as g:
             Function.fns[id] = func
             return func
 
-    def run(self, args: A | dict | DataStorage | None = None) -> "RunFunction":
+    def run(self, args: dict | DataStorage | None = None) -> "RunFunction":
         """Returns a `RunFunction` command that executes this function with the given arguments. The arguments can be provided as a dictionary of key-value pairs, or as a `DataStorage` object containing the arguments. If no arguments are provided, the function will be executed without any arguments. This method is a convenient way to create a command that runs the function, and can be used in command sequences or other contexts where commands are needed."""
         from datagen.function.commands.runfunction import RunFunction
         return RunFunction(self, args)
@@ -218,12 +218,17 @@ with Function(Identifier.of("pack:another")) as g:
             ns = Namespace.temp()
         ns += self
         return self
+
+    def __call__(self, *a: P.args, **k: P.kwargs) -> "RunFunction":
+        """Allows the function to be called like a regular Python function, returning a `RunFunction` command that executes this function with the given arguments. The arguments can be provided as positional or keyword arguments, and will be passed to the `run` method to create the appropriate command. This syntax is a convenient way to create a command that runs the function with specific arguments, and can be used in command sequences or other contexts where commands are needed."""
+        args = k | {i: ag for i, ag in enumerate(a)}
+        return self.run(args)
     
 class FunctionContext(Function):
     def __new__(cls, f: "Function") -> Self:
         if isinstance(f, Identifier):
             f = Function.of(f)
-        if id in cls.fns:
+        if f.id in cls.fns:
             return cls.fns[f.id]
         else:
             func = super(Function, cls).__new__(cls)
