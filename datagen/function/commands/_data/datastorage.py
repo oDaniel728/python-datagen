@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING, _TypedDict, TypeAlias, TypedDict
 
+from datagen.function.commands.bossbar import BossBar
 from datagen.function.commands.command import Command
 from datagen.function.commands.commandarray import CommandArray
 from datagen.function.commands.customcommand import CustomCommand
@@ -140,4 +141,21 @@ class DataStorageValue[T: DataStorage.TAny]():
     def from_data(self, from_: "DataStorageValue", scale: float = 1) -> CustomCommand:
         return CustomCommand(f"execute store result storage {self.storage._id_str()} {self.key} int {scale} run data get storage {from_.storage._id_str()} {from_.key}")
 
+    def to_bossbar(self, bossbar: "Identifier | BossBar") -> CustomCommand:
+        from datagen.function.commands.bossbar import BossBar
+        if isinstance(bossbar, BossBar):
+            id = bossbar._id
+        else:
+            id = bossbar
+        _id = f"{id.get_namespace()}:{Obfuscator.obfuscate_path(id.get_namespace(), id.get_path())}".lower()
+        return CustomCommand(f"execute store result bossbar {_id} value int 1 run data get storage {self.storage._id_str()} {self.key}")
+    
+    def from_bossbar(self, bossbar: "Identifier | BossBar") -> CustomCommand:
+        from datagen.function.commands.bossbar import BossBar
+        if isinstance(bossbar, BossBar):
+            id = bossbar._id
+        else:
+            id = bossbar
+        _id = f"{id.get_namespace()}:{Obfuscator.obfuscate_path(id.get_namespace(), id.get_path())}".lower()
+        return CustomCommand(f"execute store result storage {self.storage._id_str()} {self.key} int 1 run bossbar get {_id} value")
     
