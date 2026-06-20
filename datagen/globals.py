@@ -29,9 +29,14 @@ class DatagenConfig():
         error: bool
         task: bool
 
+    class TDatagenConfigTLoggerWhitelist(TypedDict):
+        enabled: bool
+        values: list[str]
+
     class TDatagenConfigTLoggerSettings(TypedDict):
         enabled: bool
         levels: DatagenConfig.TDatagenConfigTLoggerLevels
+        whitelist: DatagenConfig.TDatagenConfigTLoggerWhitelist
 
     class TDatagenConfig(TypedDict):
         builderSettings: DatagenConfig.TDatagenConfigTBuilderOptions

@@ -7,7 +7,9 @@ class LoggerSettings():
         log_info: bool = True, 
         log_warning: bool = True, 
         log_error: bool = True, 
-        log_task: bool = True
+        log_task: bool = True,
+        whitelist_enabled: bool = False,
+        whitelist_values: list[str] | None = None,
     ) -> None:
         self.enabled = enabled
         self.log_debug = log_debug
@@ -16,6 +18,8 @@ class LoggerSettings():
         self.log_warning = log_warning
         self.log_error = log_error
         self.log_task = log_task
+        self.whitelist_enabled = whitelist_enabled
+        self.whitelist_values = whitelist_values or []
 
     @classmethod
     def from_dict(cls, data=None) -> "LoggerSettings":
@@ -23,6 +27,7 @@ class LoggerSettings():
             return cls()
         enabled = data.get("enabled", True)
         levels = data.get("levels", {})
+        whitelist = data.get("whitelist", {})
         return cls(
             enabled=enabled,
             log_debug=levels.get("debug", False),
@@ -31,10 +36,12 @@ class LoggerSettings():
             log_warning=levels.get("warning", True),
             log_error=levels.get("error", True),
             log_task=levels.get("task", True),
+            whitelist_enabled=whitelist.get("enabled", False),
+            whitelist_values=whitelist.get("values", []),
         )
 
     def to_dict(self):
-        return {
+        result: dict = {
             "enabled": self.enabled,
             "levels": {
                 "debug": self.log_debug,
@@ -45,6 +52,12 @@ class LoggerSettings():
                 "task": self.log_task,
             }
         }
+        if self.whitelist_enabled or self.whitelist_values:
+            result["whitelist"] = {
+                "enabled": self.whitelist_enabled,
+                "values": self.whitelist_values,
+            }
+        return result
     
     def disable_debug(self):
         self.log_debug = False
@@ -87,3 +100,25 @@ class LoggerSettings():
     def enable_task(self):
         self.log_task = True
         return self
+
+    def enable_whitelist(self):
+        self.whitelist_enabled = True
+        return self
+    def disable_whitelist(self):
+        self.whitelist_enabled = False
+        return self
+    
+    def add_to_whitelist(self, name: str):
+        if name not in self.whitelist_values:
+            self.whitelist_values.append(name)
+        return self
+    
+    def remove_from_whitelist(self, name: str):
+        if name in self.whitelist_values:
+            self.whitelist_values.remove(name)
+        return self
+    
+    def is_namespace_allowed(self, namespace: str) -> bool:
+        if not self.whitelist_enabled:
+            return True
+        return namespace in self.whitelist_values

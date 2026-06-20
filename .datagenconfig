@@ -14,12 +14,19 @@
     "loggerSettings": {
         "enabled": true,
         "levels": {
-            "debug": false,
-            "success": false,
+            "debug": true,
+            "success": true,
             "info": true,
             "warning": true,
             "error": true,
-            "task": false
+            "task": true
+        },
+        "whitelist": {
+            "enabled": true,
+            "values": [
+                "testpack",
+                "SYSTEM"
+            ]
         }
     }
 }
