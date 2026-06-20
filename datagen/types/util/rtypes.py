@@ -10,7 +10,7 @@ from datagen.utils.repr.entitytype import EntityType
 from datagen.utils.scoreboard.player import ScoreboardPlayer
 
 type TInteger = (
-    int 
+    int
     | str
     | LiteralString
     | DataStorageValue[int]
@@ -108,7 +108,7 @@ how?
 
 - Identifier: for Minecraft identifiers like 'minecraft:stone'
 """
-type TIdentifier = (
+type TIdentifier[T] = (
     Identifier
     | str
     | LiteralString

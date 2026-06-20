@@ -1,10 +1,10 @@
-from typing import Any, Protocol, Type, overload, runtime_checkable
+from typing import Any, Protocol, Type, TypeAliasType, overload, runtime_checkable
 
 @runtime_checkable
 class _TConvertibleToString(Protocol):
     def __str__(self) -> str: ...
 
-class FunctionMacroArgument[T: _TConvertibleToString = Any]():
+class FunctionMacroArgument[T = Any]():
     r"""
     # Function Macro Argument \<T\>
     \<T : __str__>
@@ -62,4 +62,7 @@ print(arg)  # Output: $(example)
         return plr
 
     def cast[U](self, type: Type[U] | U) -> U:
+        return self # type: ignore
+
+    def typed[U](self, type: Type[U] | U) -> FunctionMacroArgument[U]:
         return self # type: ignore

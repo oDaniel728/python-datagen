@@ -17,13 +17,15 @@ class DataStorage[D: dict | _TypedDict]():
     type TKey = "str | int | float | bool | Identifier | FunctionMacroArgument"
     type TAny = "str | int | float | bool | Identifier | list[TAny] | dict[TKey, TAny] | None | FunctionMacroArgument"
 
-    def __init__(self, id: Identifier):
+    def __init__(self, id: Identifier | FunctionMacroArgument | str):
         self.id = id
 
     def __str__(self): return self._id_str()
     def to_string(self): return str(self)
 
     def _id_str(self) -> str:
+        if isinstance(self.id, (FunctionMacroArgument, str)):
+            return str(self.id)
         namespace = self.id.get_namespace()
         path = self.id.get_path()
         return f"{namespace}:{Obfuscator.obfuscate_path(namespace, path)}".lower()
