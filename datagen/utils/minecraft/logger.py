@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from datagen.globals import DatagenConfig
 from datagen.utils.minecraft.loggersettings import LoggerSettings
 
 class Logger():
@@ -30,31 +31,43 @@ class Logger():
         del Logger.instances[self.namespace]
 
     def info(self, message: str):
-        if not Logger.settings.log_info: return
+        if not Logger.settings.enabled or not Logger.settings.log_info: return
         print(self._build_text(message, self.namespace, Logger.C_RESET, "INFO"))
 
     def warn(self, message: str):
-        if not Logger.settings.log_warning: return
+        if not Logger.settings.enabled or not Logger.settings.log_warning: return
         print(self._build_text(message, self.namespace, Logger.C_ORANGE, "WARN"))
 
     def error(self, message: str):
-        if not Logger.settings.log_error: return
+        if not Logger.settings.enabled or not Logger.settings.log_error: return
         print(self._build_text(message, self.namespace, Logger.C_RED + Logger.C_BOLD, "ERROR"))
 
     def success(self, message: str):
-        if not Logger.settings.log_success: return
+        if not Logger.settings.enabled or not Logger.settings.log_success: return
         print(self._build_text(message, self.namespace, Logger.C_GREEN + Logger.C_BOLD, "SUCCESS"))
 
     def debug(self, message: str):
-        if not Logger.settings.log_debug: return
+        if not Logger.settings.enabled or not Logger.settings.log_debug: return
         print(self._build_text(message, self.namespace, Logger.C_GRAY, "DEBUG"))
 
     @staticmethod
     def start_task(task_name: str):
-        if not Logger.settings.log_task: return
+        if not Logger.settings.enabled or not Logger.settings.log_task: return
         print(Logger._build_text(f"Starting task '{task_name}'", "SYSTEM", Logger.C_BOLD, "TASK"))
 
     @staticmethod
     def end_task(task_name: str):
-        if not Logger.settings.log_task: return
+        if not Logger.settings.enabled or not Logger.settings.log_task: return
         print(Logger._build_text(f"Finished task '{task_name}'", "SYSTEM", Logger.C_BOLD, "TASK"))
+
+    @classmethod
+    def load_from_config(cls) -> None:
+        try:
+            config_data = DatagenConfig.config.get("loggerSettings")
+            if config_data is not None:
+                cls.settings = LoggerSettings.from_dict(config_data)
+        except Exception:
+            pass
+
+
+Logger.load_from_config()

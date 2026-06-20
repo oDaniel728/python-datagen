@@ -10,5 +10,16 @@
     "dumperSettings": {
         "source": "dumpgen/dumps/",
         "output": "datagen/utils/minecraft/collections/"
+    },
+    "loggerSettings": {
+        "enabled": true,
+        "levels": {
+            "debug": false,
+            "success": false,
+            "info": true,
+            "warning": true,
+            "error": true,
+            "task": false
+        }
     }
 }

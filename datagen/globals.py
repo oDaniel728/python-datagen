@@ -21,9 +21,22 @@ class DatagenConfig():
         source: str
         output: str
 
+    class TDatagenConfigTLoggerLevels(TypedDict):
+        debug: bool
+        success: bool
+        info: bool
+        warning: bool
+        error: bool
+        task: bool
+
+    class TDatagenConfigTLoggerSettings(TypedDict):
+        enabled: bool
+        levels: DatagenConfig.TDatagenConfigTLoggerLevels
+
     class TDatagenConfig(TypedDict):
         builderSettings: DatagenConfig.TDatagenConfigTBuilderOptions
         dumperSettings: DatagenConfig.TDataGenConfigTDumperSettings
+        loggerSettings: DatagenConfig.TDatagenConfigTLoggerSettings
         
     config: TDatagenConfig
 

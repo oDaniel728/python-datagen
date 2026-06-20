@@ -1,6 +1,7 @@
 class LoggerSettings():
     def __init__(
         self, 
+        enabled: bool = True,
         log_debug: bool = False, 
         log_success: bool = True, 
         log_info: bool = True, 
@@ -8,6 +9,7 @@ class LoggerSettings():
         log_error: bool = True, 
         log_task: bool = True
     ) -> None:
+        self.enabled = enabled
         self.log_debug = log_debug
         self.log_success = log_success
         self.log_info = log_info
@@ -15,14 +17,33 @@ class LoggerSettings():
         self.log_error = log_error
         self.log_task = log_task
 
+    @classmethod
+    def from_dict(cls, data=None) -> "LoggerSettings":
+        if not data:
+            return cls()
+        enabled = data.get("enabled", True)
+        levels = data.get("levels", {})
+        return cls(
+            enabled=enabled,
+            log_debug=levels.get("debug", False),
+            log_success=levels.get("success", True),
+            log_info=levels.get("info", True),
+            log_warning=levels.get("warning", True),
+            log_error=levels.get("error", True),
+            log_task=levels.get("task", True),
+        )
+
     def to_dict(self):
         return {
-            "log_debug": self.log_debug,
-            "log_success": self.log_success,
-            "log_info": self.log_info,
-            "log_warning": self.log_warning,
-            "log_error": self.log_error,
-            "log_task": self.log_task
+            "enabled": self.enabled,
+            "levels": {
+                "debug": self.log_debug,
+                "success": self.log_success,
+                "info": self.log_info,
+                "warning": self.log_warning,
+                "error": self.log_error,
+                "task": self.log_task,
+            }
         }
     
     def disable_debug(self):
