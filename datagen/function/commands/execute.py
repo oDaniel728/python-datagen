@@ -4,6 +4,7 @@ from typing import Any, Callable, Literal, Self, overload
 from datagen.function.commands.bossbar import BossBar
 from datagen.function.commands.command import Command
 from datagen.function.commands._data.datastorage import DataStorage
+from datagen.function.commands.commandarray import CommandArray
 from datagen.function.function import Function
 from datagen.types.util.min import Range
 from datagen.utils.minecraft.blockposition import BlockPosition
@@ -377,3 +378,17 @@ class Execute(Command):
         new = self.__class__()
         new._chunks = self._chunks.copy()
         return new
+
+    def IFELSE(self, condition_supplier: Callable[[_ConditionBuilder], IDontCare], if_true: Command | Function | Identifier, if_false: Command | Function | Identifier) -> CommandArray:
+        self._check_seal()
+        this = CommandArray([])
+
+        ifexec = self.copy()
+        unlessexec = self.copy()
+        condition_supplier(ifexec._condition_builder)
+        condition_supplier(unlessexec._unless_condition_builder)
+
+        this += ifexec.RUN(if_true)
+        this += unlessexec.RUN(if_false)
+
+        return this
