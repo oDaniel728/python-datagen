@@ -1,4 +1,5 @@
 from datagen.globals import DatagenConfig
+from datagen.utils.environment import Environment
 
 
 class Obfuscator():
@@ -17,7 +18,7 @@ class Obfuscator():
     def obfuscate_path(cls, namespace: str, path: str) -> str:
         if not DatagenConfig.config["builderSettings"].get("obfuscate", False):
             return path
-        if namespace != "temp":
+        if namespace != Environment.namespace_temp():
             return path
         return cls.obfuscate(path)
 

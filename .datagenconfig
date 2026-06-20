@@ -28,5 +28,19 @@
                 "SYSTEM"
             ]
         }
+    },
+    "environmentSettings": {
+        "names": {
+            "namespaces": {
+                "minecraft": "minecraft",
+                "temp": "temp"
+            },
+            "scoreboard": {
+                "temp": "temp"
+            },
+            "dataStorage": {
+                "temp": "temp"
+            }
+        }
     }
 }

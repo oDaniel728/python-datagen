@@ -4,6 +4,7 @@ from typing import Any
 
 from datagen.globals import RECIPES_PATH
 from datagen.tag.tag import Tag
+from datagen.utils.environment import Environment
 from datagen.utils.minecraft.identifier import Identifier
 from datagen.utils.obfuscator import Obfuscator
 from datagen.utils.repr.item import Item
@@ -79,7 +80,7 @@ class Recipe():
 
     @staticmethod
     def shaped(pattern: list[str], key: dict[str, Item | Tag[Item]], result: ItemStack) -> "Recipe":
-        return Recipe(Identifier.of("temp", f"shaped_{len(Recipe.__recipes)}"), {
+        return Recipe(Identifier.of(Environment.namespace_temp(), f"shaped_{len(Recipe.__recipes)}"), {
             "type": "minecraft:crafting_shaped",
             "pattern": pattern,
             "key": {k: {"item" if isinstance(v, Item) else "tag": v.id.to_string()} for k, v in key.items()},
@@ -92,7 +93,7 @@ class Recipe():
 
     @staticmethod
     def shapeless(ingredients: list[Item | Tag[Item]], result: ItemStack) -> "Recipe":
-        return Recipe(Identifier.of("temp", f"shapeless_{len(Recipe.__recipes)}"), {
+        return Recipe(Identifier.of(Environment.namespace_temp(), f"shapeless_{len(Recipe.__recipes)}"), {
             "type": "minecraft:crafting_shapeless",
             "ingredients": [ {
                 "item" if isinstance(ingredient, Item) else "tag": ingredient.id.to_string()
@@ -106,7 +107,7 @@ class Recipe():
 
     @staticmethod
     def smelting(ingredient: Item | Tag[Item], result: ItemStack, experience: float = 0.0, cookingtime: int = 200) -> "Recipe":
-        return Recipe(Identifier.of("temp", f"smelting_{len(Recipe.__recipes)}"), {
+        return Recipe(Identifier.of(Environment.namespace_temp(), f"smelting_{len(Recipe.__recipes)}"), {
             "type": "minecraft:smelting",
             "ingredient": ingredient.id.to_string(),
             "result": {
@@ -120,7 +121,7 @@ class Recipe():
 
     @staticmethod
     def blasting(ingredient: Item | Tag[Item], result: ItemStack, experience: float = 0.0, cookingtime: int = 100) -> "Recipe":
-        return Recipe(Identifier.of("temp", f"blasting_{len(Recipe.__recipes)}"), {
+        return Recipe(Identifier.of(Environment.namespace_temp(), f"blasting_{len(Recipe.__recipes)}"), {
             "type": "minecraft:blasting",
             "ingredient": ingredient.id.to_string(),
             "result": {
@@ -134,7 +135,7 @@ class Recipe():
     
     @staticmethod
     def smoking(ingredient: Item | Tag[Item], result: ItemStack, experience: float = 0.0, cookingtime: int = 100) -> "Recipe":
-        return Recipe(Identifier.of("temp", f"smoking_{len(Recipe.__recipes)}"), {
+        return Recipe(Identifier.of(Environment.namespace_temp(), f"smoking_{len(Recipe.__recipes)}"), {
             "type": "minecraft:smoking",
             "ingredient": ingredient.id.to_string(),
             "result": {
@@ -148,7 +149,7 @@ class Recipe():
 
     @staticmethod
     def smithing(ingredient: Item | Tag[Item], template: Item | Tag[Item], result: ItemStack) -> "Recipe":
-        return Recipe(Identifier.of("temp", f"smithing_{len(Recipe.__recipes)}"), {
+        return Recipe(Identifier.of(Environment.namespace_temp(), f"smithing_{len(Recipe.__recipes)}"), {
             "type": "minecraft:smithing",
             "ingredient": ingredient.id.to_string(),
             "template": template.id.to_string(),
@@ -161,7 +162,7 @@ class Recipe():
 
     @staticmethod
     def stonecutting(ingredient: Item | Tag[Item], result: ItemStack) -> "Recipe":
-        return Recipe(Identifier.of("temp", f"stonecutting_{len(Recipe.__recipes)}"), {
+        return Recipe(Identifier.of(Environment.namespace_temp(), f"stonecutting_{len(Recipe.__recipes)}"), {
             "type": "minecraft:stonecutting",
             "ingredient": ingredient.id.to_string(),
             "result": {
@@ -173,7 +174,7 @@ class Recipe():
 
     @staticmethod
     def transmute(ingredient: Item | Tag[Item], result: ItemStack) -> "Recipe":
-        return Recipe(Identifier.of("temp", f"transmute_{len(Recipe.__recipes)}"), {
+        return Recipe(Identifier.of(Environment.namespace_temp(), f"transmute_{len(Recipe.__recipes)}"), {
             "type": "minecraft:transmuting",
             "ingredient": ingredient.id.to_string(),
             "result": {
@@ -185,7 +186,7 @@ class Recipe():
     
     @staticmethod
     def campfire_cooking(ingredient: Item | Tag[Item], result: ItemStack, experience: float = 0.0, cookingtime: int = 100) -> "Recipe":
-        return Recipe(Identifier.of("temp", f"campfire_cooking_{len(Recipe.__recipes)}"), {
+        return Recipe(Identifier.of(Environment.namespace_temp(), f"campfire_cooking_{len(Recipe.__recipes)}"), {
             "type": "minecraft:campfire_cooking",
             "ingredient": ingredient.id.to_string(),
             "result": {

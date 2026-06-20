@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING, Literal, Self
 
+from datagen.utils.environment import Environment
 from datagen.function.commands._data.datastorage import DataStorageValue
 from datagen.function.commands.command import Command
 from datagen.function.commands.commandarray import CommandArray
@@ -153,4 +154,4 @@ class ScoreboardObjective():
                 raise ValueError(f"Invalid value type: {type(v)} for key: {k}")
         return arr
     
-ScoreboardObjective.TEMP = ScoreboardObjective("temp", Text.literal("Temporary Objective"), ObjectiveCriterion.DUMMY)
+ScoreboardObjective.TEMP = ScoreboardObjective(Environment.scoreboard_temp(), Text.literal("Temporary Objective"), ObjectiveCriterion.DUMMY)

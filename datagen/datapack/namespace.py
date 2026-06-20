@@ -9,6 +9,7 @@ from datagen.function.function import Function
 from datagen.tag.functiontag import FunctionTag
 from datagen.tag.tag import Tag
 from datagen.utils.minecraft.identifier import Identifier
+from datagen.utils.environment import Environment
 from datagen.utils.minecraft.logger import Logger
 
 if TYPE_CHECKING:
@@ -326,12 +327,12 @@ def main():
     @staticmethod
     def minecraft() -> "Namespace":
         """Returns the default Minecraft namespace, which contains all of the vanilla resources."""
-        return Namespace('minecraft')
+        return Namespace(Environment.namespace_minecraft())
     
     _TEMP: "Namespace | None" = None
 
     @staticmethod
     def temp() -> "Namespace":
         """Returns a temporary namespace that can be used for resources that don't need to be organized into a specific namespace."""
-        return Namespace("temp")
+        return Namespace(Environment.namespace_temp())
     

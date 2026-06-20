@@ -38,10 +38,19 @@ class DatagenConfig():
         levels: DatagenConfig.TDatagenConfigTLoggerLevels
         whitelist: DatagenConfig.TDatagenConfigTLoggerWhitelist
 
+    class TDatagenConfigTEnvironmentNames(TypedDict, total=False):
+        namespaces: dict[str, str]
+        scoreboard: dict[str, str]
+        dataStorage: dict[str, str]
+
+    class TDatagenConfigTEnvironmentSettings(TypedDict, total=False):
+        names: DatagenConfig.TDatagenConfigTEnvironmentNames
+
     class TDatagenConfig(TypedDict):
         builderSettings: DatagenConfig.TDatagenConfigTBuilderOptions
         dumperSettings: DatagenConfig.TDataGenConfigTDumperSettings
         loggerSettings: DatagenConfig.TDatagenConfigTLoggerSettings
+        environmentSettings: DatagenConfig.TDatagenConfigTEnvironmentSettings
         
     config: TDatagenConfig
 
