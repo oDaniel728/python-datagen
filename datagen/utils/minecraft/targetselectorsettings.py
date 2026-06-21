@@ -279,3 +279,29 @@ class TargetSelectorSettings():
                 } 
             }
         return self
+    
+    def copy(self) -> "TargetSelectorSettings":
+        """Creates a copy of this TargetSelectorSettings."""
+        return TargetSelectorSettings(
+            x=self.x,
+            y=self.y,
+            z=self.z,
+            dx=self.dx,
+            dy=self.dy,
+            dz=self.dz,
+            distance=self.distance,
+            x_rotation=self.x_rotation,
+            y_rotation=self.y_rotation,
+            scores=self.scores.copy() if self.scores else None,
+            tag=self.tag,
+            team=self.team,
+            name=self.name,
+            type=self.type,
+            predicate=self.predicate,
+            nbt=self.nbt.copy() if self.nbt else None,
+            level=self.level,
+            gamemode=self.gamemode, # type: ignore
+            advancements=self.advancements.copy() if self.advancements else None,
+            limit=self.limit,
+            sort=self.sort # type: ignore
+        )
