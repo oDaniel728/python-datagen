@@ -7,6 +7,14 @@ class EntitySettings():
     def __init__(self) -> None:
         self.nbt = {}
 
+    def with_nbt(self, nbt: compound):
+        self.nbt.update(nbt)
+        return self
+
+    def with_settings(self, settings: EntitySettings):
+        self.nbt.update(settings.to_dict())
+        return self
+
     def to_dict(self) -> dict:
         return self.nbt
     
