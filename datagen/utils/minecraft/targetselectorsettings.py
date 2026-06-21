@@ -305,3 +305,31 @@ class TargetSelectorSettings():
             limit=self.limit,
             sort=self.sort # type: ignore
         )
+    
+    def do_first(self):
+        self.with_limit(1)
+        return self
+    def do_nearest(self):
+        self.with_sort("nearest")
+        return self
+    def do_furthest(self):
+        self.with_sort("furthest")
+        return self
+    def do_rand(self):
+        self.with_sort("random")
+        return self
+    def do_arbitrary(self):
+        self.with_sort("arbitrary")
+        return self
+    def do_survival(self):
+        self.with_gamemode("survival")
+        return self
+    def do_creative(self):
+        self.with_gamemode("creative")
+        return self
+    def do_adventure(self):
+        self.with_gamemode("adventure")
+        return self
+    def do_spectator(self):
+        self.with_gamemode("spectator")
+        return self
