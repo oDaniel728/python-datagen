@@ -14,6 +14,9 @@ class Entity():
         self.type = type
         self.properties = Dictionary.auto(properties)
 
+    def with_settings(self, settings: Dictionary.TDictionaryProvider) -> "Entity":
+        return Entity(self.type, self.properties | Dictionary.auto(settings))
+
     def summon(self, at: Position3 = RelativePlayerPosition(0, 0, 0)) -> CustomCommand:
         return Summon.entity(self.type, at, self.properties)
     

@@ -9,13 +9,15 @@ from datagen.utils.minecraft.relativeplayerposition import RelativePlayerPositio
 from datagen.utils.minecraft.targetselector import TargetSelector
 from datagen.utils.minecraft.targetselectorsettings import TargetSelectorSettings
 from datagen.utils.minecraft.text._components import LiteralText
+from datagenpp.extras.repr._entitysettings.mobentitysettings import MobEntitySettings
 from datagenpp.extras.repr.entity import Entity
 from datagenpp.extras.repr.entitysettings import EntitySettings
 from packs.pack import Pack
 
 PIGGO = Entity(
     EntityTypes.PIG, 
-    EntitySettings().with_custom_name("Piggo")
+    MobEntitySettings()
+    .with_custom_name("Piggo")
 )
 
 def PiggoTargetSelectorSettings() -> TargetSelector:
@@ -55,7 +57,14 @@ class TestPack(Pack, name="testpack"):
 
         with~ Function(ns / "summon_piggo") as summon_piggo:
             ~ Say("Summoning Piggo...")
-            ~ PIGGO.summon(RelativePlayerPosition(0, 0, 0))
+            ~ (
+                PIGGO
+                    .with_settings(
+                        MobEntitySettings()
+                        .with_health(1)
+                    )
+                    .summon(RelativePlayerPosition(0, 0, 0))
+            )
         
         mc.load += load
 

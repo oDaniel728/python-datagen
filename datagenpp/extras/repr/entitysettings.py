@@ -10,6 +10,10 @@ class EntitySettings():
     def with_nbt(self, nbt: compound):
         self.nbt.update(nbt)
         return self
+    
+    def with_key(self, key: str, value: Any):
+        self.nbt[key] = value
+        return self
 
     def with_settings(self, settings: EntitySettings):
         self.nbt.update(settings.to_dict())
