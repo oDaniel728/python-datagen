@@ -1,4 +1,5 @@
 from datagen.datapack.namespace import Namespace
+from datagen.function.commands.customcommand import CustomCommand
 from datagen.function.commands.execute import Execute
 from datagen.function.commands.say import Say
 from datagen.function.commands.summon import Summon
@@ -12,7 +13,7 @@ from datagen.utils.minecraft.text._components import LiteralText
 from datagenpp.extras.repr._entitysettings.mobentitysettings import MobEntitySettings
 from datagenpp.extras.repr.entity import Entity
 from datagenpp.extras.repr.entitysettings import EntitySettings
-from packs.pack import Pack
+from datagenpp.extras.packs.pack import Pack
 
 PIGGO = Entity(
     EntityTypes.PIG, 

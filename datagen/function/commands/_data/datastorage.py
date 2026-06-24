@@ -1,10 +1,13 @@
 from typing import TYPE_CHECKING, _TypedDict, TypeAlias, TypedDict
+from uuid import UUID
 
+from datagen.types.util.reprs import *
 from datagen.function.commands.bossbar import BossBar
 from datagen.function.commands.command import Command
 from datagen.function.commands.commandarray import CommandArray
 from datagen.function.commands.customcommand import CustomCommand
 from datagen.utils.obfuscator import Obfuscator
+from datagen.utils.repr.entityuuid import EntityUUID
 if TYPE_CHECKING:
     from datagen.function.function import Function
     from datagen.utils.scoreboard.player import ScoreboardPlayer
@@ -88,7 +91,7 @@ class DataStorage[D: dict | _TypedDict]():
         return self[key].set(value)
 
 class DataStorageValue[T: DataStorage.TAny]():
-    type TAny = "T | FunctionMacroArgument | Identifier | Function | ScoreboardPlayer | DataStorageValue | DataStorage"
+    type TAny = "T | FunctionMacroArgument | Identifier | Function | ScoreboardPlayer | DataStorageValue | DataStorage | UUID | EntityUUID"
     def __init__(self, storage: DataStorage, key: DataStorage.TKey):
         self.storage = storage
         self.key = key
@@ -110,6 +113,17 @@ class DataStorageValue[T: DataStorage.TAny]():
             return self.storage.set(str(self.key), value)
         elif isinstance(value, DataStorage):
             return CustomCommand(f"data modify storage {self.storage._id_str()} {self.key} set from storage {value._id_str()}")
+        elif isinstance(value, UUID):
+            # [I; ...]
+            _values: tuple4[int] = (
+                value.int >> 96 & 0xFFFFFFFF, 
+                value.int >> 64 & 0xFFFFFFFF, 
+                value.int >> 32 & 0xFFFFFFFF, 
+                value.int & 0xFFFFFFFF
+            )
+            return self.storage.set(str(self.key), f"[I; {_values[0]}, {_values[1]}, {_values[2]}, {_values[3]}]")
+        elif isinstance(value, EntityUUID):
+            return self.storage.set(str(self.key), value.to_string())
         else:
             return self.storage.set(self.key, value)
     

@@ -1,5 +1,4 @@
-from typing import Any, Literal
-
+from typing import Any, Literal, TypeAliasType
 type double = float
 type boolean = int | bool | Literal['0', '1']
 type short = int
