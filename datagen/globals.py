@@ -7,6 +7,7 @@ TAGS_PATH = "tags/"
 PREDICATES_PATH = "predicate/"
 RECIPES_PATH = "recipe/"
 ADVANCEMENTS_PATH = "advancement/"
+LOOT_TABLES_PATH = "loot_table/"
 CONFIG_PATH = ".datagenconfig"
 
 class DatagenConfig():

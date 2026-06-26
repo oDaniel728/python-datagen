@@ -169,9 +169,16 @@ class SNBTSerializer:
         # OTHERS
         # ----------------------------------------------------------
 
+        from datagen.function.commands._data.entitydata import EntityData, BlockEntityData
         from datagen.function.function import Function
         if isinstance(value, Function):
             return f'"{value.id}"'
+
+        if isinstance(value, EntityData):
+            return f'"{value.get_target()}"'
+
+        if isinstance(value, BlockEntityData):
+            return f'"{value.get_pos()}"'
 
         raise TypeError(
             f"Unsupported type: {type(value)}"

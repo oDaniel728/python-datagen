@@ -13,6 +13,7 @@ from datagen.utils.environment import Environment
 from datagen.utils.minecraft.logger import Logger
 
 if TYPE_CHECKING:
+    from datagen.loot_table.loot_table import LootTable
     from datagen.predicate.predicate import Predicate
     from datagen.recipes.recipe import Recipe
     from datagen.utils.repr.enchantment_provider import EnchantmentProvider
@@ -108,6 +109,9 @@ def main():
     recipes: set["Recipe"]
     """A set of recipes contained within the namespace."""
 
+    loot_tables: set["LootTable"]
+    """A set of loot tables contained within the namespace."""
+
     load: FunctionTag
     """The load function tag for the namespace."""
 
@@ -135,6 +139,7 @@ def main():
         self.tags = set[Tag]()
         self.predicates = set["Predicate"]()
         self.recipes = set["Recipe"]()
+        self.loot_tables = set["LootTable"]()
         self.enchantments = set["EnchantmentProvider"]()
 
         self.load = FunctionTag(self / "load", [])
@@ -145,8 +150,9 @@ def main():
         """Returns an Identifier for a resource in the namespace with the given path. The identifier will have the namespace's name as its namespace, and the given path as its path."""
         return Identifier.from_string(f"{self.name}:{path}")
 
-    def add(self, obj: Function | Tag | "Predicate" | "EnchantmentProvider") -> Self:
+    def add(self, obj: Function | Tag | "Predicate" | "LootTable" | "EnchantmentProvider") -> Self:
         """Adds a function, tag, predicate, or enchantment to the namespace. The resource's namespace is set to this namespace, and its identifier is updated accordingly. The resource is also added to the appropriate set of resources in the namespace."""
+        from datagen.loot_table.loot_table import LootTable as LT
         from datagen.predicate.predicate import Predicate
         from datagen.utils.repr.enchantment_provider import EnchantmentProvider as EP
 
@@ -156,10 +162,12 @@ def main():
             return self.add_tag(obj)
         elif isinstance(obj, Predicate):
             return self.add_predicate(obj)
+        elif isinstance(obj, LT):
+            return self.add_loot_table(obj)
         elif isinstance(obj, EP):
             return self.add_enchantment(obj)
         else:
-            raise TypeError(f"Object of type '{type(obj)}' is not a Function, Tag or Predicate")
+            raise TypeError(f"Object of type '{type(obj)}' is not a Function, Tag, Predicate, or LootTable")
 
     def add_function(self, function: Function) -> Self:
         """Adds a function to the namespace. The function's namespace is set to this namespace, and its identifier is updated accordingly. The function is also added to the set of functions in the namespace."""
@@ -212,6 +220,20 @@ def main():
         """Adds multiple advancements to the namespace. Each advancement's namespace is set to this namespace, and its identifier is updated accordingly. The advancements are also added to the set of advancements in the namespace."""
         for adv in advs:
             self.add_advancement(adv)
+        return self
+
+    def add_loot_table(self, loot_table: "LootTable") -> Self:
+        """Adds a loot table to the namespace."""
+        from datagen.loot_table.loot_table import LootTable as LT
+        self.logger.info(f"Adding loot table '{loot_table.id._path}' to namespace '{self.name}'")
+        loot_table.namespace = self
+        self.loot_tables.add(loot_table)
+        return self
+
+    def add_loot_tables(self, *loot_tables: "LootTable") -> Self:
+        """Adds multiple loot tables to the namespace."""
+        for lt in loot_tables:
+            self.add_loot_table(lt)
         return self
 
     def add_enchantment(self, enchantment: "EnchantmentProvider") -> Self:
@@ -275,6 +297,15 @@ def main():
             f.build(base)
         Logger.end_task(f"Building recipes in namespace '{self.name}'")
 
+    def build_loot_tables(self, base: Path) -> None:
+        """Builds the loot tables in the namespace into the appropriate subdirectory."""
+        Logger.start_task(f"Building loot tables in namespace '{self.name}'")
+        for loot_table in self.loot_tables:
+            self.logger.info(f"Building loot table '{loot_table.id._path}' in namespace '{self.name}'")
+            f = loot_table.to_file()
+            f.build(base)
+        Logger.end_task(f"Building loot tables in namespace '{self.name}'")
+
     def build_enchantments(self, base: Path) -> None:
         """Builds the enchantments in the namespace into the appropriate subdirectory of the output directory."""
         Logger.start_task(f"Building enchantments in namespace '{self.name}'")
@@ -292,6 +323,7 @@ def main():
         self.build_predicates(base)
         self.build_advancements(base)
         self.build_recipes(base)
+        self.build_loot_tables(base)
         self.build_enchantments(base)
         Logger.end_task(f"Building namespace '{self.name}'")
 
@@ -308,7 +340,7 @@ def main():
         """Exits the context of the namespace, clearing the currently active namespace being built. This is called automatically at the end of a with block that uses the namespace as a context manager."""
         self.set_current_namespace(None) # type: ignore
 
-    type _TAddition = Function | Tag | "Predicate" | "EnchantmentProvider"
+    type _TAddition = Function | Tag | "Predicate" | "LootTable" | "EnchantmentProvider"
     def __iadd__(self, other: _TAddition | tuple[_TAddition, ...]) -> Self:
         """Adds a resource to the namespace using the `+=` operator."""
         if isinstance(other, tuple):

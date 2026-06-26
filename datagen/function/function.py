@@ -5,6 +5,7 @@ from click import command
 from datagen.function.functionmacroargument import FunctionMacroArgument
 
 if TYPE_CHECKING:
+    from datagen.function.commands._data.entitydata import EntityData, BlockEntityData
     from datagen.function.commands.commandarray import CommandArray
     from datagen.function.commands.runfunction import RunFunction
 from datagen.function.commands._data.datastorage import DataStorage
@@ -190,7 +191,7 @@ with Function(Identifier.of("pack:another")) as g:
             Function.fns[id] = func
             return func
 
-    def run(self, args: dict | DataStorage | None = None) -> "RunFunction":
+    def run(self, args: "dict | DataStorage | EntityData | BlockEntityData | None" = None) -> "RunFunction":
         """Returns a `RunFunction` command that executes this function with the given arguments. The arguments can be provided as a dictionary of key-value pairs, or as a `DataStorage` object containing the arguments. If no arguments are provided, the function will be executed without any arguments. This method is a convenient way to create a command that runs the function, and can be used in command sequences or other contexts where commands are needed."""
         from datagen.function.commands.runfunction import RunFunction
         return RunFunction(self, args)
