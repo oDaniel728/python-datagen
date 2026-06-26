@@ -90,11 +90,16 @@ class DataStorage[D: dict | _TypedDict]():
     def __setitem__(self, key: TKey, value: "DataStorageValue.TAny"):
         return self[key].set(value)
 
-class DataStorageValue[T: DataStorage.TAny]():
+class DataStorageValue[T]():
     type TAny = "T | FunctionMacroArgument | Identifier | Function | ScoreboardPlayer | DataStorageValue | DataStorage | UUID | EntityUUID"
     def __init__(self, storage: DataStorage, key: DataStorage.TKey):
         self.storage = storage
         self.key = key
+
+    def __getitem__(self, key: int | str | float | bool | Identifier | FunctionMacroArgument) -> "DataStorageValue":
+        if isinstance(key, (int)):
+            return DataStorageValue(self.storage, f"{self.key}[{key}]")
+        return DataStorageValue(self.storage, f'{self.key}.{str(key)}')
 
     def set(self, value: "DataStorageValue.TAny") -> Command:
         from datagen.function.function import Function
