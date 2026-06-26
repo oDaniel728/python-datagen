@@ -1,8 +1,12 @@
 from abc import ABC, abstractmethod
 import re
-from typing import Final
+from typing import TYPE_CHECKING, Final
 
 from datagen.types.util.counter import Counter
+
+if TYPE_CHECKING:
+    from datagen.function.commands._data.datastorage import DataStorageValue
+    from datagen.utils.scoreboard.player import ScoreboardPlayer
 
 _C = Counter()
 
@@ -83,3 +87,14 @@ class Command(ABC):
         from datagen.datapack.namespace import Namespace
         f = Function(Namespace.temp() / (name or f"__encaps{_C}")).add_command(self)
         return f
+    
+    def into(self, holder: "DataStorageValue | ScoreboardPlayer") -> "Command":
+        """Returns a command that stores the result of this command into the given holder, which can be a DataStorageValue or a ScoreboardPlayer. This allows for the result of the command to be used later in the function or in other commands."""
+        from datagen.function.commands._data.datastorage import DataStorageValue
+        from datagen.utils.scoreboard.player import ScoreboardPlayer
+        if isinstance(holder, DataStorageValue):
+            return holder.set(self)
+        elif isinstance(holder, ScoreboardPlayer):
+            return holder.set(self)
+        else:
+            raise TypeError(f"Cannot return into {type(holder)}")
