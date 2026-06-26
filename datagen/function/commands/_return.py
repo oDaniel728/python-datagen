@@ -3,7 +3,7 @@ from xml.etree.ElementTree import tostring
 
 from datagen.function.commands.command import Command
 from datagen.function.commands.customcommand import CustomCommand
-from datagen.function.commands._data.datastorage import DataStorage
+from datagen.function.commands._data.datastorage import DataStorage, DataStorageValue
 from datagen.function.function import Function
 from datagen.utils.scoreboard.player import ScoreboardPlayer
 
@@ -36,11 +36,19 @@ class Return(Command):
     
     @staticmethod
     def data_storage(storage: "DataStorage", key: str, scale: float | None = None):
+        id = storage.id.__str__()
         if scale is not None:
-            return Return.run(CustomCommand("data get storage", storage.id.to_string(), key, str(scale)))
+            return Return.run(CustomCommand("data get storage", id, key, str(scale)))
         else:
-            return Return.run(CustomCommand("data get storage", storage.id.to_string(), key))
+            return Return.run(CustomCommand("data get storage", id, key))
 
     def to_string(self) -> str:
         return f"# returns {self.value}\nreturn {self.value}"
     
+    def into(self, holder: "DataStorageValue | ScoreboardPlayer") -> Command:
+        if isinstance(holder, DataStorageValue):
+            return holder.set(self)
+        elif isinstance(holder, ScoreboardPlayer):
+            return holder.set(self)
+        else:
+            raise TypeError(f"Cannot return into {type(holder)}")

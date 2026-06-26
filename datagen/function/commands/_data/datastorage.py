@@ -9,6 +9,7 @@ from datagen.function.commands.customcommand import CustomCommand
 from datagen.utils.obfuscator import Obfuscator
 from datagen.utils.repr.entityuuid import EntityUUID
 if TYPE_CHECKING:
+    from datagen.function.commands._data.entitydata import EntityDataValue, BlockEntityDataValue, EntityData, BlockEntityData
     from datagen.function.function import Function
     from datagen.utils.scoreboard.player import ScoreboardPlayer
 from datagen.function.functionmacroargument import FunctionMacroArgument
@@ -18,7 +19,7 @@ from datagen.utils.minecraft.targetselector import TargetSelector
 
 class DataStorage[D: dict | _TypedDict]():
     type TKey = "str | int | float | bool | Identifier | FunctionMacroArgument"
-    type TAny = "str | int | float | bool | Identifier | list[TAny] | dict[TKey, TAny] | None | FunctionMacroArgument"
+    type TAny = "str | int | float | bool | Identifier | list[TAny] | dict[TKey, TAny] | None | FunctionMacroArgument | EntityUUID"
 
     def __init__(self, id: Identifier | FunctionMacroArgument | str):
         self.id = id
@@ -38,6 +39,10 @@ class DataStorage[D: dict | _TypedDict]():
             return CustomCommand(f'data modify storage {self._id_str()} {key} set value "{value}"')
         if isinstance(value, str):
             return CustomCommand(f'data modify storage {self._id_str()} {key} set value "{value}"')
+        if isinstance(value, bool):
+            return CustomCommand(f'data modify storage {self._id_str()} {key} set value {"true" if value else "false"}')
+        if isinstance(value, EntityUUID):
+            return CustomCommand(f'data modify storage {self._id_str()} {key} set value "{value.to_string()}"')
         return CustomCommand(f"data modify storage {self._id_str()} {key} set value {value}")
     
     def set_from_block(self, key: TKey, pos: "BlockPosition", path: str) -> CustomCommand:
@@ -91,7 +96,7 @@ class DataStorage[D: dict | _TypedDict]():
         return self[key].set(value)
 
 class DataStorageValue[T]():
-    type TAny = "T | FunctionMacroArgument | Identifier | Function | ScoreboardPlayer | DataStorageValue | DataStorage | UUID | EntityUUID"
+    type TAny = "T | FunctionMacroArgument | Identifier | Function | ScoreboardPlayer | DataStorageValue | DataStorage | EntityDataValue | EntityData | BlockEntityDataValue | BlockEntityData | UUID | EntityUUID"  # type: ignore
     def __init__(self, storage: DataStorage, key: DataStorage.TKey):
         self.storage = storage
         self.key = key
@@ -102,14 +107,16 @@ class DataStorageValue[T]():
         return DataStorageValue(self.storage, f'{self.key}.{str(key)}')
 
     def set(self, value: "DataStorageValue.TAny") -> Command:
+        from datagen.function.commands._data.entitydata import EntityData, EntityDataValue, BlockEntityData, BlockEntityDataValue
         from datagen.function.function import Function
         from datagen.utils.scoreboard.player import ScoreboardPlayer
         if isinstance(value, DataStorageValue):
-            # from datagen.function.commands.execute import Execute
-            # # /execute store result storage ns:id path int 1 run data get storage ns2:id2 path2 1
-            # return Execute().STORE("result", "storage", self.storage, str(self.key), "int", 1).RUN(value.get(scale=1))
             # /data modify storage ns:name path set from storage ns2:name2 path2
             return CustomCommand(f"data modify storage {self.storage._id_str()} {self.key} set from storage {value.storage._id_str()} {value.key}")
+        elif isinstance(value, EntityDataValue):
+            return CustomCommand(f"data modify storage {self.storage._id_str()} {self.key} set from entity {value.get_entity().get_target()} {value.get_key()}")
+        elif isinstance(value, BlockEntityDataValue):
+            return CustomCommand(f"data modify storage {self.storage._id_str()} {self.key} set from block {value.get_block_entity().get_pos()} {value.get_key()}")
         elif isinstance(value, (Function, Identifier)):
             return self.storage.set_from_function_return(str(self.key), value)
         elif isinstance(value, ScoreboardPlayer):
@@ -118,6 +125,10 @@ class DataStorageValue[T]():
             return self.storage.set(str(self.key), value)
         elif isinstance(value, DataStorage):
             return CustomCommand(f"data modify storage {self.storage._id_str()} {self.key} set from storage {value._id_str()}")
+        elif isinstance(value, EntityData):
+            return CustomCommand(f"data modify storage {self.storage._id_str()} {self.key} set from entity {value.get_target()}")
+        elif isinstance(value, BlockEntityData):
+            return CustomCommand(f"data modify storage {self.storage._id_str()} {self.key} set from block {value.get_pos()}")
         elif isinstance(value, UUID):
             # [I; ...]
             _values: tuple4[int] = (
@@ -129,13 +140,16 @@ class DataStorageValue[T]():
             return self.storage.set(str(self.key), f"[I; {_values[0]}, {_values[1]}, {_values[2]}, {_values[3]}]")
         elif isinstance(value, EntityUUID):
             return self.storage.set(str(self.key), value.to_string())
+        elif isinstance(value, Command):
+            cmd = f"execute store result storage {self.storage._id_str()} {self.key} int 1 run {value.raw()}"
+            return CustomCommand(['', '$']['$' in cmd] + cmd)
         else:
             return self.storage.set(self.key, value)
     
-    def get(self, scale: float | None = None) -> CustomCommand:
+    def get(self, scale: float | None = None) -> Command:
         return self.storage.get(self.key, scale=scale)
     
-    def merge(self, value: dict) -> CustomCommand:
+    def merge(self, value: dict) -> Command:
         return self.storage.merge(value)
     
     def remove(self) -> CustomCommand:
@@ -153,16 +167,26 @@ class DataStorageValue[T]():
             )
         return plr
 
-    def from_score(self, player: "ScoreboardPlayer") -> CustomCommand:
+    def from_score(self, player: "ScoreboardPlayer") -> Command:
         return CustomCommand(f"execute store result storage {self.storage._id_str()} {self.key} int 1 run scoreboard players get {player} {player.objective}")
 
-    def to_data(self, into: "DataStorageValue",  scale: float = 1) -> CustomCommand:
+    def to_data(self, into: "DataStorageValue | EntityDataValue | BlockEntityDataValue", scale: float = 1) -> Command:
+        from datagen.function.commands._data.entitydata import EntityDataValue as EDV, BlockEntityDataValue as BEDV
+        if isinstance(into, EDV):
+            return CustomCommand(f"execute store result entity {into.get_entity().get_target()} {into.get_key()} int {scale} run data get storage {self.storage._id_str()} {self.key}")
+        elif isinstance(into, BEDV):
+            return CustomCommand(f"execute store result block {into.get_block_entity().get_pos()} {into.get_key()} int {scale} run data get storage {self.storage._id_str()} {self.key}")
         return CustomCommand(f"execute store result storage {into.storage._id_str()} {into.key} int {scale} run data get storage {self.storage._id_str()} {self.key}")
 
-    def from_data(self, from_: "DataStorageValue", scale: float = 1) -> CustomCommand:
+    def from_data(self, from_: "DataStorageValue | EntityDataValue | BlockEntityDataValue", scale: float = 1) -> Command:
+        from datagen.function.commands._data.entitydata import EntityDataValue as EDV, BlockEntityDataValue as BEDV
+        if isinstance(from_, EDV):
+            return CustomCommand(f"execute store result storage {self.storage._id_str()} {self.key} int {scale} run data get entity {from_.get_entity().get_target()} {from_.get_key()}")
+        elif isinstance(from_, BEDV):
+            return CustomCommand(f"execute store result storage {self.storage._id_str()} {self.key} int {scale} run data get block {from_.get_block_entity().get_pos()} {from_.get_key()}")
         return CustomCommand(f"execute store result storage {self.storage._id_str()} {self.key} int {scale} run data get storage {from_.storage._id_str()} {from_.key}")
 
-    def to_bossbar(self, bossbar: "Identifier | BossBar") -> CustomCommand:
+    def to_bossbar(self, bossbar: "Identifier | BossBar") -> Command:
         from datagen.function.commands.bossbar import BossBar
         if isinstance(bossbar, BossBar):
             id = bossbar._id
@@ -171,7 +195,7 @@ class DataStorageValue[T]():
         _id = f"{id.get_namespace()}:{Obfuscator.obfuscate_path(id.get_namespace(), id.get_path())}".lower()
         return CustomCommand(f"execute store result bossbar {_id} value int 1 run data get storage {self.storage._id_str()} {self.key}")
     
-    def from_bossbar(self, bossbar: "Identifier | BossBar") -> CustomCommand:
+    def from_bossbar(self, bossbar: "Identifier | BossBar") -> Command:
         from datagen.function.commands.bossbar import BossBar
         if isinstance(bossbar, BossBar):
             id = bossbar._id
@@ -180,3 +204,19 @@ class DataStorageValue[T]():
         _id = f"{id.get_namespace()}:{Obfuscator.obfuscate_path(id.get_namespace(), id.get_path())}".lower()
         return CustomCommand(f"execute store result storage {self.storage._id_str()} {self.key} int 1 run bossbar get {_id} value")
     
+    def set_into(self, into: "DataStorageValue | EntityDataValue | BlockEntityDataValue") -> Command:
+        from datagen.function.commands._data.entitydata import EntityDataValue as EDV, BlockEntityDataValue as BEDV
+        if isinstance(into, EDV):
+            return CustomCommand(f"data modify entity {into.get_entity().get_target()} {into.get_key()} set from storage {self.storage._id_str()} {self.key}")
+        elif isinstance(into, BEDV):
+            return CustomCommand(f"data modify block {into.get_block_entity().get_pos()} {into.get_key()} set from storage {self.storage._id_str()} {self.key}")
+        return CustomCommand(f"data modify storage {into.storage._id_str()} {into.key} set from storage {self.storage._id_str()} {self.key}")
+
+    def __lshift__(self, other: "TAny | DataStorage | EntityData | BlockEntityData") -> Command:
+        from datagen.function.commands._data.entitydata import EntityDataValue as EDV, BlockEntityDataValue as BEDV, EntityData as ED, BlockEntityData as BED
+        if isinstance(other, (DataStorageValue, EDV, BEDV)):
+            return self.set_into(other)  # type: ignore
+        elif isinstance(other, (DataStorage, ED, BED)):
+            return self.set(other)
+        else:
+            return self.set(other)
