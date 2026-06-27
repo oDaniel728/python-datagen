@@ -10,7 +10,7 @@ class ItemStack[I: Item = Item]():
     def to_dict(self) -> dict:
         return {
             "id": ~self.item.id,
-            "components": self.item.__get_nbt_dict(),
+            "components": self.item.get_nbt_dict(),
             "count": self.count
         }
     
