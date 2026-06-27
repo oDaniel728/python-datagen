@@ -1,10 +1,11 @@
 import json
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable, Type
 
 from datagen.globals import LOOT_TABLES_PATH
 from datagen.utils.minecraft.identifier import Identifier
 from datagen.utils.obfuscator import Obfuscator
+from datagen.utils.repr.item import Item
 from datagen.utils.simplefile import SimpleFile
 
 
@@ -59,6 +60,17 @@ class _LootFunctions():
     @staticmethod
     def set_stew_effect(effects: list[dict]) -> dict:
         return {"function": "minecraft:set_stew_effect", "effects": effects}
+
+    @staticmethod
+    def set_components(components: dict) -> dict:
+        """Minecraft set_components function (1.21+ data components).
+
+        Examples:
+
+            >>> _LootFunctions.set_components({"minecraft:custom_name": '{"text":"Sword"}'})
+            {'function': 'minecraft:set_components', 'components': {'minecraft:custom_name': '{"text":"Sword"}'}}
+        """
+        return {"function": "minecraft:set_components", "components": components}
 
     @staticmethod
     def set_instrument(instrument: str | Identifier) -> dict:
@@ -257,14 +269,20 @@ class _LootConditions():
 class _EntryBuilder():
     """Builder for a loot entry within a pool."""
 
-    def __init__(self, pool_builder: "_PoolBuilder", entry_type: str, name: str | None = None) -> None:
+    def __init__(self, pool_builder: "_PoolBuilder", entry_type: str, name: "str | Identifier | Item | None" = None) -> None:
         self.__pool_builder = pool_builder
         self.__data: dict = {"type": entry_type}
-        if name is not None:
-            self.__data["name"] = name
         self.__functions: list[dict] = []
         self.__conditions: list[dict] = []
         self.__children: list[dict] = []
+        if name is not None:
+            if isinstance(name, Item):
+                self.__data["name"] = str(name.id)
+                components = name.to_dict()
+                if components:
+                    self.__functions.append(_LootFunctions.set_components(components))
+            else:
+                self.__data["name"] = str(name)
 
     def weight(self, w: int) -> "_EntryBuilder":
         self.__data["weight"] = w
@@ -278,7 +296,9 @@ class _EntryBuilder():
         self.__functions.append(func)
         return self
 
-    def condition(self, cond: dict) -> "_EntryBuilder":
+    def condition(self, cond: dict | Callable[["Type[_LootConditions]"], dict]) -> "_EntryBuilder":
+        if callable(cond):
+            cond = cond(_LootConditions)
         self.__conditions.append(cond)
         return self
 
@@ -315,10 +335,12 @@ class _PoolBuilder():
     def add_entry_data(self, data: dict) -> None:
         self.__entry_data.append(data)
 
-    def entry(self, entry_type: str = "minecraft:item", name: str | None = None) -> _EntryBuilder:
+    def entry(self, entry_type: str = "minecraft:item", name: str | Identifier | Item | None = None) -> _EntryBuilder:
         return _EntryBuilder(self, entry_type, name)
 
-    def condition(self, cond: dict) -> "_PoolBuilder":
+    def condition(self, cond: dict | Callable[["Type[_LootConditions]"], dict]) -> "_PoolBuilder":
+        if callable(cond):
+            cond = cond(_LootConditions)
         self.__conditions.append(cond)
         return self
 
