@@ -154,7 +154,7 @@ class DataPack:
 
         write_file("pack.mcmeta", json.dumps({
             "pack": {
-                "pack_format": 48,
+                "pack_format": DatagenConfig.config["builderSettings"].get("pack_format", 48),
                 "description": self.description
             }
         }, indent=4))

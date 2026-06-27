@@ -5,7 +5,8 @@
         "comment": false,
         "allowEmptyLines": false,
         "obfuscate": false,
-        "indent": 4
+        "indent": 4,
+        "pack_format": 48
     },
     "dumperSettings": {
         "source": "dumpgen/dumps/",

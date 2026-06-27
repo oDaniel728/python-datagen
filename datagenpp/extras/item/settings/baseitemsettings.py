@@ -15,6 +15,10 @@ class BaseItemSettings(Item.Settings):
         super().__init__()
         self._data = {}
 
+    def with_(self, key: str, value: str):
+        self._data[key] = value
+        return self
+
     def with_enchantment_glint_override(self, override: bool):
         self._data["enchantment_glint_override"] = override
         return self
@@ -66,7 +70,7 @@ class BaseItemSettings(Item.Settings):
         self,
         name: Text.BaseText
     ):
-        self._data["item_name"] = "'" + name.to_string() + "'"
+        self._data["item_name"] = f"'{str(name.to_dict()).replace("'", "\"")}'"
         return self
     
     def with_fire_resistant(self):

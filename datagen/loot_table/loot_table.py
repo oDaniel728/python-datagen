@@ -5,11 +5,13 @@ from typing import Any, Callable, Type
 from datagen.globals import LOOT_TABLES_PATH
 from datagen.utils.minecraft.identifier import Identifier
 from datagen.utils.obfuscator import Obfuscator
+from datagen.utils.repr.enchantment import Enchantment
 from datagen.utils.repr.item import Item
+from datagen.utils.repr.levelbasedvalue import LevelBasedValue
 from datagen.utils.simplefile import SimpleFile
 
 
-class _LootFunctions():
+class LootFunctions():
 
     @staticmethod
     def set_count(count: int | tuple[int, int] | list[int] | dict, add: bool = False) -> dict:
@@ -63,13 +65,6 @@ class _LootFunctions():
 
     @staticmethod
     def set_components(components: dict) -> dict:
-        """Minecraft set_components function (1.21+ data components).
-
-        Examples:
-
-            >>> _LootFunctions.set_components({"minecraft:custom_name": '{"text":"Sword"}'})
-            {'function': 'minecraft:set_components', 'components': {'minecraft:custom_name': '{"text":"Sword"}'}}
-        """
         return {"function": "minecraft:set_components", "components": components}
 
     @staticmethod
@@ -143,11 +138,29 @@ class _LootFunctions():
         }
 
 
-class _LootConditions():
+class LootConditions():
 
     @staticmethod
-    def random_chance(chance: float) -> dict:
+    def random_chance(chance: float | dict) -> dict:
         return {"condition": "minecraft:random_chance", "chance": chance}
+
+    @staticmethod
+    def random_chance_with_enchanted_bonus(
+        enchantment: str | Identifier | Enchantment,
+        unenchanted_chance: float = 0.0,
+        enchanted_chance: float | LevelBasedValue | None = None,
+    ) -> dict:
+        _enchanted = (
+            enchanted_chance.to_dict()
+            if hasattr(enchanted_chance, "to_dict")
+            else enchanted_chance
+        ) if enchanted_chance is not None else unenchanted_chance
+        return {
+            "condition": "minecraft:random_chance_with_enchanted_bonus",
+            "enchantment": str(enchantment),
+            "unenchanted_chance": unenchanted_chance,
+            "enchanted_chance": _enchanted,
+        }
 
     @staticmethod
     def random_chance_with_looting(chance: float, looting_multiplier: float = 0.0) -> dict:
@@ -204,7 +217,7 @@ class _LootConditions():
         return result
 
     @staticmethod
-    def table_bonus(enchantment: str | Identifier, chances: list[float]) -> dict:
+    def table_bonus(enchantment: str | Identifier | Enchantment, chances: list[float]) -> dict:
         return {
             "condition": "minecraft:table_bonus",
             "enchantment": str(enchantment),
@@ -265,9 +278,15 @@ class _LootConditions():
             "range": range,
         }
 
+    @staticmethod
+    def enchantment_active_check(active: bool) -> dict:
+        return {
+            "condition": "minecraft:enchantment_active_check",
+            "active": active,
+        }
+
 
 class _EntryBuilder():
-    """Builder for a loot entry within a pool."""
 
     def __init__(self, pool_builder: "_PoolBuilder", entry_type: str, name: "str | Identifier | Item | None" = None) -> None:
         self.__pool_builder = pool_builder
@@ -277,12 +296,16 @@ class _EntryBuilder():
         self.__children: list[dict] = []
         if name is not None:
             if isinstance(name, Item):
-                self.__data["name"] = str(name.id)
+                if entry_type == "minecraft:loot_table":
+                    self.__data["value"] = str(name.id)
+                else:
+                    self.__data["name"] = str(name.id)
                 components = name.to_dict()
                 if components:
-                    self.__functions.append(_LootFunctions.set_components(components))
+                    self.__functions.append(LootFunctions.set_components(components))
             else:
-                self.__data["name"] = str(name)
+                key = "value" if entry_type == "minecraft:loot_table" else "name"
+                self.__data[key] = str(name)
 
     def weight(self, w: int) -> "_EntryBuilder":
         self.__data["weight"] = w
@@ -292,25 +315,35 @@ class _EntryBuilder():
         self.__data["quality"] = q
         return self
 
-    def function(self, func: dict) -> "_EntryBuilder":
+    def expand(self, expand: bool) -> "_EntryBuilder":
+        self.__data["expand"] = expand
+        return self
+
+    def value(self, v: str | Identifier | dict) -> "_EntryBuilder":
+        self.__data["value"] = v if isinstance(v, dict) else str(v)
+        return self
+
+    def function(self, func: dict | Callable[["Type[LootFunctions]"], dict]) -> "_EntryBuilder":
+        if callable(func):
+            func = func(LootFunctions)
         self.__functions.append(func)
         return self
 
-    def condition(self, cond: dict | Callable[["Type[_LootConditions]"], dict]) -> "_EntryBuilder":
+    def condition(self, cond: dict | Callable[["Type[LootConditions]"], dict]) -> "_EntryBuilder":
         if callable(cond):
-            cond = cond(_LootConditions)
+            cond = cond(LootConditions)
         self.__conditions.append(cond)
         return self
 
     def child(self, entry_type: str = "minecraft:item", name: str | None = None) -> "_EntryBuilder":
         child_data: dict = {"type": entry_type}
         if name is not None:
-            child_data["name"] = name
+            key = "value" if entry_type == "minecraft:loot_table" else "name"
+            child_data[key] = str(name)
         self.__children.append(child_data)
         return self
 
     def then(self) -> "_PoolBuilder":
-        """Finalizes this entry and returns to the pool builder for more entries."""
         if self.__functions:
             self.__data["functions"] = self.__functions
         if self.__conditions:
@@ -322,7 +355,6 @@ class _EntryBuilder():
 
 
 class _PoolBuilder():
-    """Builder for a loot pool. Allows adding multiple entries."""
 
     def __init__(self, builder: "LootTableBuilder", rolls: int | dict | tuple[int, int], bonus_rolls: int | dict | tuple[int, int] | None = None) -> None:
         self.__builder = builder
@@ -338,18 +370,36 @@ class _PoolBuilder():
     def entry(self, entry_type: str = "minecraft:item", name: str | Identifier | Item | None = None) -> _EntryBuilder:
         return _EntryBuilder(self, entry_type, name)
 
-    def condition(self, cond: dict | Callable[["Type[_LootConditions]"], dict]) -> "_PoolBuilder":
+    def group(self) -> _EntryBuilder:
+        return _EntryBuilder(self, "minecraft:group")
+
+    def alternatives(self) -> _EntryBuilder:
+        return _EntryBuilder(self, "minecraft:alternatives")
+
+    def sequence(self) -> _EntryBuilder:
+        return _EntryBuilder(self, "minecraft:sequence")
+
+    def tag(self, tag_id: str | Identifier, expand: bool = False) -> _EntryBuilder:
+        e = _EntryBuilder(self, "minecraft:tag", str(tag_id))
+        e.expand(expand)
+        return e
+
+    def dynamic(self, name: str) -> _EntryBuilder:
+        return _EntryBuilder(self, "minecraft:dynamic", name)
+
+    def condition(self, cond: dict | Callable[["Type[LootConditions]"], dict]) -> "_PoolBuilder":
         if callable(cond):
-            cond = cond(_LootConditions)
+            cond = cond(LootConditions)
         self.__conditions.append(cond)
         return self
 
-    def function(self, func: dict) -> "_PoolBuilder":
+    def function(self, func: dict | Callable[["Type[LootFunctions]"], dict]) -> "_PoolBuilder":
+        if callable(func):
+            func = func(LootFunctions)
         self.__functions.append(func)
         return self
 
     def end_pool(self) -> "LootTableBuilder":
-        """Finalizes this pool and returns to the table builder."""
         pool_dict: dict = {
             "rolls": (
                 {"min": self.__rolls[0], "max": self.__rolls[1]}
@@ -373,16 +423,17 @@ class _PoolBuilder():
 
 
 class LootTableBuilder():
-    """Fluent builder for constructing loot tables.
+    """Fluent builder for constructing loot tables (Minecraft 1.21+).
 
     Examples:
 
-        >>> LootTableBuilder(Identifier.of("mypack:chest")) \\
+        >>> LootTable.builder(Identifier.of("mypack:chest")) \\
         ...     .pool(1).entry("minecraft:item", "minecraft:diamond").weight(1).then() \\
         ...     .end_pool() \\
         ...     .pool((2, 4)).entry("minecraft:item", "minecraft:iron_ingot").weight(3).then() \\
         ...     .end_pool() \\
-        ...     .seal()
+        ...     .seal().to_string()
+        '{\\n    "type": "minecraft:generic",\\n    "pools": [\\n        {\\n            "rolls": 1,\\n            "entries": [\\n                {\\n                    "type": "minecraft:item",\\n                    "name": "minecraft:diamond",\\n                    "weight": 1\\n                }\\n            ]\\n        },\\n        {\\n            "rolls": {\\n                "min": 2,\\n                "max": 4\\n            },\\n            "entries": [\\n                {\\n                    "type": "minecraft:item",\\n                    "name": "minecraft:iron_ingot",\\n                    "weight": 3\\n                }\\n            ]\\n        }\\n    ]\\n}'
     """
 
     def __init__(self, id: Identifier) -> None:
@@ -390,6 +441,8 @@ class LootTableBuilder():
         self.__pool_data: list[dict] = []
         self.__conditions: list[dict] = []
         self.__functions: list[dict] = []
+        self.__context_type: str = "minecraft:generic"
+        self.__random_sequence: str | None = None
 
     def pool(self, rolls: int | tuple[int, int] | dict, bonus_rolls: int | tuple[int, int] | dict | None = None) -> _PoolBuilder:
         return _PoolBuilder(self, rolls, bonus_rolls)
@@ -397,29 +450,39 @@ class LootTableBuilder():
     def add_pool_data(self, data: dict) -> None:
         self.__pool_data.append(data)
 
-    def condition(self, cond: dict) -> "LootTableBuilder":
+    def context_type(self, ct: str) -> "LootTableBuilder":
+        self.__context_type = ct
+        return self
+
+    def random_sequence(self, rs: str | Identifier) -> "LootTableBuilder":
+        self.__random_sequence = str(rs)
+        return self
+
+    def condition(self, cond: dict | Callable[["Type[LootConditions]"], dict]) -> "LootTableBuilder":
+        if callable(cond):
+            cond = cond(LootConditions)
         self.__conditions.append(cond)
         return self
 
-    def function(self, func: dict) -> "LootTableBuilder":
+    def function(self, func: dict | Callable[["Type[LootFunctions]"], dict]) -> "LootTableBuilder":
+        if callable(func):
+            func = func(LootFunctions)
         self.__functions.append(func)
         return self
 
     def seal(self) -> "LootTable":
-        data: dict = {"type": "minecraft:loot_table", "pools": self.__pool_data}
+        data: dict = {"type": self.__context_type, "pools": self.__pool_data}
         if self.__conditions:
             data["conditions"] = self.__conditions
         if self.__functions:
             data["functions"] = self.__functions
+        if self.__random_sequence is not None:
+            data["random_sequence"] = self.__random_sequence
         return LootTable(self.__id, data)
 
 
 class LootTable():
-    """Represents a Minecraft loot table resource.
-
-    Loot tables define what items are dropped from chests, entities, blocks,
-    and other game mechanics. Each loot table has an identifier and contains
-    pools of entries with associated conditions and functions.
+    """Represents a Minecraft loot table resource (1.21+ format).
 
     Examples:
 
@@ -428,23 +491,13 @@ class LootTable():
         ...     .end_pool() \\
         ...     .seal()
         >>> lt.to_string()
-        '{\\n    "type": "minecraft:loot_table",\\n    "pools": [\\n        {\\n            "rolls": 1,\\n            "entries": [\\n                {\\n                    "type": "minecraft:item",\\n                    "name": "minecraft:diamond",\\n                    "weight": 1,\\n                    "functions": [],\\n                    "conditions": []\\n                }\\n            ]\\n        }\\n    ]\\n}'
+        '{\\n    "type": "minecraft:generic",\\n    "pools": [\\n        {\\n            "rolls": 1,\\n            "entries": [\\n                {\\n                    "type": "minecraft:item",\\n                    "name": "minecraft:diamond",\\n                    "weight": 1\\n                }\\n            ]\\n        }\\n    ]\\n}'
     """
 
     __loot_tables: dict[Identifier, "LootTable"] = {}
 
     @staticmethod
     def builder(id: Identifier) -> LootTableBuilder:
-        """Creates a new LootTableBuilder for the given identifier.
-
-        Args:
-            id: identifier for the loot table
-
-        Examples:
-
-            >>> lb = LootTable.builder(Identifier.of("mypack:chest"))
-            >>> lt = lb.pool(1).entry("minecraft:item", "minecraft:diamond").weight(1).then().end_pool().seal()
-        """
         return LootTableBuilder(id)
 
     def __new__(cls, id: Identifier, data: dict) -> "LootTable":
@@ -476,21 +529,14 @@ class LootTable():
         return NotImplemented
 
     def to_dict(self) -> dict:
-        """Returns the loot table data as a plain dict."""
-        _data = self._data.copy()
-        if "type" not in _data:
-            _data["type"] = "minecraft:loot_table"
-        return _data
+        return self._data.copy()
 
     def to_string(self) -> str:
-        """Returns the loot table as a JSON string."""
         return json.dumps(self.to_dict(), indent=4)
 
     def get_filepath(self) -> Path:
-        """Returns the relative file path for this loot table."""
         path = Obfuscator.obfuscate_path(self.id.get_namespace(), self.id.get_path())
         return Path(LOOT_TABLES_PATH) / (path.replace(".", "/") + ".json")
 
     def to_file(self) -> SimpleFile:
-        """Returns a SimpleFile for writing to disk."""
         return SimpleFile(self.get_filepath(), self.to_string())

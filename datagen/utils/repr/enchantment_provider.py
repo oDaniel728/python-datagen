@@ -1,10 +1,15 @@
-from typing import Literal, Self
+from typing import TYPE_CHECKING, Literal, Self
 
 from datagen.types.protocols.todict import ToDict
 from datagen.utils.minecraft.identifier import Identifier
 from datagen.utils.minecraft.text._base import BaseText, _remove_nulls
 from datagen.utils.obfuscator import Obfuscator
 from datagen.utils.simplefile import SimpleFile
+
+if TYPE_CHECKING:
+    from datagen.tag.itemtag import ItemTag
+    from datagen.utils.repr.item import Item
+    from datagen.utils.repr.itemstack import ItemStack
 
 
 class EnchantmentProvider(ToDict):
@@ -159,7 +164,20 @@ class EnchantmentProvider(ToDict):
         self._data["exclusive_set"] = [str(e) for e in enchantments]
         return self
 
-    def with_supported_items(self, *items: str | Identifier) -> Self:
+    def _normalize_item_ref(self, item: "str | Identifier | Item | ItemStack | ItemTag") -> str:
+        from datagen.tag.itemtag import ItemTag
+        from datagen.utils.repr.item import Item
+        from datagen.utils.repr.itemstack import ItemStack
+
+        if isinstance(item, ItemTag):
+            return f"#{item.id}"
+        if isinstance(item, ItemStack):
+            return str(item.item.id)
+        if isinstance(item, Item):
+            return str(item.id)
+        return str(item)
+
+    def with_supported_items(self, *items: "str | Identifier | Item | ItemStack | ItemTag") -> Self:
         """
         Sets which items can receive this enchantment.
 
@@ -171,15 +189,20 @@ class EnchantmentProvider(ToDict):
         ```python
         .with_supported_items(
             "minecraft:diamond_sword",
-            "minecraft:netherite_sword",
-            "minecraft:iron_axe",
+            Items.NETHERITE_SWORD,
+            "#minecraft:enchantable/durability",
         )
         ```
         """
-        self._data["supported_items"] = [str(i) for i in items]
+        if not items:
+            raise ValueError("At least one supported item must be provided.")
+        elif len(items) == 1 and isinstance(items[0], str):
+            self._data["supported_items"] = self._normalize_item_ref(items[0])
+        else:
+            self._data["supported_items"] = [self._normalize_item_ref(i) for i in items]
         return self
 
-    def with_primary_items(self, *items: str | Identifier) -> Self:
+    def with_primary_items(self, *items: "str | Identifier | Item | ItemStack | ItemTag") -> Self:
         """
         Sets which items can get this enchantment from the enchanting table.
 
@@ -195,7 +218,12 @@ class EnchantmentProvider(ToDict):
         # Stick can get it via anvil, diamond sword via enchanting table too
         ```
         """
-        self._data["primary_items"] = [str(i) for i in items]
+        if not items:
+            raise ValueError("At least one primary item must be provided.")
+        elif len(items) == 1 and isinstance(items[0], str):
+            self._data["primary_items"] = self._normalize_item_ref(items[0])
+        else:
+            self._data["primary_items"] = [self._normalize_item_ref(i) for i in items]
         return self
 
     def with_weight(self, weight: int) -> Self:
@@ -265,7 +293,7 @@ class EnchantmentProvider(ToDict):
         return self
 
     _TSlot = Literal[
-        "mainhand", "offhand", "head", "chest", "legs", "feet", "hand", "armor"
+        "mainhand", "offhand", "head", "chest", "legs", "feet", "hand", "armor", "any"
     ]
     def with_slots(self, *slots: _TSlot) -> Self:
         """

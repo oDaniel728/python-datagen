@@ -18,6 +18,7 @@ class DatagenConfig():
         comment: bool
         allowEmptyLines: bool
         obfuscate: bool
+        pack_format: int
     class TDataGenConfigTDumperSettings(TypedDict):
         source: str
         output: str
