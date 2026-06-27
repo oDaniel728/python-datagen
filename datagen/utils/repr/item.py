@@ -130,7 +130,7 @@ class Item[T: __Settings__]():
                 for k1, v1 in {
                     k: c(vv, 1)
                     for k, vv in v.items() 
-                    if vv is not None
+                    if vv != None
                 }.items()
                 if not (depth >= 1 and (v1 == [] or v1 == {}))
             }
@@ -138,7 +138,7 @@ class Item[T: __Settings__]():
             return [
                 c(vv, 1)
                 for vv in v 
-                if vv is not None
+                if vv != None
             ]
         if isinstance(v, Identifier):
             return ~v

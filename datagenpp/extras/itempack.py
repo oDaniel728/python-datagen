@@ -1,8 +1,9 @@
-from typing import Any, Iterable
+from typing import Any, Iterable, Type
 
 from datagen.function.commands.commandarray import CommandArray
 from datagen.function.commands.give import Give
 from datagen.function.commands.summon import Summon
+from datagen.utils.converters import Dictionary
 from datagen.utils.minecraft.collections.items import Items
 from datagen.utils.minecraft.relativeplayerposition import RelativePlayerPosition
 from datagen.utils.minecraft.targetselector import TargetSelector
@@ -22,9 +23,16 @@ class ItemPack():
     def summon(self, at: Position3 = RelativePlayerPosition(0, 0, 0)) -> CommandArray:
         return CommandArray([Summon.item(item, at) for item in self.items])
     
-    def bundle(self) -> Item:
+    def bundle(self, settings: Item.Settings | dict = {}) -> Item:
         ITEMS = []
         for item in self.items:
             ITEMS.append(item.to_dict())
-        return Item(Items.BUNDLE.id, {"bundle_contents": ITEMS, "custom_data": self.PACK_CUSTOM_DATA})
+        return Item(
+            Items.BUNDLE.id, 
+            {
+                "bundle_contents": ITEMS, 
+                "custom_data": self.PACK_CUSTOM_DATA
+            } | Dictionary[str, Any].auto(settings)
+        )
+
         

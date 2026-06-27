@@ -26,6 +26,6 @@ class Clear(Command):
             return f"clear {self.target.to_string()}"
         else:
             if isinstance(self.item, ItemStack):
-                return f"clear {self.target.to_string()} {self.item.item.id} {self.item.count}"
+                return f"clear {self.target.to_string()} {self.item.item.__str__()} {self.item.count}"
             else:
-                return f"clear {self.target.to_string()} {self.item.id}"
+                return f"clear {self.target.to_string()} {self.item.__str__()}"
