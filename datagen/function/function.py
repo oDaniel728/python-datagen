@@ -1,10 +1,11 @@
 from typing import TYPE_CHECKING, Any, Self
 
-from click import command
 
 from datagen.function.functionmacroargument import FunctionMacroArgument
 
 if TYPE_CHECKING:
+    from datagen.tag.functiontag import FunctionTag
+    from datagen.datapack.namespace import Namespace
     from datagen.function.commands._data.entitydata import EntityData, BlockEntityData
     from datagen.function.commands.commandarray import CommandArray
     from datagen.function.commands.runfunction import RunFunction
@@ -231,6 +232,19 @@ with Function(Identifier.of("pack:another")) as g:
         as_: type[T] | T = Any
     ) -> FunctionMacroArgument[T]:
         return self[key, as_]
+
+    def hook(self, at: "Namespace | FunctionTag") -> Self:
+        """Hooks the function into the given namespace or function tag, adding it to their list of functions. This is a convenient way to associate a function with a specific namespace or function tag, and can be used to organize functions within a datapack or other context where namespaces and function tags are used."""
+        from datagen.datapack.namespace import Namespace
+        from datagen.tag.functiontag import FunctionTag
+        if isinstance(at, FunctionTag):
+            at += self
+            return self
+        elif isinstance(at, Namespace):
+            at += self
+            return self
+        else:
+            raise TypeError(f"Expected Namespace or FunctionTag, got {type(at)}")
     
 class FunctionContext(Function):
     def __new__(cls, f: "Function") -> Self:
