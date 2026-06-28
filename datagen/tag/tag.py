@@ -1,9 +1,9 @@
-import json
 from pathlib import Path
 from typing import Iterable, Self, Type
 
 from datagen.function.function import Function
 from datagen.globals import TAGS_PATH
+from datagen.utils.json_encoder import dumps
 from datagen.utils.obfuscator import Obfuscator
 from datagen.utils.minecraft.identifier import Identifier
 from datagen.utils.repr.item import Item
@@ -102,7 +102,7 @@ class Tag[T]():
         }
     
     def to_string(self) -> str:
-        return json.dumps(self.to_dict(), indent=4)
+        return dumps(self.to_dict(), indent=4)
 
     def to_file(self) -> SimpleFile:
         path = Obfuscator.obfuscate_path(self.id.get_namespace(), self.id._path)

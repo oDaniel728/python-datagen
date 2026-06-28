@@ -42,3 +42,10 @@ class Range():
         if self.end is not None:
             out["max"] = self.end
         return out
+    
+    def __contains__(self, item: int | Range) -> bool:
+        if isinstance(item, Range):
+            s, e = item.start, item.end
+            return (self.start is None or (s is not None and self.start <= s)) and (self.end is None or (e is not None and self.end >= e))
+        else:
+            return (self.start is None or self.start <= item) and (self.end is None or self.end >= item)

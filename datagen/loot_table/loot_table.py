@@ -3,6 +3,7 @@ from pathlib import Path
 from typing import Any, Callable, Type
 
 from datagen.globals import LOOT_TABLES_PATH
+from datagen.utils.json_encoder import dumps
 from datagen.utils.minecraft.identifier import Identifier
 from datagen.utils.obfuscator import Obfuscator
 from datagen.utils.repr.enchantment import Enchantment
@@ -147,18 +148,31 @@ class LootConditions():
     @staticmethod
     def random_chance_with_enchanted_bonus(
         enchantment: str | Identifier | Enchantment,
-        unenchanted_chance: float = 0.0,
-        enchanted_chance: float | LevelBasedValue | None = None,
+        unenchanted_chance: float | list[float] = 0.0,
+        enchanted_chance: float | LevelBasedValue | list[float] | None = None,
     ) -> dict:
+        _to_num = lambda v: (
+            {"min": v[0], "max": v[1]}
+            if isinstance(v, list)
+            else v.to_dict() if hasattr(v, "to_dict")
+            else v
+        )
+        if isinstance(enchanted_chance, list):
+            step = enchanted_chance[1] - enchanted_chance[0] if len(enchanted_chance) > 1 else enchanted_chance[0]
+            for i in range(2, len(enchanted_chance)):
+                if abs(enchanted_chance[i] - enchanted_chance[i-1] - step) > 1e-10:
+                    raise ValueError(
+                        f"enchanted_chance list must have linear progression, "
+                        f"got non-constant step at index {i}"
+                    )
+            enchanted_chance = step
         _enchanted = (
-            enchanted_chance.to_dict()
-            if hasattr(enchanted_chance, "to_dict")
-            else enchanted_chance
-        ) if enchanted_chance is not None else unenchanted_chance
+            _to_num(enchanted_chance)
+        ) if enchanted_chance is not None else _to_num(unenchanted_chance)
         return {
             "condition": "minecraft:random_chance_with_enchanted_bonus",
             "enchantment": str(enchantment),
-            "unenchanted_chance": unenchanted_chance,
+            "unenchanted_chance": _to_num(unenchanted_chance),
             "enchanted_chance": _enchanted,
         }
 
@@ -532,7 +546,7 @@ class LootTable():
         return self._data.copy()
 
     def to_string(self) -> str:
-        return json.dumps(self.to_dict(), indent=4)
+        return dumps(self.to_dict(), indent=4)
 
     def get_filepath(self) -> Path:
         path = Obfuscator.obfuscate_path(self.id.get_namespace(), self.id.get_path())

@@ -1,11 +1,11 @@
 from enum import auto
-import json
 from pathlib import Path
 from typing import Any, Literal
 
 from datagen.datapack.namespace import Namespace
 from datagen.globals import PREDICATES_PATH
 from datagen.predicate.builders import PredicateBuilderUtil
+from datagen.utils.json_encoder import dumps
 from datagen.utils.obfuscator import Obfuscator
 from datagen.types.util.min import Range
 from datagen.types.util.validpredicate import ValidPredicate
@@ -75,7 +75,7 @@ class Predicate[T](ValidPredicate):
         return self._data
 
     def to_string(self) -> str:
-        return json.dumps(self.to_dict(), indent=4)
+        return dumps(self.to_dict(), indent=4)
 
     def get_filepath(self) -> Path:
         path = Obfuscator.obfuscate_path(self.id.get_namespace(), self.id.get_path())

@@ -557,8 +557,8 @@ class EnchantmentProvider(ToDict):
         Called automatically during `dp.build()`. You usually don't need to
         call this directly.
         """
-        import json
-        return SimpleFile(self.get_filepath(), json.dumps(self.to_dict(), indent=4))
+        from datagen.utils.json_encoder import dumps
+        return SimpleFile(self.get_filepath(), dumps(self.to_dict(), indent=4))
 
     # --- Auto-registration ---
 

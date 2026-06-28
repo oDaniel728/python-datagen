@@ -8,3 +8,6 @@ class StatusEffect():
 
     def apply(self, duration: int | None = None, amplifier: int | None = None) -> "AppliedStatusEffect":
         return AppliedStatusEffect(self, duration, amplifier)
+    
+    def __str__(self) -> str:
+        return str(self.id)

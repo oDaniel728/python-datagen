@@ -1,21 +1,23 @@
 from datagen.datapack.namespace import Namespace
 from datagen.function.anonymousfunction import AnonymousFunction
+from datagen.function.commands import tag
 from datagen.function.commands._data.datastorage import DataStorage
 from datagen.function.commands._data.entitydata import EntityData
 from datagen.function.commands.clear import Clear
-from datagen.function.commands.customcommand import CustomCommand
 from datagen.function.commands.data import Data
+from datagen.function.commands.effect import Effect
 from datagen.function.commands.execute import Execute
 from datagen.function.commands.give import Give
 from datagen.function.commands.scoreboard import Scoreboard
 from datagen.function.function import Function
-from datagen.loot_table.loot_table import LootConditions, LootTable
-from datagen.utils.repr.enchantment_provider import EnchantmentProvider
+from datagen.loot_table.loot_table import LootTable
+from datagen.types.util.min import Range
 from datagen.utils.minecraft.collections.entity_types import EntityTypes
 from datagen.utils.minecraft.collections.items import Items
+from datagen.utils.minecraft.collections.status_effects import StatusEffects
 from datagen.utils.minecraft.targetselector import TargetSelector
 from datagen.utils.minecraft.targetselectorsettings import TargetSelectorSettings
-from datagen.utils.minecraft.text._components import LiteralText, ScoreText
+from datagen.utils.minecraft.text._components import LiteralText
 from datagen.utils.repr.levelbasedvalue import LevelBasedValue
 from datagen.utils.scoreboard.criterion import ObjectiveCriterion
 from datagen.utils.scoreboard.objective import ScoreboardObjective
@@ -23,31 +25,28 @@ from datagenpp.extras.item.entityspawnegg import EntitySpawnEgg
 from datagenpp.extras.item.settings.baseitemsettings import BaseItemSettings
 from datagenpp.extras.itempack import ItemPack
 from datagenpp.extras.packs.pack import Pack
+from packs.coin_system.pack_enchantments.bundles import BUNDLES
+from packs.coin_system.pack_enchantments.coins import COINS
+from packs.coin_system.pack_enchantments.damage import DAMAGE
+from packs.coin_system.pack_enchantments.emeralds import EMERALDS
+from packs.coin_system.pack_enchantments.items import ITEMS
 from packs.coin_system.pack_entities.coin import Coin
+from packs.coin_system.pack_items.coinbundleitem import CoinBundleItem, ItemBundle
 from packs.coin_system.pack_items.coins.feather import FeatherCoin
+from packs.coin_system.pack_loot.coinloot import CoinLoot
+from packs.coin_system.pack_objectives.ages import AGES_SOBJ
+from packs.coin_system.pack_selectors.glowing_items import GLOWING_ITEMS, NOT_GLOWING_ITEMS
+from packs.coin_system.pack_settings import textsettings
 
 
 class CoinSystem(Pack, name='csys'):
-    class LOOT_TABLES():
-        ...
     def on_prepare(self) -> None:
         return None
-
-    BUNDLES: EnchantmentProvider
     
     def on_register(self, ns: Namespace, mc: Namespace, tmp: Namespace) -> None:
-        BUNDLES = EnchantmentProvider(ns / "bundles")
-        BUNDLES \
-            .with_description(LiteralText("Bundles")) \
-            .with_max_level(10) \
-            .with_supported_items("#minecraft:swords") \
-            .with_primary_items("#minecraft:swords") \
-            .with_weight(5) \
-            .with_cost(1, 10, 15, 10) \
-            .with_anvil_cost(3) \
-            .with_slots("any")
-        ns += BUNDLES
-
+        
+        ns += BUNDLES, COINS, EMERALDS, DAMAGE, ITEMS
+            
         TAG = "coin"
         SCORE: ScoreboardObjective
         with Function(ns / "load") as load:
@@ -89,33 +88,111 @@ class CoinSystem(Pack, name='csys'):
 
         with Function(ns / "ticks/clear_bundles") as clear_bundles:
             ~ Clear(TargetSelector.ALL_PLAYERS, Items.BUNDLE.with_settings(
-                BaseItemSettings().with_custom_data({"pack": True}).with_("bundle_contents", "[]")
+                BaseItemSettings().with_custom_data({"bundle": True}).with_("bundle_contents", "[]")
             ))
 
             ns += clear_bundles
             mc.tick += clear_bundles
 
+        with Function(ns / "ticks/add_tag_glow") as add_tag_glow:
+            with Function(ns / "ticks/inner/add_tag_glow") as inner_add_tag_glow:
+                THIS = EntityData(TargetSelector.SELF)
+                SELF = (~ AGES_SOBJ).player(TargetSelector.SELF)
+                ~ SELF.set(THIS["Age"].get())
+                ~ tag._Tag.add("glow", NOT_GLOWING_ITEMS)
+
+                ns += inner_add_tag_glow
+            ~ Execute() \
+                .ASAT(
+                    TargetSelector.ALL_ENTITIES
+                    .with_settings(
+                        TargetSelectorSettings()
+                        .with_type(EntityTypes.ITEM)
+                        .with_tag("!glow")
+                    )
+                ) \
+                .RUN(inner_add_tag_glow)
+
+            ns += add_tag_glow
+            mc.tick += add_tag_glow
+
+        with Function(ns / "ticks/make_items_glow") as make_items_glow:
+            ~ Execute() \
+                .ASAT(
+                    TargetSelector.ALL_ENTITIES
+                    .with_settings(
+                        TargetSelectorSettings()
+                        .with_type(EntityTypes.ITEM)
+                        .with_tag("glow")
+                    )
+                ) \
+                .RUN(
+                    EntityData(TargetSelector.SELF)["Glowing"].set(True)
+                )
+
+            ns += make_items_glow
+            mc.tick += make_items_glow
+
+        with Function(ns / "ticks/each_coin_item") as each_coin_item:
+            
+            with Function(ns / "ticks/inner/each_coin_item") as each_item:
+                ~ EntityData(TargetSelector.SELF)["CustomNameVisible"].set(True)
+                ~ EntityData(TargetSelector.SELF)["CustomName"].set(
+                    EntityData(TargetSelector.SELF)["Item"]["components"]["minecraft:item_name"]
+                )
+                ns += each_item 
+
+            ~ Execute() \
+                .ASAT(
+                    TargetSelector.ALL_ENTITIES
+                    .with_settings(
+                        TargetSelectorSettings()
+                        .with_type(EntityTypes.ITEM)
+                        .with_nbt({"Item": {"components": {"minecraft:custom_data": {"show": True}}}})
+                    ) 
+                ) \
+                .RUN(each_item)
+
+            ns += each_coin_item
+            mc.tick += each_coin_item
+
         with Function(ns / "give/spawn_egg/coin") as spawn_egg_c:
-            loot = (LootTable.builder(ns / "coin_tables/coin")
-                .pool((1, 3))
-                    .entry(name=FeatherCoin()).weight(1).then()
-                .end_pool()
-                .pool(1, (2, 3))   
-                    .entry(name=ItemPack([FeatherCoin().get_stack(10)]).bundle(
-                        BaseItemSettings()
-                            .with_rarity("common")
-                            .with_item_name(LiteralText("Coin Bundle I"))
-                    ))
-                        .weight(1)
-                    .then() 
-                    .condition(lambda b: b.random_chance_with_enchanted_bonus(
-                        BUNDLES.id, 0.1, LevelBasedValue.linear(.1, .09)
-                    ))
-                .end_pool()
-            .seal())
-            egg = EntitySpawnEgg(Coin(EntityTypes.CAVE_SPIDER, loot))
+            featherloot = CoinLoot(ns / "coin_tables/coin") \
+                .add_coin_with_bonus(
+                    FeatherCoin(),
+                    Range(1, 3),
+                    Range(1, 10),
+                    weight=1,
+                    unenchanted_chance=0.1,
+                    enchanted_chance=LevelBasedValue.linear(0.1, 0.09)
+                ) \
+                .add_bundle(
+                    CoinBundleItem( 
+                        FeatherCoin(), 10, LiteralText("Coin Bundle I", textsettings.COMMON), "common"
+                    ),
+                    unenchanted_chance=0.1,
+                    enchanted_chance=LevelBasedValue.lookup([i / 10 for i in range(1, 6)], 0)
+                ) \
+                .add_bundle(
+                    CoinBundleItem(
+                        FeatherCoin(), 25, LiteralText("Coin Bundle II", textsettings.UNCOMMON), "uncommon"
+                    ),
+                    unenchanted_chance=0.05, 
+                    enchanted_chance=LevelBasedValue.lookup([max(0, i / 5) for i in range(-4, 7)], 0)
+                ) \
+                .add_bundle(
+                    ItemBundle(
+                        [FeatherCoin().get_stack(25)] * 4,
+                        LiteralText("Coin Bundle III", textsettings.RARE),
+                        "rare"
+                    ),
+                    unenchanted_chance=0.005,
+                    enchanted_chance=LevelBasedValue.lookup([max(0, i / 2) for i in range(-8, 3)], 0)
+                ) \
+                .seal()
+            egg = EntitySpawnEgg(Coin(EntityTypes.CHICKEN, featherloot))
             ~ Give(TargetSelector.SELF, egg.get_stack())
-            ns += loot
+            ns += featherloot
             ns += spawn_egg_c
 
     def on_build(self) -> None:

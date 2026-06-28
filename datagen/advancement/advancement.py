@@ -1,9 +1,9 @@
-import json
 from pathlib import Path
 from typing import Any, Callable
 
 from datagen.advancement.advancementbuilder import AdvancementBuilder
 from datagen.globals import ADVANCEMENTS_PATH
+from datagen.utils.json_encoder import dumps
 from datagen.utils.minecraft.identifier import Identifier
 from datagen.utils.obfuscator import Obfuscator
 from datagen.utils.simplefile import SimpleFile
@@ -57,7 +57,7 @@ class Advancement():
         return out
 
     def to_string(self) -> str:
-        return json.dumps(self.__get_data_dict(self.data), indent=4)
+        return dumps(self.__get_data_dict(self.data), indent=4)
 
     def to_file(self) -> "SimpleFile":
         path = Obfuscator.obfuscate_path(self.id.get_namespace(), self.id._path)

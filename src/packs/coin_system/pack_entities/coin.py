@@ -15,7 +15,7 @@ class Coin(Entity):
                 "NoGravity": True, 
                 "Health": 12, 
                 "Tags": ["coin"],
-                "Silent": True, 
+                # "Silent": True, 
                 "DeathLootTable": loot_table.id
             }
         )

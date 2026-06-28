@@ -1,4 +1,4 @@
-import json
+from datagen.utils.json_encoder import dumps
 from typing import overload
 
 from datagen.function.commands.customcommand import CustomCommand
@@ -30,7 +30,7 @@ class Summon():
         pos: Position3, 
         nbt: dict | None = None
     ) -> CustomCommand:
-        return CustomCommand(f"summon {entity} {pos} {'' if nbt is None else json.dumps(nbt)}")
+        return CustomCommand(f"summon {entity} {pos} {'' if nbt is None else dumps(nbt)}")
     
     @staticmethod
     def item(
@@ -48,4 +48,4 @@ class Summon():
                 "components": item.item.settings if item.item.settings is not None else {}
             }
         }
-        return CustomCommand(f"summon item {pos} {'' if nbt is None else json.dumps(_nbt)}")
+        return CustomCommand(f"summon item {pos} {'' if nbt is None else dumps(_nbt)}")

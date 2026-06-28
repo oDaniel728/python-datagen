@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import Any, Literal
 
 from datagen.advancement.advancement import Advancement
 from datagen.types.util.min import Range
@@ -6,6 +6,7 @@ from datagen.utils.minecraft.identifier import Identifier
 from datagen.utils.repr.entitytype import EntityType
 from datagen.utils.repr.item import Item
 from datagen.utils.repr.itemstack import ItemStack
+from datagen.utils.snbtserializer import SNBTSerializer
 
 
 class TargetSelectorSettings():
@@ -109,43 +110,59 @@ class TargetSelectorSettings():
         self.limit = limit
         self.sort = sort
 
+        self.other = {}
+
+    def _fmt_range(self, v: int | Range | None) -> int | str | None:
+        if isinstance(v, Range):
+            return str(v)
+        return v
+
+    def _fmt_scores(self) -> str | None:
+        if not self.scores:
+            return None
+        return "{" + ",".join(
+            f"{k}={v}" for k, v in self.scores.items()
+        ) + "}"
+
     def to_dict(self) -> dict:
         return {
-            "x": self.x,
-            "y": self.y,
-            "z": self.z,
+            "x": self._fmt_range(self.x),
+            "y": self._fmt_range(self.y),
+            "z": self._fmt_range(self.z),
 
-            "dx": self.dx,
-            "dy": self.dy,
-            "dz": self.dz,
+            "dx": self._fmt_range(self.dx),
+            "dy": self._fmt_range(self.dy),
+            "dz": self._fmt_range(self.dz),
 
-            "distance": self.distance,
+            "distance": self._fmt_range(self.distance),
 
-            "x_rotation": self.x_rotation,
-            "y_rotation": self.y_rotation,
-            
-            "scores": self.scores,
-            
+            "x_rotation": self._fmt_range(self.x_rotation),
+            "y_rotation": self._fmt_range(self.y_rotation),
+
+            "scores": self._fmt_scores(),
+
             "tag": self.tag,
-            
+
             "team": self.team,
-            
+
             "name": self.name,
-            
+
             "type": self.type if isinstance(self.type, str) else ~self.type.id if self.type is not None else None,
-            
+
             "predicate": self.predicate,
-            
-            "nbt": self.nbt,
-            
-            "level": self.level,
-            
+
+            "nbt": SNBTSerializer.serialize(self.nbt) if self.nbt else None,
+
+            "level": self._fmt_range(self.level),
+
             "gamemode": self.gamemode,
-            
+
             "advancements": self.advancements,
-            
+
             "limit": self.limit,
-            "sort": self.sort
+            "sort": self.sort,
+
+            **self.other
         }
     
     def with_x(self, value: int | Range | None):
@@ -332,4 +349,11 @@ class TargetSelectorSettings():
         return self
     def do_spectator(self):
         self.with_gamemode("spectator")
+        return self
+    
+    def with_(self, k: str, v: Any):
+        """Sets a custom key-value pair in the settings."""
+        if hasattr(v, "__str__"):
+            v = str(v)
+        self.other[k] = v
         return self

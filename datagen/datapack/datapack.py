@@ -1,4 +1,3 @@
-import json
 from pathlib import Path
 from typing import final
 
@@ -6,6 +5,7 @@ from typing_extensions import Self
 
 from datagen.datapack.namespace import Namespace
 from datagen.globals import DatagenConfig
+from datagen.utils.json_encoder import dumps
 from datagen.utils.minecraft.identifier import Identifier
 from datagen.utils.minecraft.logger import Logger
 from datagen.utils.obfuscator import Obfuscator
@@ -152,7 +152,7 @@ class DataPack:
         for namespace in self.namespaces:
             namespace.build(out / "data" / namespace.name)
 
-        write_file("pack.mcmeta", json.dumps({
+        write_file("pack.mcmeta", dumps({
             "pack": {
                 "pack_format": DatagenConfig.config["builderSettings"].get("pack_format", 48),
                 "description": self.description

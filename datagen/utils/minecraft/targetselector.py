@@ -27,7 +27,6 @@ class TargetSelector():
 
     def __format(self, data: Any, d: int = 0) -> Any:
         if isinstance(data, Identifier):
-            print(data)
             return ~data
         elif isinstance(data, (list, tuple, set)):
             data = [ self.__format(i, d + 1) for i in data ]

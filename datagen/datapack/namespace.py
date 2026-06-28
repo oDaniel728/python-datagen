@@ -173,6 +173,7 @@ def main():
         """Adds a function to the namespace. The function's namespace is set to this namespace, and its identifier is updated accordingly. The function is also added to the set of functions in the namespace."""
         self.logger.info(f"Adding function '{function.id._path}' to namespace '{self.name}'")
         function.namespace = self # type: ignore
+        function.id._namespace = self.name
         self.functions.add(function)
         return self
 
@@ -180,6 +181,7 @@ def main():
         """Adds a tag to the namespace. The tag's namespace is set to this namespace, and its identifier is updated accordingly. The tag is also added to the set of tags in the namespace."""
         self.logger.info(f"Adding tag '{tag.id._path}' to namespace '{self.name}'")
         tag.namespace = self # type: ignore
+        tag.id._namespace = self.name
         self.tags.add(tag)
         return self
 
@@ -187,6 +189,7 @@ def main():
         """Adds a predicate to the namespace. The predicate's namespace is set to this namespace, and its identifier is updated accordingly. The predicate is also added to the set of predicates in the namespace."""
         self.logger.info(f"Adding predicate '{predicate.id._path}' to namespace '{self.name}'")
         predicate.namespace = self # type: ignore
+        predicate.id._namespace = self.name
         self.predicates.add(predicate)
         return self
 
@@ -214,6 +217,7 @@ def main():
         """Adds an advancement to the namespace. The advancement's namespace is set to this namespace, and its identifier is updated accordingly. The advancement is also added to the set of advancements in the namespace."""
         self.logger.info(f"Adding advancement '{adv.id._path}' to namespace '{self.name}'")
         adv._ns = self # type: ignore
+        adv.id._namespace = self.name
         return self
 
     def add_advancements(self, *advs: "Advancement") -> Self:
@@ -227,6 +231,7 @@ def main():
         from datagen.loot_table.loot_table import LootTable as LT
         self.logger.info(f"Adding loot table '{loot_table.id._path}' to namespace '{self.name}'")
         loot_table.namespace = self
+        loot_table.id._namespace = self.name
         self.loot_tables.add(loot_table)
         return self
 
@@ -240,6 +245,7 @@ def main():
         """Adds an enchantment to the namespace. The enchantment's namespace is set to this namespace, and its identifier is updated accordingly."""
         self.logger.info(f"Adding enchantment '{enchantment.id._path}' to namespace '{self.name}'")
         enchantment.namespace = self
+        enchantment.id._namespace = self.name
         self.enchantments.add(enchantment)
         return self
 

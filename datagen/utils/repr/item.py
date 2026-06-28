@@ -1,8 +1,8 @@
 import abc
-import json
 from typing import TYPE_CHECKING, Any, Self, Type, overload
 
 from datagen.types.protocols.todict import ToDict
+from datagen.utils.json_encoder import dumps
 from datagen.utils.minecraft.identifier import Identifier
 if TYPE_CHECKING:
     from datagen.utils.repr.itemstack import ItemStack
@@ -15,7 +15,10 @@ class __Settings__(ToDict, abc.ABC):
         return self.get_components()
 
     def to_json(self) -> str:
-        return json.dumps(self.to_dict())
+        return dumps(self.to_dict())
+    
+    def __invert__(self):
+        return self.to_dict()
 
     @abc.abstractmethod
     def get_components(self) -> dict: ...
@@ -146,8 +149,7 @@ class Item[T: __Settings__]():
 
     def __str__(self) -> str:
         nbt_dict: dict = self._remove_nulls(self.get_nbt_dict())
-        print(self._remove_nulls(nbt_dict))
-        return f"{~self.id}[{','.join(f'{k}={v}' for k, v in nbt_dict.items())}]" if nbt_dict else f"{~self.id}"
+        return f"{~self.id}[{','.join(f'{k}{'=' if k != 'custom_data' else '~'}{v}' for k, v in nbt_dict.items())}]" if nbt_dict else f"{~self.id}"
 
     def __invert__(self):
         return self.id
@@ -190,16 +192,16 @@ class Item[T: __Settings__]():
         self.settings = nbt
         return self
     
-    def with_settings[U: Settings](self, setting: U) -> "Item[U]":
+    def with_settings(self, setting: Settings) -> "Item":
         """Returns a new `Item` instance with the same identifier but with the provided settings.
         
         Args:
-            setting (U): The settings to be applied to the new `Item` instance.
+            setting (Settings): The settings to be applied to the new `Item` instance.
         
         Returns:
-            Item[U]: A new instance of the item with the same identifier but with the provided settings.
+            Item: A new instance of the item with the same identifier but with the provided settings.
         """
-        return Item[U](self.id, setting)
+        return Item(self.id, ~ self.settings | ~ setting)
     
     def to_dict(self) -> dict:
         return self.settings.get_components()

@@ -15,15 +15,15 @@ class LevelBasedValue(ToDict):
         return LevelBasedValue._LevelsSquared(added)
 
     @staticmethod
-    def clamped(value, min: float, max: float):
+    def clamped(value, min: float, max: float) -> "LevelBasedValue":
         return LevelBasedValue._Clamped(value, min, max)
 
     @staticmethod
-    def fraction(numerator, denominator):
+    def fraction(numerator, denominator) -> "LevelBasedValue":
         return LevelBasedValue._Fraction(numerator, denominator)
 
     @staticmethod
-    def lookup(values: list[float], fallback: float | None = None):
+    def lookup(values: list[float], fallback: float | None = None) -> "LevelBasedValue":
         return LevelBasedValue._Lookup(values, fallback)
 
     class _Linear(ToDict):

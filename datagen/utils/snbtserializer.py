@@ -1,9 +1,10 @@
 from __future__ import annotations
 
-from symtable import Function
 from typing import Any
 import re
 
+from datagen.types.util.min import Range
+from datagen.utils.json_encoder import dumps
 from datagen.utils.minecraft.identifier import Identifier
 
 
@@ -179,6 +180,9 @@ class SNBTSerializer:
 
         if isinstance(value, BlockEntityData):
             return f'"{value.get_pos()}"'
+        
+        if isinstance(value, Range):
+            return dumps(value.to_dict())
 
         raise TypeError(
             f"Unsupported type: {type(value)}"

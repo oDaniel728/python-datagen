@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING, Any, Literal, Self
 
 from datagen.function.commands._data.datastorage import DataStorageValue
+from datagen.function.commands._data.entitydata import BlockEntityDataValue, EntityDataValue
 from datagen.function.commands.command import Command
 from datagen.function.commands.customcommand import CustomCommand
 if TYPE_CHECKING:
@@ -54,7 +55,7 @@ class ScoreboardPlayer():
         else:
             return self.operation(score, "-=")
 
-    def set(self, score: "int | ScoreboardPlayer | FunctionMacroArgument | Function | DataStorageValue | Command"):
+    def set(self, score: "int | ScoreboardPlayer | FunctionMacroArgument | Function | DataStorageValue | EntityDataValue | BlockEntityDataValue | Command"):
         from datagen.function.function import Function
         if isinstance(score, (int, FunctionMacroArgument)):
             return CustomCommand(
@@ -83,6 +84,26 @@ class ScoreboardPlayer():
                 str(score.storage), 
                 str(score.key)
             )
+        elif isinstance(score, EntityDataValue):
+            return CustomCommand(
+                f"\n# set {~self.to_identiifer()} {score}\n",
+                "execute store result score", 
+                str(self), 
+                str(self.objective), 
+                "int 1 run data get entity", 
+                str(score.get_entity().get_target()), 
+                str(score.get_key())
+            )
+        elif isinstance(score, BlockEntityDataValue):
+            return CustomCommand(
+                f"\n# set {~self.to_identiifer()} {score}\n",
+                "execute store result score", 
+                str(self), 
+                str(self.objective), 
+                "int 1 run data get block", 
+                str(score.get_block_entity().get_pos()), 
+                str(score.get_key())
+            )
         elif isinstance(score, Command):
             return CustomCommand(
                 f"\n# set {~self.to_identiifer()} {score}\n",
@@ -98,11 +119,6 @@ class ScoreboardPlayer():
     def multiply(self, score: "int | ScoreboardPlayer | FunctionMacroArgument") -> "CustomCommand":
         from datagen.utils.minecraft.text import Text
         out = CustomCommand()
-        # 1. score add temp
-        # 2. score player temp = 0
-        # 3. score player temp += score
-        # 4. score player self *= temp
-        # 6. score remove temp
         tmpscore = ScoreboardObjective("temp_multiply", Text.literal(""), self.objective.criterion)
         from datagen.function.function import Function
         current_function = getattr(Function, "_Function__current_function", None)
@@ -121,11 +137,6 @@ class ScoreboardPlayer():
     def divide(self, score: "int | ScoreboardPlayer | FunctionMacroArgument"):
         from datagen.utils.minecraft.text import Text
         out = CustomCommand()
-        # 1. score add temp
-        # 2. score player temp = 0
-        # 3. score player temp += score
-        # 4. score player self /= temp
-        # 6. score remove temp
         tmpscore = ScoreboardObjective("temp_divide", Text.literal(""), self.objective.criterion)
         from datagen.function.function import Function
         current_function = getattr(Function, "_Function__current_function", None)
@@ -145,11 +156,6 @@ class ScoreboardPlayer():
     def modulus(self, score: "int | ScoreboardPlayer | FunctionMacroArgument"):
         from datagen.utils.minecraft.text import Text
         out = CustomCommand()
-        # 1. score add temp
-        # 2. score player temp = 0
-        # 3. score player temp += score
-        # 4. score player self %= temp
-        # 6. score remove temp
         tmpscore = ScoreboardObjective("temp_mod", Text.literal(""), self.objective.criterion)
         from datagen.function.function import Function
         current_function = getattr(Function, "_Function__current_function", None)

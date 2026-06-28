@@ -1,10 +1,10 @@
-import json
 from pathlib import Path
 from typing import Any
 
 from datagen.globals import RECIPES_PATH
 from datagen.tag.tag import Tag
 from datagen.utils.environment import Environment
+from datagen.utils.json_encoder import dumps
 from datagen.utils.minecraft.identifier import Identifier
 from datagen.utils.obfuscator import Obfuscator
 from datagen.utils.repr.item import Item
@@ -69,7 +69,7 @@ class Recipe():
         return {str(k): encode(v) for k, v in self._data.items()}
 
     def to_string(self) -> str:
-        return json.dumps(self.to_dict(), indent=4)
+        return dumps(self.to_dict(), indent=4)
 
     def get_filepath(self) -> Path:
         path = Obfuscator.obfuscate_path(self.id.get_namespace(), self.id.get_path())

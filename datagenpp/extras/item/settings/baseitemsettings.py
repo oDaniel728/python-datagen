@@ -31,7 +31,8 @@ class BaseItemSettings(Item.Settings):
         return self
 
     def with_custom_data(self, data: dict):
-        self._data["custom_data"] = data
+        from datagen.utils.snbtserializer import SNBTSerializer
+        self._data["custom_data"] = SNBTSerializer.serialize(data)
         return self
     
     def with_hide_tooltip(self):
@@ -70,7 +71,7 @@ class BaseItemSettings(Item.Settings):
         self,
         name: Text.BaseText
     ):
-        self._data["item_name"] = f"'{str(name.to_dict()).replace("'", "\"")}'"
+        self._data["item_name"] = f"{str(name.to_dict()).replace("'", "\"")}"
         return self
     
     def with_fire_resistant(self):

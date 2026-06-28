@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, Literal
 
 from datagen.utils.minecraft.identifier import Identifier
 from datagen.utils.minecraft.targetselector import TargetSelector
-from datagen.utils.minecraft.text._base import BaseText, BaseTextSettings
+from datagen.utils.minecraft.text._base import BaseText, BaseTextSettings, _remove_nulls
 from datagen.utils.repr.keybind import KeyBind
 
 if TYPE_CHECKING:
@@ -35,7 +35,7 @@ class LiteralTextSettings(BaseTextSettings):
         self.text: str = text
 
     def to_dict(self) -> dict:
-        return super().to_dict() | {"text": self.text}
+        return _remove_nulls(super().to_dict() | {"text": self.text})
 
 
 class TranslateTextSettings(BaseTextSettings):
@@ -68,10 +68,10 @@ class TranslateTextSettings(BaseTextSettings):
         self.with_: list[BaseText] | None = with_
 
     def to_dict(self) -> dict:
-        return super().to_dict() | {
-            "translate": self.translate,
+        return _remove_nulls(super().to_dict() | {
+            "translate": str(self.translate) if self.translate else None,
             "with": [t.to_string() for t in self.with_] if self.with_ else None,
-        }
+        })
 
 
 class ScoreTextSettings(BaseTextSettings):
@@ -134,10 +134,10 @@ class SelectorTextSettings(BaseTextSettings):
         self.separator: BaseText | None = separator
 
     def to_dict(self) -> dict:
-        return super().to_dict() | {
-            "selector": self.selector,
+        return _remove_nulls(super().to_dict() | {
+            "selector": str(self.selector) if self.selector else None,
             "separator": self.separator.to_string() if self.separator else None,
-        }
+        })
 
 
 class KeybindTextSettings(BaseTextSettings):
@@ -166,7 +166,7 @@ class KeybindTextSettings(BaseTextSettings):
         self.keybind: KeyBind | None = keybind
 
     def to_dict(self) -> dict:
-        return super().to_dict() | {"keybind": self.keybind}
+        return _remove_nulls(super().to_dict() | {"keybind": self.keybind.name if self.keybind else None})
 
 
 class NBTTextSettings(BaseTextSettings):
@@ -209,10 +209,10 @@ class NBTTextSettings(BaseTextSettings):
         self.separator: BaseText | None = separator
 
     def to_dict(self) -> dict:
-        return super().to_dict() | {
+        return _remove_nulls(super().to_dict() | {
             "nbt": self.nbt,
             "block": self.block,
             "entity": self.entity,
             "storage": self.storage,
             "separator": self.separator.to_string() if self.separator else None,
-        }
+        })
