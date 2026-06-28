@@ -8,7 +8,6 @@ from datagen.function.commands.data import Data
 from datagen.function.commands.execute import Execute
 from datagen.function.commands.give import Give
 from datagen.function.commands.random import Random
-from datagen.function.function import Function
 from datagen.types.util.min import Range
 from datagen.utils.minecraft.collections.entity_types import EntityTypes
 from datagen.utils.minecraft.collections.items import Items
@@ -44,30 +43,29 @@ class CoinSystem(Pack, name='csys'):
         ns += BUNDLES, COINS, EMERALDS, DAMAGE, ITEMS
             
         TAG = "coin"
-        with Function(ns / "load") as load:
+        with ns.create_function("load").hook(mc.load) as load:
             
             ~ COIN_HEALTHS
+            ~ AGES_SOBJ
+            ~ ROLL
 
-            ns += load
             mc.load += load
 
-        with Function(ns / "ticks/each_coin") as ec:
-            SELF = COIN_HEALTHS.player(TargetSelector.SELF)
-            THIS = EntityData(TargetSelector.SELF)
+        with ns.create_function("ticks/each_coin") as ec:
+            SSELF = COIN_HEALTHS.player(TargetSelector.SELF)
+            DSELF = EntityData(TargetSelector.SELF)
 
             with AnonymousFunction() as a1:
-                ~ THIS["CustomName"].set(f"'{a1["Health"]}'")
-                ~ THIS["CustomNameVisible"].set(True)
+                ~ DSELF["CustomName"].set(f"'{a1["Health"]}'")
+                ~ DSELF["CustomNameVisible"].set(True)
                 tmp += a1
-            ~ SELF.set(Data.get("entity", TargetSelector.SELF, "Health"))
+            ~ SSELF.set(Data.get("entity", TargetSelector.SELF, "Health"))
 
             args = DataStorage(tmp / "a1args")
-            ~ args["Health"].set(THIS["Health"])
+            ~ args["Health"].set(DSELF["Health"])
             ~ a1.run(args)
 
-            ns += ec
-
-        with Function(ns / "tick") as tick:
+        with ns.create_function("tick") as tick:
             ~ Execute() \
                 .ASAT(
                     TargetSelector
@@ -79,25 +77,22 @@ class CoinSystem(Pack, name='csys'):
                     ) \
                 .RUN(ec)
             
-            ns += tick
             mc.tick += tick
 
-        with Function(ns / "ticks/clear_bundles") as clear_bundles:
+        with ns.create_function("ticks/clear_bundles") as clear_bundles:
             ~ Clear(TargetSelector.ALL_PLAYERS, Items.BUNDLE.with_settings(
                 BaseItemSettings().with_custom_data({"bundle": True}).with_("bundle_contents", "[]")
             ))
 
-            ns += clear_bundles
             mc.tick += clear_bundles
 
-        with Function(ns / "ticks/add_tag_glow") as add_tag_glow:
-            with Function(ns / "ticks/inner/add_tag_glow") as inner_add_tag_glow:
-                THIS = EntityData(TargetSelector.SELF)
-                SELF = (~ AGES_SOBJ).player(TargetSelector.SELF)
-                ~ SELF.set(THIS["Age"].get())
+        with ns.create_function("ticks/add_tag_glow") as add_tag_glow:
+            with ns.create_function("ticks/inner/add_tag_glow") as inner_add_tag_glow:
+                DSELF = EntityData(TargetSelector.SELF)
+                SSELF = AGES_SOBJ.player(TargetSelector.SELF)
+                ~ SSELF.set(DSELF["Age"].get())
                 ~ tag._Tag.add("glow", NOT_GLOWING_ITEMS)
 
-                ns += inner_add_tag_glow
             ~ Execute() \
                 .ASAT(
                     TargetSelector.ALL_ENTITIES
@@ -109,10 +104,9 @@ class CoinSystem(Pack, name='csys'):
                 ) \
                 .RUN(inner_add_tag_glow)
 
-            ns += add_tag_glow
             mc.tick += add_tag_glow
 
-        with Function(ns / "ticks/make_items_glow") as make_items_glow:
+        with ns.create_function("ticks/make_items_glow") as make_items_glow:
             ~ Execute() \
                 .ASAT(
                     TargetSelector.ALL_ENTITIES
@@ -126,27 +120,24 @@ class CoinSystem(Pack, name='csys'):
                     EntityData(TargetSelector.SELF)["Glowing"].set(True)
                 )
 
-            ns += make_items_glow
             mc.tick += make_items_glow
 
-        with Function(ns / "ticks/each_coin_item") as each_coin_item:
+        with ns.create_function("ticks/each_coin_item") as each_coin_item:
             
-            with Function(ns / "ticks/inner/each_coin_item") as each_item:
-                THIS = EntityData(TargetSelector.SELF)
+            with ns.create_function("ticks/inner/each_coin_item") as each_item:
+                DSELF = EntityData(TargetSelector.SELF)
                 
-                SELF = (~ ROLL).player(TargetSelector.SELF)
-                ~ SELF.set(Random.value(Range(1, 250)))
+                SSELF = ROLL.player(TargetSelector.SELF)
+                ~ SSELF.set(Random.value(Range(1, 250)))
                 
-                ~ THIS["CustomNameVisible"].set(True)
-                ~ THIS["CustomName"].set(
-                    THIS["Item"]["components"]["minecraft:item_name"]
+                ~ DSELF["CustomNameVisible"].set(True)
+                ~ DSELF["CustomName"].set(
+                    DSELF["Item"]["components"]["minecraft:item_name"]
                 )
                 ~ Execute() \
-                    .IF(lambda b: b.score(SELF, "matches", Range(1, 2))) \
-                    .RUN(THIS["Motion[1]"].set(0.2))
+                    .IF(lambda b: b.score(SSELF, "matches", Range(1, 2))) \
+                    .RUN(DSELF["Motion[1]"].set(0.2))
                 
-                ns += each_item 
-
             ~ Execute() \
                 .ASAT(
                     TargetSelector.ALL_ENTITIES
@@ -158,39 +149,35 @@ class CoinSystem(Pack, name='csys'):
                 ) \
                 .RUN(each_item)
 
-            ns += each_coin_item
             mc.tick += each_coin_item
 
-        with Function(ns / "ticks/each_exp_orb") as each_exp_orb:
-            with Function(ns / "ticks/inner/each_exp_orb") as each_orb:
-                THIS = EntityData(TargetSelector.SELF)
+        with ns.create_function("ticks/each_exp_orb") as each_exp_orb:
+            with ns.create_function("ticks/inner/each_exp_orb") as each_orb:
+                DSELF = EntityData(TargetSelector.SELF)
                 with AnonymousFunction() as a2:
-                    ~ THIS["CustomNameVisible"].set(True)
-                    ~ THIS["CustomName"].set(
+                    ~ DSELF["CustomNameVisible"].set(True)
+                    ~ DSELF["CustomName"].set(
                         LiteralText(f"{a2['Value']}", textsettings.RARE)
                     )
                    
-                    SELF = (~ ROLL).player(TargetSelector.SELF)
-                    ~ SELF.set(Random.value(Range(1, 250)))
+                    SSELF = ROLL.player(TargetSelector.SELF)
+                    ~ SSELF.set(Random.value(Range(1, 250)))
                     ~ Execute() \
-                        .IF(lambda b: b.score(SELF, "matches", Range(1, 2))) \
-                        .RUN(THIS["Motion"][1].set(0.2))
+                        .IF(lambda b: b.score(SSELF, "matches", Range(1, 2))) \
+                        .RUN(DSELF["Motion"][1].set(0.2))
 
                     tmp += a2 
                 ARGS = DataStorage(tmp / "a2args")
-                ~ ARGS["Value"].set(THIS["Value"].get(1))
+                ~ ARGS["Value"].set(DSELF["Value"].get(1))
                 ~ a2.run(ARGS)
                 
-                ns += each_orb
-
             ~ Execute() \
                 .ASAT(EXP_ORB) \
                 .RUN(each_orb)
             
-            ns += each_exp_orb
             mc.tick += each_exp_orb
 
-        with Function(ns / "give/spawn_egg/coin") as spawn_egg_c: 
+        with ns.create_function("give/spawn_egg/coin") as spawn_egg_c: 
             featherloot = CoinLoot(ns / "coin_tables/coin") \
                 .add_coin_with_bonus(
                     FeatherCoin(),
@@ -226,7 +213,6 @@ class CoinSystem(Pack, name='csys'):
                 .seal()
             egg = EntitySpawnEgg(Coin(EntityTypes.CHICKEN, featherloot))
             ~ Give(TargetSelector.SELF, egg.get_stack())
-            ns += featherloot
             ns += spawn_egg_c
 
     def on_build(self) -> None:
