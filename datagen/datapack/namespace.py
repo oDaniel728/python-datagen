@@ -1,7 +1,6 @@
 from pathlib import Path
 from typing import TYPE_CHECKING
 from typing import final
-from uuid import uuid4
 from typing_extensions import Self
 
 from datagen.advancement.advancement import Advancement
@@ -374,3 +373,49 @@ def main():
         """Returns a temporary namespace that can be used for resources that don't need to be organized into a specific namespace."""
         return Namespace(Environment.namespace_temp())
     
+    def create_function(self, path: str) -> Function:
+        """Creates a new function in the namespace with the given path. The function's namespace is set to this namespace, and its identifier is updated accordingly. The function is also added to the set of functions in the namespace."""
+        f = Function(self / path)
+        self.add_function(f)
+        return f
+    
+    def create_tag(self, path: str) -> Tag:
+        """Creates a new tag in the namespace with the given path. The tag's namespace is set to this namespace, and its identifier is updated accordingly. The tag is also added to the set of tags in the namespace."""
+        t = Tag(self / path, [])
+        self.add_tag(t)
+        return t 
+    
+    def create_predicate(self, path: str) -> "Predicate":
+        """Creates a new predicate in the namespace with the given path. The predicate's namespace is set to this namespace, and its identifier is updated accordingly. The predicate is also added to the set of predicates in the namespace."""
+        from datagen.predicate.predicate import Predicate
+        p = Predicate(self / path, {})
+        self.add_predicate(p)
+        return p
+    
+    def create_loot_table(self, path: str) -> "LootTable":
+        """Creates a new loot table in the namespace with the given path. The loot table's namespace is set to this namespace, and its identifier is updated accordingly. The loot table is also added to the set of loot tables in the namespace."""
+        from datagen.loot_table.loot_table import LootTable
+        lt = LootTable(self / path, {})
+        self.add_loot_table(lt)
+        return lt
+    
+    def create_enchantment(self, path: str) -> "EnchantmentProvider":
+        """Creates a new enchantment in the namespace with the given path. The enchantment's namespace is set to this namespace, and its identifier is updated accordingly. The enchantment is also added to the set of enchantments in the namespace."""
+        from datagen.utils.repr.enchantment_provider import EnchantmentProvider
+        e = EnchantmentProvider(self / path)
+        self.add_enchantment(e)
+        return e
+    
+    def create_recipe(self, path: str) -> "Recipe":
+        """Creates a new recipe in the namespace with the given path. The recipe's namespace is set to this namespace, and its identifier is updated accordingly. The recipe is also added to the set of recipes in the namespace."""
+        from datagen.recipes.recipe import Recipe
+        r = Recipe(self / path, {})
+        self.add_recipe(r)
+        return r
+    
+    def create_advancement(self, path: str) -> "Advancement":
+        """Creates a new advancement in the namespace with the given path. The advancement's namespace is set to this namespace, and its identifier is updated accordingly. The advancement is also added to the set of advancements in the namespace."""
+        from datagen.advancement.advancement import Advancement
+        a = Advancement(self / path)
+        self.add_advancement(a)
+        return a
