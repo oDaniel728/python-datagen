@@ -6,6 +6,7 @@ from datagen.function.commands.bossbar import BossBar
 from datagen.function.commands.command import Command
 from datagen.function.commands.commandarray import CommandArray
 from datagen.function.commands.customcommand import CustomCommand
+from datagen.utils.minecraft.text._base import BaseText
 from datagen.utils.obfuscator import Obfuscator
 from datagen.utils.repr.entityuuid import EntityUUID
 if TYPE_CHECKING:
@@ -36,9 +37,17 @@ class DataStorage[D: dict | _TypedDict]():
 
     def set(self, key: TKey, value: TAny) -> CustomCommand:
         if isinstance(value, FunctionMacroArgument):
-            return CustomCommand(f'data modify storage {self._id_str()} {key} set value "{value}"')
+            _v = str(value)
+            q = "'" if '"' in _v else '"'
+            if q == "'":
+                _v = _v.replace("'", "\\'")
+            return CustomCommand(f"data modify storage {self._id_str()} {key} set value {q}{_v}{q}")
+        if isinstance(value, BaseText):
+            value = str(value)
         if isinstance(value, str):
-            return CustomCommand(f'data modify storage {self._id_str()} {key} set value "{value}"')
+            q = "'" if '"' in value else '"'
+            v = value.replace("'", "\\'") if q == "'" else value
+            return CustomCommand(f"data modify storage {self._id_str()} {key} set value {q}{v}{q}")
         if isinstance(value, bool):
             return CustomCommand(f'data modify storage {self._id_str()} {key} set value {"true" if value else "false"}')
         if isinstance(value, EntityUUID):

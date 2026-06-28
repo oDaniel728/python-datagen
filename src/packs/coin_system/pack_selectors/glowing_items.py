@@ -7,13 +7,13 @@ from packs.coin_system.pack_objectives.ages import AGES_SOBJ
 
 GLOWING_ITEMS = TargetSelector.ALL_ENTITIES.with_settings(
     TargetSelectorSettings()
-    .with_scores({AGES_SOBJ.name: Range.min(40)})
+    .with_scores({AGES_SOBJ.name: Range.min(80)})
     .with_type(EntityTypes.ITEM)
     .with_tag("glow")
 )
 NOT_GLOWING_ITEMS = TargetSelector.ALL_ENTITIES.with_settings(
     TargetSelectorSettings()
-    .with_scores({AGES_SOBJ.name: Range.min(40)})
+    .with_scores({AGES_SOBJ.name: Range.min(80)})
     .with_type(EntityTypes.ITEM)
     .with_tag('!' + "glow")
 )

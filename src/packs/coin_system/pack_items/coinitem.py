@@ -27,7 +27,7 @@ class CoinItem(Item):
         ]
         super().__init__(id, {
             "max_stack_size": 99,
-            "custom_name": LiteralText(name, self.__RarityMap[rarity]),
+            "item_name": LiteralText(name, self.__RarityMap[rarity]),
             "lore": _lore,
             "custom_data": SNBTSerializer.serialize({"coin": True, "value": value, "show": True}),
         })

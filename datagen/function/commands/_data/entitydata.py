@@ -9,6 +9,7 @@ from datagen.function.commands._data.datastorage import DataStorage, DataStorage
 from datagen.utils.minecraft.blockposition import BlockPosition
 from datagen.utils.minecraft.identifier import Identifier
 from datagen.utils.minecraft.targetselector import TargetSelector
+from datagen.utils.minecraft.text._base import BaseText
 from datagen.utils.repr.entityuuid import EntityUUID
 
 if TYPE_CHECKING:
@@ -74,9 +75,17 @@ class EntityData[_TEntity: (TargetSelector, str)]():
             >>> ed.set("Health", 20.0)
         """
         if isinstance(value, FunctionMacroArgument):
-            return CustomCommand(f'data modify entity {self.__target} {key} set value "{value}"')
+            _v = str(value)
+            q = "'" if '"' in _v else '"'
+            if q == "'":
+                _v = _v.replace("'", "\\'")
+            return CustomCommand(f"data modify entity {self.__target} {key} set value {q}{_v}{q}")
+        if isinstance(value, BaseText):
+            value = str(value)
         if isinstance(value, str):
-            return CustomCommand(f'data modify entity {self.__target} {key} set value "{value}"')
+            q = "'" if '"' in value else '"'
+            v = value.replace("'", "\\'") if q == "'" else value
+            return CustomCommand(f"data modify entity {self.__target} {key} set value {q}{v}{q}")
         if isinstance(value, bool):
             return CustomCommand(f'data modify entity {self.__target} {key} set value {"true" if value else "false"}')
         if isinstance(value, EntityUUID):
@@ -297,9 +306,17 @@ class BlockEntityData[_TPos: (BlockPosition, str)]():
             >>> bed.set("CustomName", '{"text":"Chest"}')
         """
         if isinstance(value, FunctionMacroArgument):
-            return CustomCommand(f'data modify block {self.__pos} {key} set value "{value}"')
+            _v = str(value)
+            q = "'" if '"' in _v else '"'
+            if q == "'":
+                _v = _v.replace("'", "\\'")
+            return CustomCommand(f"data modify block {self.__pos} {key} set value {q}{_v}{q}")
+        if isinstance(value, BaseText):
+            value = str(value)
         if isinstance(value, str):
-            return CustomCommand(f'data modify block {self.__pos} {key} set value "{value}"')
+            q = "'" if '"' in value else '"'
+            v = value.replace("'", "\\'") if q == "'" else value
+            return CustomCommand(f"data modify block {self.__pos} {key} set value {q}{v}{q}")
         if isinstance(value, bool):
             return CustomCommand(f'data modify block {self.__pos} {key} set value {"true" if value else "false"}')
         if isinstance(value, EntityUUID):

@@ -5,9 +5,10 @@ from uuid import uuid4
 from datagen.datapack.datapack import DataPack
 from datagen.datapack.namespace import Namespace
 from datagen.function.function import Function
+from datagen.types.util.counter import Counter
 from datagen.utils.minecraft.identifier import Identifier
 
-
+_C = Counter()
 class AnonymousFunction(Function):
     """
     # Anonymous Function
@@ -23,7 +24,7 @@ class AnonymousFunction(Function):
     """
 
     def __init__(self, datapack: DataPack | None = None):
-        super().__init__(Namespace.temp().identifier(f"fun{len(Namespace.temp().functions)}"))
+        super().__init__(Namespace.temp().identifier(f"fun{_C}"))
         self.datapack = datapack or DataPack.get_current_datapack()
         self.datapack.add_namespace(Namespace.temp())
         Namespace.temp().add(self)

@@ -15,7 +15,7 @@ class AppliedStatusEffect():
 
     def to_dict(self) -> dict:
         data = {}
-        data["effect"] = str(self.effect.id)
+        data["id"] = str(self.effect.id)
         if self.duration is not None:
             data["duration"] = self.duration
         if self.amplifier is not None:

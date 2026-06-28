@@ -5,16 +5,14 @@ from datagen.function.commands._data.datastorage import DataStorage
 from datagen.function.commands._data.entitydata import EntityData
 from datagen.function.commands.clear import Clear
 from datagen.function.commands.data import Data
-from datagen.function.commands.effect import Effect
 from datagen.function.commands.execute import Execute
 from datagen.function.commands.give import Give
+from datagen.function.commands.random import Random
 from datagen.function.commands.scoreboard import Scoreboard
 from datagen.function.function import Function
-from datagen.loot_table.loot_table import LootTable
 from datagen.types.util.min import Range
 from datagen.utils.minecraft.collections.entity_types import EntityTypes
 from datagen.utils.minecraft.collections.items import Items
-from datagen.utils.minecraft.collections.status_effects import StatusEffects
 from datagen.utils.minecraft.targetselector import TargetSelector
 from datagen.utils.minecraft.targetselectorsettings import TargetSelectorSettings
 from datagen.utils.minecraft.text._components import LiteralText
@@ -23,7 +21,6 @@ from datagen.utils.scoreboard.criterion import ObjectiveCriterion
 from datagen.utils.scoreboard.objective import ScoreboardObjective
 from datagenpp.extras.item.entityspawnegg import EntitySpawnEgg
 from datagenpp.extras.item.settings.baseitemsettings import BaseItemSettings
-from datagenpp.extras.itempack import ItemPack
 from datagenpp.extras.packs.pack import Pack
 from packs.coin_system.pack_enchantments.bundles import BUNDLES
 from packs.coin_system.pack_enchantments.coins import COINS
@@ -35,7 +32,9 @@ from packs.coin_system.pack_items.coinbundleitem import CoinBundleItem, ItemBund
 from packs.coin_system.pack_items.coins.feather import FeatherCoin
 from packs.coin_system.pack_loot.coinloot import CoinLoot
 from packs.coin_system.pack_objectives.ages import AGES_SOBJ
-from packs.coin_system.pack_selectors.glowing_items import GLOWING_ITEMS, NOT_GLOWING_ITEMS
+from packs.coin_system.pack_objectives.roll import ROLL
+from packs.coin_system.pack_selectors.glowing_items import NOT_GLOWING_ITEMS
+from packs.coin_system.pack_selectors.orbs import EXP_ORB
 from packs.coin_system.pack_settings import textsettings
 
 
@@ -56,9 +55,10 @@ class CoinSystem(Pack, name='csys'):
             ns += load
             mc.load += load
 
-        with Function(ns / "each_coin") as ec:
+        with Function(ns / "ticks/each_coin") as ec:
             SELF = SCORE.player(TargetSelector.SELF)
             THIS = EntityData(TargetSelector.SELF)
+
             with AnonymousFunction() as a1:
                 ~ THIS["CustomName"].set(f"'{a1["Health"]}'")
                 ~ THIS["CustomNameVisible"].set(True)
@@ -136,10 +136,19 @@ class CoinSystem(Pack, name='csys'):
         with Function(ns / "ticks/each_coin_item") as each_coin_item:
             
             with Function(ns / "ticks/inner/each_coin_item") as each_item:
-                ~ EntityData(TargetSelector.SELF)["CustomNameVisible"].set(True)
-                ~ EntityData(TargetSelector.SELF)["CustomName"].set(
-                    EntityData(TargetSelector.SELF)["Item"]["components"]["minecraft:item_name"]
+                THIS = EntityData(TargetSelector.SELF)
+                
+                SELF = (~ ROLL).player(TargetSelector.SELF)
+                ~ SELF.set(Random.value(Range(1, 250)))
+                
+                ~ THIS["CustomNameVisible"].set(True)
+                ~ THIS["CustomName"].set(
+                    THIS["Item"]["components"]["minecraft:item_name"]
                 )
+                ~ Execute() \
+                    .IF(lambda b: b.score(SELF, "matches", Range(1, 2))) \
+                    .RUN(THIS["Motion[1]"].set(0.2))
+                
                 ns += each_item 
 
             ~ Execute() \
@@ -155,6 +164,35 @@ class CoinSystem(Pack, name='csys'):
 
             ns += each_coin_item
             mc.tick += each_coin_item
+
+        with Function(ns / "ticks/each_exp_orb") as each_exp_orb:
+            with Function(ns / "ticks/inner/each_exp_orb") as each_orb:
+                THIS = EntityData(TargetSelector.SELF)
+                with AnonymousFunction() as a2:
+                    ~ THIS["CustomNameVisible"].set(True)
+                    ~ THIS["CustomName"].set(
+                        LiteralText(f"{a2['Value']}", textsettings.RARE)
+                    )
+                   
+                    SELF = (~ ROLL).player(TargetSelector.SELF)
+                    ~ SELF.set(Random.value(Range(1, 250)))
+                    ~ Execute() \
+                        .IF(lambda b: b.score(SELF, "matches", Range(1, 2))) \
+                        .RUN(THIS["Motion"][1].set(0.2))
+
+                    tmp += a2 
+                ARGS = DataStorage(tmp / "a2args")
+                ~ ARGS["Value"].set(THIS["Value"].get(1))
+                ~ a2.run(ARGS)
+                
+                ns += each_orb
+
+            ~ Execute() \
+                .ASAT(EXP_ORB) \
+                .RUN(each_orb)
+            
+            ns += each_exp_orb
+            mc.tick += each_exp_orb
 
         with Function(ns / "give/spawn_egg/coin") as spawn_egg_c: 
             featherloot = CoinLoot(ns / "coin_tables/coin") \
@@ -180,7 +218,7 @@ class CoinSystem(Pack, name='csys'):
                     unenchanted_chance=0.05, 
                     enchanted_chance=LevelBasedValue.lookup([max(0, i / 5) for i in range(-4, 7)], 0)
                 ) \
-                .add_bundle(
+                .add_bundle( 
                     ItemBundle(
                         [FeatherCoin().get_stack(25)] * 4, 
                         LiteralText("Coin Bundle III", textsettings.RARE),

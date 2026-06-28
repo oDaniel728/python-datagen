@@ -7,7 +7,7 @@ from packs.coin_system.pack_enchantments.common import basic_enchantment
 DAMAGE = basic_enchantment(
     Namespace.temp() / "damage",
     LiteralText("Damage"),
-    10,
+    100,
     1,
     (20, 30, 30, 40),
     20,
