@@ -14,6 +14,7 @@ class CoinLoot(LootTableBuilder):
     
     def __init__(self, id: Identifier) -> None:
         super().__init__(id)
+        self.context_type("minecraft:entity")
 
     def add_coin(
         self,
@@ -46,17 +47,16 @@ class CoinLoot(LootTableBuilder):
                 .then()
             .end_pool()
         )
-        if 0 in bonus_amount:
-            (
-                self.pool(bonus_amount.to_dict())
-                    .entry(name=coin)
-                        .weight(weight)
-                    .then()
-                    .condition(lambda b: b.random_chance_with_enchanted_bonus(
-                        COINS.id, unenchanted_chance, enchanted_chance
-                    ))
-                .end_pool()
-            )
+        (
+            self.pool(bonus_amount.to_dict())
+                .entry(name=coin)
+                    .weight(weight)
+                .then()
+                .condition(lambda b: b.random_chance_with_enchanted_bonus(
+                    COINS.id, unenchanted_chance, enchanted_chance
+                ))
+            .end_pool()
+        )
         return self
     
     def add_emerald_coin_with_bonus(
@@ -75,17 +75,16 @@ class CoinLoot(LootTableBuilder):
                 .then()
             .end_pool()
         )
-        if 0 in bonus_amount:
-            (
-                self.pool(bonus_amount.to_dict())
-                    .entry(name=coin)
-                        .weight(weight)
-                    .then()
-                    .condition(lambda b: b.random_chance_with_enchanted_bonus(
-                        EMERALDS.id, unenchanted_chance, enchanted_chance
-                    ))
-                .end_pool()
-            )
+        (
+            self.pool(bonus_amount.to_dict())
+                .entry(name=coin)
+                    .weight(weight)
+                .then()
+                .condition(lambda b: b.random_chance_with_enchanted_bonus(
+                    EMERALDS.id, unenchanted_chance, enchanted_chance
+                ))
+            .end_pool()
+        )
         return self
     
     def add_bundle(

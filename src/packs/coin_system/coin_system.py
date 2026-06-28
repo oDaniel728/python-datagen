@@ -156,7 +156,7 @@ class CoinSystem(Pack, name='csys'):
             ns += each_coin_item
             mc.tick += each_coin_item
 
-        with Function(ns / "give/spawn_egg/coin") as spawn_egg_c:
+        with Function(ns / "give/spawn_egg/coin") as spawn_egg_c: 
             featherloot = CoinLoot(ns / "coin_tables/coin") \
                 .add_coin_with_bonus(
                     FeatherCoin(),
@@ -182,7 +182,7 @@ class CoinSystem(Pack, name='csys'):
                 ) \
                 .add_bundle(
                     ItemBundle(
-                        [FeatherCoin().get_stack(25)] * 4,
+                        [FeatherCoin().get_stack(25)] * 4, 
                         LiteralText("Coin Bundle III", textsettings.RARE),
                         "rare"
                     ),

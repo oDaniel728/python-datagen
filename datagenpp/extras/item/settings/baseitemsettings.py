@@ -71,7 +71,7 @@ class BaseItemSettings(Item.Settings):
         self,
         name: Text.BaseText
     ):
-        self._data["item_name"] = f"{str(name.to_dict()).replace("'", "\"")}"
+        self._data["item_name"] = name.to_string()
         return self
     
     def with_fire_resistant(self):
