@@ -8,7 +8,6 @@ from datagen.function.commands.data import Data
 from datagen.function.commands.execute import Execute
 from datagen.function.commands.give import Give
 from datagen.function.commands.random import Random
-from datagen.function.commands.scoreboard import Scoreboard
 from datagen.function.function import Function
 from datagen.types.util.min import Range
 from datagen.utils.minecraft.collections.entity_types import EntityTypes
@@ -17,8 +16,6 @@ from datagen.utils.minecraft.targetselector import TargetSelector
 from datagen.utils.minecraft.targetselectorsettings import TargetSelectorSettings
 from datagen.utils.minecraft.text._components import LiteralText
 from datagen.utils.repr.levelbasedvalue import LevelBasedValue
-from datagen.utils.scoreboard.criterion import ObjectiveCriterion
-from datagen.utils.scoreboard.objective import ScoreboardObjective
 from datagenpp.extras.item.entityspawnegg import EntitySpawnEgg
 from datagenpp.extras.item.settings.baseitemsettings import BaseItemSettings
 from datagenpp.extras.packs.pack import Pack
@@ -32,11 +29,11 @@ from packs.coin_system.pack_items.coinbundleitem import CoinBundleItem, ItemBund
 from packs.coin_system.pack_items.coins.feather import FeatherCoin
 from packs.coin_system.pack_loot.coinloot import CoinLoot
 from packs.coin_system.pack_objectives.ages import AGES_SOBJ
+from packs.coin_system.pack_objectives.coin_healths import COIN_HEALTHS
 from packs.coin_system.pack_objectives.roll import ROLL
 from packs.coin_system.pack_selectors.glowing_items import NOT_GLOWING_ITEMS
 from packs.coin_system.pack_selectors.orbs import EXP_ORB
 from packs.coin_system.pack_settings import textsettings
-
 
 class CoinSystem(Pack, name='csys'):
     def on_prepare(self) -> None:
@@ -47,16 +44,15 @@ class CoinSystem(Pack, name='csys'):
         ns += BUNDLES, COINS, EMERALDS, DAMAGE, ITEMS
             
         TAG = "coin"
-        SCORE: ScoreboardObjective
         with Function(ns / "load") as load:
             
-            SCORE = ~ Scoreboard.objective("coin_healths", LiteralText.EMPTY, ObjectiveCriterion.DUMMY)
+            ~ COIN_HEALTHS
 
             ns += load
             mc.load += load
 
         with Function(ns / "ticks/each_coin") as ec:
-            SELF = SCORE.player(TargetSelector.SELF)
+            SELF = COIN_HEALTHS.player(TargetSelector.SELF)
             THIS = EntityData(TargetSelector.SELF)
 
             with AnonymousFunction() as a1:
