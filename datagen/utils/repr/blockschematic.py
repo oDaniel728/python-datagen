@@ -1,8 +1,4 @@
-from datagen.datapack.datapack import DataPack
-from datagen.datapack.namespace import Namespace
-from datagen.function.anonymousfunction import AnonymousFunction
 from datagen.function.commands.command import Command
-from datagen.function.function import Function
 from datagen.types.util.maybe import Maybe
 from datagen.utils.minecraft.blockposition import BlockPosition
 from datagen.utils.minecraft.relativeblockposition import RelativeBlockPosition
@@ -56,35 +52,38 @@ class BlockSchematic[B: PlaceableBlock = PlaceableBlock]():
     def get_area(self) -> BlockPosition:
         if not self.blocks:
             return BlockPosition(0, 0, 0)
-        min_x = min(block.pos.x for block in self.blocks)
-        max_x = max(block.pos.x for block in self.blocks)
-        min_y = min(block.pos.y for block in self.blocks)
-        max_y = max(block.pos.y for block in self.blocks)
-        min_z = min(block.pos.z for block in self.blocks)
-        max_z = max(block.pos.z for block in self.blocks)
+        min_x = min(int(str(block.pos.x)) for block in self.blocks)
+        max_x = max(int(str(block.pos.x)) for block in self.blocks)
+        min_y = min(int(str(block.pos.y)) for block in self.blocks)
+        max_y = max(int(str(block.pos.y)) for block in self.blocks)
+        min_z = min(int(str(block.pos.z)) for block in self.blocks)
+        max_z = max(int(str(block.pos.z)) for block in self.blocks)
         return BlockPosition(max_x - min_x + 1, max_y - min_y + 1, max_z - min_z + 1)
     
     def get_start_point(self) -> BlockPosition:
         if not self.blocks:
             return BlockPosition(0, 0, 0)
-        min_x = min(block.pos.x for block in self.blocks)
-        min_y = min(block.pos.y for block in self.blocks)
-        min_z = min(block.pos.z for block in self.blocks)
+        min_x = min(int(str(block.pos.x)) for block in self.blocks)
+        min_y = min(int(str(block.pos.y)) for block in self.blocks)
+        min_z = min(int(str(block.pos.z)) for block in self.blocks)
         return BlockPosition(min_x, min_y, min_z)
     
     def get_end_point(self) -> BlockPosition:
         if not self.blocks:
             return BlockPosition(0, 0, 0)
-        max_x = max(block.pos.x for block in self.blocks)
-        max_y = max(block.pos.y for block in self.blocks)
-        max_z = max(block.pos.z for block in self.blocks)
+        max_x = max(int(str(block.pos.x)) for block in self.blocks)
+        max_y = max(int(str(block.pos.y)) for block in self.blocks)
+        max_z = max(int(str(block.pos.z)) for block in self.blocks)
         return BlockPosition(max_x, max_y, max_z)
     
     def move(self, pos: BlockPosition) -> None:
         for block in self.blocks:
-            block.pos.x += pos.x
-            block.pos.y += pos.y
-            block.pos.z += pos.z
+            if isinstance(block.pos.x, int):
+                block.pos.x += int(str(pos.x))
+            if isinstance(block.pos.y, int):
+                block.pos.y += int(str(pos.y))
+            if isinstance(block.pos.z, int):
+                block.pos.z += int(str(pos.z))
 
     def copy(self) -> "BlockSchematic[B]":
         new_schematic = BlockSchematic[B]()
@@ -95,12 +94,25 @@ class BlockSchematic[B: PlaceableBlock = PlaceableBlock]():
     def place(self, at: BlockPosition) -> list[Command]:
         func = list[Command]()
         for block in self.blocks:
-            new_x = block.pos.x + at.x
-            new_y = block.pos.y + at.y
-            new_z = block.pos.z + at.z
+            if isinstance(block.pos.x, int):
+                new_x = block.pos.x + int(str(at.x))
+            else:
+                new_x = block.pos.x
+            
+            if isinstance(block.pos.y, int):
+                new_y = block.pos.y + int(str(at.y))
+            else:
+                new_y = block.pos.y
+            
+            if isinstance(block.pos.z, int):
+                new_z = block.pos.z + int(str(at.z))
+            else:
+                new_z = block.pos.z
+            
             if isinstance(block.pos, RelativeBlockPosition):
                 new_pos = RelativeBlockPosition(new_x, new_y, new_z)
             else:
                 new_pos = BlockPosition(new_x, new_y, new_z)
+            
             func.append(block.at(new_pos).place())
         return func
