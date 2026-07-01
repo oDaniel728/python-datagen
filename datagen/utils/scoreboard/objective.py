@@ -51,7 +51,7 @@ class ScoreboardObjective():
         self.display_name = display_name
         self.criterion = criterion
 
-    def __str__(self) -> str: return Obfuscator.obfuscate(self.name)
+    def __str__(self) -> str: return Obfuscator.obfuscate(self.name, "other.scoreboard.objectives")
     def to_string(self) -> str: return str(self)
 
     # Command Generators

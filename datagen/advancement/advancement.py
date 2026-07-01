@@ -60,7 +60,7 @@ class Advancement():
         return dumps(self.__get_data_dict(self.data), indent=4)
 
     def to_file(self) -> "SimpleFile":
-        path = Obfuscator.obfuscate_path(self.id.get_namespace(), self.id._path)
+        path = Obfuscator.obfuscate_path(self.id.get_namespace(), self.id._path, "identifiers.advancements")
         return SimpleFile(
             Path(ADVANCEMENTS_PATH) / (path.replace(".", "/") + ".json"),
             self.to_string()

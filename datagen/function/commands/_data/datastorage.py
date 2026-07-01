@@ -33,7 +33,7 @@ class DataStorage[D: dict | _TypedDict]():
             return str(self.id)
         namespace = self.id.get_namespace()
         path = self.id.get_path()
-        return f"{namespace}:{Obfuscator.obfuscate_path(namespace, path)}".lower()
+        return f"{namespace}:{Obfuscator.obfuscate_path(namespace, path, 'identifiers.data_storages')}".lower()
 
     def set(self, key: TKey, value: TAny) -> CustomCommand:
         if isinstance(value, FunctionMacroArgument):
@@ -68,11 +68,11 @@ class DataStorage[D: dict | _TypedDict]():
         if isinstance(function, Func):
             ns = function.id.get_namespace()
             path = function.id.get_path()
-            func_str = f"{ns}:{Obfuscator.obfuscate_path(ns, path)}".lower()
+            func_str = f"{ns}:{Obfuscator.obfuscate_path(ns, path, 'identifiers.functions')}".lower()
         else:
             ns = function.get_namespace()
             path = function.get_path()
-            func_str = f"{ns}:{Obfuscator.obfuscate_path(ns, path)}".lower()
+            func_str = f"{ns}:{Obfuscator.obfuscate_path(ns, path, 'identifiers.functions')}".lower()
         return CustomCommand(f"execute store result storage {self._id_str()} {key} int 1 run function {func_str}")
 
     def get(self, key: TKey, *, scale: float | None = None) -> CustomCommand:

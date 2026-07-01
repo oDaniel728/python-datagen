@@ -31,7 +31,12 @@ class BaseItemSettings(Item.Settings):
         return self
 
     def with_custom_data(self, data: dict):
+        from datagen.utils.obfuscator import Obfuscator
         from datagen.utils.snbtserializer import SNBTSerializer
+        data = {
+            Obfuscator.obfuscate(key, "other.item_custom_data_keys") if isinstance(key, str) else key: value
+            for key, value in data.items()
+        }
         self._data["custom_data"] = SNBTSerializer.serialize(data)
         return self
     

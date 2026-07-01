@@ -11,13 +11,39 @@ LOOT_TABLES_PATH = "loot_table/"
 CONFIG_PATH = ".datagenconfig"
 
 class DatagenConfig():
+    class TDatagenConfigTObfuscationIdentifiers(TypedDict):
+        functions: bool
+        tags: bool
+        advancements: bool
+        predicates: bool
+        loot_tables: bool
+        data_storages: bool
+
+    class TDatagenConfigTObfuscationOtherScoreboard(TypedDict):
+        objectives: bool
+        players: bool
+
+    class TDatagenConfigTObfuscationOther(TypedDict):
+        scoreboard: DatagenConfig.TDatagenConfigTObfuscationOtherScoreboard
+        entity_teams: bool
+        entity_tags: bool
+        item_custom_data_keys: bool
+
+    class TDatagenConfigTObfuscationWhere(TypedDict):
+        identifiers: DatagenConfig.TDatagenConfigTObfuscationIdentifiers
+        other: DatagenConfig.TDatagenConfigTObfuscationOther
+
+    class TDatagenConfigTObfuscation(TypedDict):
+        enabled: bool
+        where: DatagenConfig.TDatagenConfigTObfuscationWhere
+
     class TDatagenConfigTBuilderOptions(TypedDict):
         source: str
         output: str
         indent: int
         comment: bool
         allowEmptyLines: bool
-        obfuscate: bool
+        obfuscation: DatagenConfig.TDatagenConfigTObfuscation
         pack_format: int
     class TDataGenConfigTDumperSettings(TypedDict):
         source: str

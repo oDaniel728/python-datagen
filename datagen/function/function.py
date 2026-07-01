@@ -117,13 +117,13 @@ with Function(Identifier.of("pack:another")) as g:
 
     def get_filepath(self):
         """Returns the file path where the function should be saved, based on its identifier and the configured functions path."""
-        path = Obfuscator.obfuscate_path(self.id.get_namespace(), self.id._path)
+        path = Obfuscator.obfuscate_path(self.id.get_namespace(), self.id._path, "identifiers.functions")
         return FUNCTIONS_PATH + path.replace(".", "/").replace(" ", "_") + ".mcfunction"
 
     def to_string(self) -> str:
         """Converts the function to a string in the format of a Minecraft function file, with proper indentation and formatting."""
         lines: list[str] = []
-        lines.append("# " + Obfuscator.obfuscate_path(self.id.get_namespace(), self.id._path))
+        lines.append("# " + Obfuscator.obfuscate_path(self.id.get_namespace(), self.id._path, "identifiers.functions"))
         indent = " " * DatagenConfig.config["builderSettings"]["indent"]
         for command in self.commands:
             cmd_str = str(command)

@@ -22,8 +22,8 @@ class ScoreboardPlayer():
         return Identifier.of(self.objective.name, str(self.name).replace("@", "at_").replace("\n#", "hs_"))
 
     def __str__(self) -> str:
-        if isinstance(self.name, str):
-            return Obfuscator.obfuscate(self.name)
+        if isinstance(self.name, str) and self.name != "*":
+            return Obfuscator.obfuscate(self.name, "other.scoreboard.players")
         return f"{self.name}"
 
     def get_full_name(self) -> str:

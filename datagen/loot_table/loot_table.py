@@ -548,7 +548,7 @@ class LootTable():
         return dumps(self.to_dict(), indent=4)
 
     def get_filepath(self) -> Path:
-        path = Obfuscator.obfuscate_path(self.id.get_namespace(), self.id.get_path())
+        path = Obfuscator.obfuscate_path(self.id.get_namespace(), self.id.get_path(), "identifiers.loot_tables")
         return Path(LOOT_TABLES_PATH) / (path.replace(".", "/") + ".json")
 
     def to_file(self) -> SimpleFile:

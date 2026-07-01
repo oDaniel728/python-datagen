@@ -105,7 +105,7 @@ class Tag[T]():
         return dumps(self.to_dict(), indent=4)
 
     def to_file(self) -> SimpleFile:
-        path = Obfuscator.obfuscate_path(self.id.get_namespace(), self.id._path)
+        path = Obfuscator.obfuscate_path(self.id.get_namespace(), self.id._path, "identifiers.tags")
         return SimpleFile(Path(TAGS_PATH) / self.parent() / (path.replace(".", "/") + ".json"), self.to_string())
 
     def __enter__(self) -> Self:

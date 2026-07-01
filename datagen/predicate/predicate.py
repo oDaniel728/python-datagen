@@ -78,7 +78,7 @@ class Predicate[T](ValidPredicate):
         return dumps(self.to_dict(), indent=4)
 
     def get_filepath(self) -> Path:
-        path = Obfuscator.obfuscate_path(self.id.get_namespace(), self.id.get_path())
+        path = Obfuscator.obfuscate_path(self.id.get_namespace(), self.id.get_path(), "identifiers.predicates")
         return Path(PREDICATES_PATH) / (path.replace(".", "/").lower() + ".json")
 
     def to_file(self) -> SimpleFile:

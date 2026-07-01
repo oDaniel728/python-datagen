@@ -29,7 +29,7 @@ class RunFunction(Command):
             return str(self.func)
         ns = self.func.id.get_namespace()
         path = self.func.id.get_path()
-        return f"{ns}:{Obfuscator.obfuscate_path(ns, path)}".lower()
+        return f"{ns}:{Obfuscator.obfuscate_path(ns, path, 'identifiers.functions')}".lower()
 
     def to_string(self) -> str:
         if self.args is not None:

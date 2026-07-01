@@ -586,7 +586,28 @@ O config fica na raiz do projeto e define output, indent, obfuscation e **pack_f
     "builderSettings": {
         "output": "datapacks/",
         "indent": 4,
-        "obfuscate": false,
+        "obfuscation": {
+            "enabled": false,
+            "where": {
+                "identifiers": {
+                    "functions": true,
+                    "tags": true,
+                    "advancements": true,
+                    "predicates": true,
+                    "loot_tables": true,
+                    "data_storages": true
+                },
+                "other": {
+                    "scoreboard": {
+                        "objectives": true,
+                        "players": true
+                    },
+                    "entity_teams": true,
+                    "entity_tags": true,
+                    "item_custom_data_keys": true
+                }
+            }
+        },
         "pack_format": 41
     }
 }
@@ -623,7 +644,28 @@ Isso significa que **`/reload` NÃO é suficiente** — você precisa **fechar e
         "output": "datapacks/",
         "comment": false,
         "allowEmptyLines": false,
-        "obfuscate": false,
+        "obfuscation": {
+            "enabled": false,
+            "where": {
+                "identifiers": {
+                    "functions": true,
+                    "tags": true,
+                    "advancements": true,
+                    "predicates": true,
+                    "loot_tables": true,
+                    "data_storages": true
+                },
+                "other": {
+                    "scoreboard": {
+                        "objectives": true,
+                        "players": true
+                    },
+                    "entity_teams": true,
+                    "entity_tags": true,
+                    "item_custom_data_keys": true
+                }
+            }
+        },
         "indent": 4
     },
     "dumperSettings": { ... },
@@ -632,7 +674,9 @@ Isso significa que **`/reload` NÃO é suficiente** — você precisa **fechar e
 }
 ```
 
-- `obfuscate`: se true, ofusca caminhos de functions/loot tables
+- `obfuscation.enabled`: se true, habilita a ofuscação (chave mestre)
+- `obfuscation.where.identifiers.*`: controla a ofuscação de caminhos por tipo (functions, tags, advancements, predicates, loot_tables, data_storages)
+- `obfuscation.where.other.*`: controla a ofuscação de nomes de scoreboard (objectives/players), entity teams, entity tags e chaves de custom data de itens
 - `comment`: adiciona comentários nos arquivos gerados
 - `output`: diretório de saída dos datapacks
 
