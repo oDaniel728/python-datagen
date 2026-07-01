@@ -8,7 +8,6 @@ if TYPE_CHECKING:
     from datagen.datapack.namespace import Namespace
     from datagen.function.commands._data.entitydata import EntityData, BlockEntityData
     from datagen.function.commands.commandarray import CommandArray
-    from datagen.function.commands.runfunction import RunFunction
 from datagen.function.commands._data.datastorage import DataStorage
 from datagen.utils.minecraft.identifier import Identifier
 from datagen.function.commands.command import Command

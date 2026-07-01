@@ -3,7 +3,6 @@ from uuid import uuid4
 
 from datagen.function.commands.command import Command
 from datagen.function.commands._data.datastorage import DataStorage
-from datagen.function.commands.commandarray import CommandArray
 from datagen.function.function import Function
 from datagen.function.functionmacroargument import FunctionMacroArgument
 from datagen.utils.minecraft.identifier import Identifier

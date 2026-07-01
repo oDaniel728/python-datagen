@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, _TypedDict, TypeAlias, TypedDict
+from typing import TYPE_CHECKING, _TypedDict
 from uuid import UUID
 
 from datagen.types.util.reprs import *

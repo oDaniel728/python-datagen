@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Literal, Self
+from typing import TYPE_CHECKING, Literal
 
 from datagen.function.commands._data.datastorage import DataStorageValue
 from datagen.function.commands._data.entitydata import BlockEntityDataValue, EntityDataValue

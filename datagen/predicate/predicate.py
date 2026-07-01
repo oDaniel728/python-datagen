@@ -1,4 +1,3 @@
-from enum import auto
 from pathlib import Path
 from typing import Any, Literal
 

@@ -1,13 +1,10 @@
 #type: ignore
-from typing import Self
-from uuid import uuid4
 
-from datagen.datapack.datapack import DataPack
-from datagen.datapack.namespace import Namespace
+from typing import TYPE_CHECKING
+
 from datagen.function.function import Function
 from datagen.types.util.counter import Counter
-from datagen.utils.minecraft.identifier import Identifier
-
+if TYPE_CHECKING: from datagen.datapack.datapack import DataPack
 _C = Counter()
 class AnonymousFunction(Function):
     """
@@ -24,6 +21,8 @@ class AnonymousFunction(Function):
     """
 
     def __init__(self, datapack: DataPack | None = None):
+        from datagen.datapack.datapack import DataPack
+        from datagen.datapack.namespace import Namespace
         super().__init__(Namespace.temp().identifier(f"fun{_C}"))
         self.datapack = datapack or DataPack.get_current_datapack()
         self.datapack.add_namespace(Namespace.temp())
