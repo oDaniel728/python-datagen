@@ -1,5 +1,4 @@
 from datagen.globals import DatagenConfig
-from datagen.utils.environment import Environment
 
 
 class Obfuscator():
@@ -44,7 +43,8 @@ class Obfuscator():
     def obfuscate_path(cls, namespace: str, path: str, category: str | None = None) -> str:
         if not cls._is_enabled(category):
             return path
-        if namespace != Environment.namespace_temp():
+        # Nunca ofuscar paths do namespace minecraft (vanilla)
+        if namespace == "minecraft":
             return path
         return cls.obfuscate(path, category)
 
