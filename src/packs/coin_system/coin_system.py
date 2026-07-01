@@ -49,14 +49,6 @@ class CoinSystem(Pack, name='csys'):
         # Enchantments
         ns += BUNDLES, COINS, EMERALDS, DAMAGE, ITEMS
 
-        # Teams
-        BASIC_TEAM: EntityTeam
-        COMMON_TEAM: EntityTeam
-        UNCOMMON_TEAM: EntityTeam
-        RARE_TEAM: EntityTeam
-        EPIC_TEAM: EntityTeam
-        LEGENDARY_TEAM: EntityTeam
-            
         # EntityTags
         COIN_TAG = "coin"
         
@@ -66,19 +58,12 @@ class CoinSystem(Pack, name='csys'):
             ~ AGES_SOBJ
             ~ ROLL
 
-            arr, BASIC_TEAM = make_rarity_team("basic")
-            ~ arr
-            arr, COMMON_TEAM = make_rarity_team("common")
-            ~ arr
-            arr, UNCOMMON_TEAM = make_rarity_team("uncommon")
-            ~ arr
-            arr, RARE_TEAM = make_rarity_team("rare")
-            ~ arr
-            arr, EPIC_TEAM = make_rarity_team("epic")
-            ~ arr
-            arr, LEGENDARY_TEAM = make_rarity_team("legendary")
-            ~ arr
-            del arr
+            ~ make_rarity_team("basic")[0]
+            ~ make_rarity_team("common")[0]
+            ~ make_rarity_team("uncommon")[0]
+            ~ make_rarity_team("rare")[0]
+            ~ make_rarity_team("epic")[0]
+            ~ make_rarity_team("legendary")[0]
 
         with ns.create_function("ticks/each_coin").hook(mc.tick) as ec:
             SSELF = COIN_HEALTHS.player(TargetSelector.SELF)
