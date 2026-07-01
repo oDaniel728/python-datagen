@@ -1,6 +1,7 @@
-from typing import Any, Literal
+from typing import TYPE_CHECKING, Any, Literal
 
 from datagen.advancement.advancement import Advancement
+if TYPE_CHECKING: from datagen.entitytag import EntityTag
 from datagen.types.util.min import Range
 from datagen.utils.minecraft.identifier import Identifier
 from datagen.utils.repr.entitytype import EntityType
@@ -210,9 +211,9 @@ class TargetSelectorSettings():
         self.scores = value
         return self
 
-    def with_tag(self, value: str | None):
+    def with_tag(self, value: str | EntityTag | None):
         """Sets the entity tag."""
-        self.tag = value
+        self.tag = str(value)
         return self
 
     def with_team(self, value: str | None):

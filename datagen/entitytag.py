@@ -20,3 +20,6 @@ class EntityTag():
     @staticmethod
     def list(target: TargetSelector) -> Command:
         return _Tag.list(target)
+    
+    def __str__(self) -> str:
+        return self.name

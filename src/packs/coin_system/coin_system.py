@@ -19,7 +19,7 @@ from datagen.utils.minecraft.targetselectorsettings import TargetSelectorSetting
 from datagen.utils.minecraft.text._components import LiteralText
 from datagen.utils.repr.levelbasedvalue import LevelBasedValues
 from datagen.utils.repr.position3 import Position3
-from datagenpp.extras.entityteam import EntityTeam
+from datagen.entitytag import EntityTag
 from datagenpp.extras.item.entityspawnegg import EntitySpawnEgg
 from datagenpp.extras.item.settings.baseitemsettings import BaseItemSettings
 from datagenpp.extras.packs.pack import Pack
@@ -50,7 +50,7 @@ class CoinSystem(Pack, name='csys'):
         ns += BUNDLES, COINS, EMERALDS, DAMAGE, ITEMS
 
         # EntityTags
-        COIN_TAG = "coin"
+        COIN_TAG = EntityTag("coin")
         
         with ns.create_function("load").hook(mc.load) as load:
             
