@@ -1,15 +1,14 @@
 from typing import Any
 
 from datagen.function.commands.command import Command
-from datagen.types.protocols.todict import ToDict
 from datagen.utils.minecraft.blockposition import BlockPosition
-from datagen.utils.minecraft.identifier import Identifier
 from datagen.utils.repr.block import Block
+from datagen.utils.repr.position3 import Position3
 from datagen.utils.snbtserializer import SNBTSerializer
 
 
 class SetBlock(Command):
-    def __init__(self, block_pos: BlockPosition, block: Block[Any]):
+    def __init__(self, block_pos: BlockPosition | Position3, block: Block[Any]):
         super().__init__()
         self.block_pos = block_pos
         self.block = block
