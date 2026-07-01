@@ -192,10 +192,19 @@ with Function(Identifier.of("pack:another")) as g:
             Function.fns[id] = func
             return func
 
-    def run(self, args: "dict | DataStorage | EntityData | BlockEntityData | None" = None) -> "RunFunction":
+    def run(self, args: "dict | DataStorage | EntityData | BlockEntityData | None" = None) -> "CommandArray":
         """Returns a `RunFunction` command that executes this function with the given arguments. The arguments can be provided as a dictionary of key-value pairs, or as a `DataStorage` object containing the arguments. If no arguments are provided, the function will be executed without any arguments. This method is a convenient way to create a command that runs the function, and can be used in command sequences or other contexts where commands are needed."""
         from datagen.function.commands.runfunction import RunFunction
-        return RunFunction(self, args)
+        from datagen.function.commands.commandarray import CommandArray
+        from datagen.datapack.namespace import Namespace
+        arr = CommandArray([])
+        if isinstance(args, dict):
+            _args = DataStorage(Namespace.temp() / "__args")
+            arr += _args.rset(args)
+            arr += RunFunction(self, _args)
+        else:
+            arr += RunFunction(self, args)
+        return arr
     
     def __invert__(self) -> "Self":
         """Returns the function itself, but with the `~` operator. This is a convenient syntax for quickly creating a function instance without needing to call the constructor directly, and can be used in contexts where a function instance is needed but the identifier is already known."""
@@ -213,7 +222,7 @@ with Function(Identifier.of("pack:another")) as g:
         ns += self
         return self
 
-    def __call__(self, *a: P.args, **k: P.kwargs) -> "RunFunction":
+    def __call__(self, *a: P.args, **k: P.kwargs) -> "CommandArray":
         """Allows the function to be called like a regular Python function, returning a `RunFunction` command that executes this function with the given arguments. The arguments can be provided as positional or keyword arguments, and will be passed to the `run` method to create the appropriate command. This syntax is a convenient way to create a command that runs the function with specific arguments, and can be used in command sequences or other contexts where commands are needed."""
         args = k | {str(i): ag for i, ag in enumerate(a)}
         return self.run(args)
