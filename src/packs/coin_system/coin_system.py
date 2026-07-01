@@ -162,14 +162,12 @@ class CoinSystem(Pack, name='csys'):
                     ~ Team.join(rarity, TargetSelector.SELF)
                     tmp += _
 
-                ARGS = DataStorage(tmp / "_args")
-                ~ ARGS.rset({
+                ~ _.run({
                     "0": DSELF["Item"]["components"]["minecraft:item_name"],
                     "1": DSELF["Item"]["count"],
                     "2": DSELF["Item"]["id"],
                     "3": DSELF["Item"]["components"]["minecraft:custom_data"]["rarity"]
                 })
-                ~ _.run(ARGS)
                 ~ Execute() \
                     .IF(lambda b: b.score(SSELF, "matches", Range(1, 2))) \
                     .RUN(DSELF["Motion[1]"].set(0.2))
