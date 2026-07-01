@@ -1,22 +1,22 @@
 from datagen.types.protocols.todict import ToDict
-from datagen.utils.repr.levelbasedvalue import LevelBasedValue, as_level
+from datagen.utils.repr.levelbasedvalue import LevelBasedValues, as_level
 
 
 class ValueEffect(ToDict):
     @staticmethod
-    def set_(value: float | LevelBasedValue) -> "ToDict":
+    def set_(value: float | LevelBasedValues) -> "ToDict":
         return ValueEffect._Set(value)
 
     @staticmethod
-    def add(value: float | LevelBasedValue) -> "ToDict":
+    def add(value: float | LevelBasedValues) -> "ToDict":
         return ValueEffect._Add(value)
 
     @staticmethod
-    def multiply(factor: float | LevelBasedValue) -> "ToDict":
+    def multiply(factor: float | LevelBasedValues) -> "ToDict":
         return ValueEffect._Multiply(factor)
 
     @staticmethod
-    def remove_binomial(chance: float | LevelBasedValue) -> "ToDict":
+    def remove_binomial(chance: float | LevelBasedValues) -> "ToDict":
         return ValueEffect._RemoveBinomial(chance)
 
     @staticmethod
@@ -24,28 +24,28 @@ class ValueEffect(ToDict):
         return ValueEffect._AllOf(list(effects))
 
     class _Set(ToDict):
-        def __init__(self, value: float | LevelBasedValue):
+        def __init__(self, value: float | LevelBasedValues):
             self.value = value
 
         def to_dict(self) -> dict:
             return {"type": "minecraft:set", "value": as_level(self.value)}
 
     class _Add(ToDict):
-        def __init__(self, value: float | LevelBasedValue):
+        def __init__(self, value: float | LevelBasedValues):
             self.value = value
 
         def to_dict(self) -> dict:
             return {"type": "minecraft:add", "value": as_level(self.value)}
 
     class _Multiply(ToDict):
-        def __init__(self, factor: float | LevelBasedValue):
+        def __init__(self, factor: float | LevelBasedValues):
             self.factor = factor
 
         def to_dict(self) -> dict:
             return {"type": "minecraft:multiply", "factor": as_level(self.factor)}
 
     class _RemoveBinomial(ToDict):
-        def __init__(self, chance: float | LevelBasedValue):
+        def __init__(self, chance: float | LevelBasedValues):
             self.chance = chance
 
         def to_dict(self) -> dict:
@@ -70,36 +70,36 @@ class EntityEffect(ToDict):
     @staticmethod
     def apply_mob_effect(
         to_apply: list[str],
-        min_duration: float | LevelBasedValue,
-        max_duration: float | LevelBasedValue,
-        min_amplifier: float | LevelBasedValue,
-        max_amplifier: float | LevelBasedValue
+        min_duration: float | LevelBasedValues,
+        max_duration: float | LevelBasedValues,
+        min_amplifier: float | LevelBasedValues,
+        max_amplifier: float | LevelBasedValues
     ) -> "ToDict":
         return EntityEffect._ApplyMobEffect(to_apply, min_duration, max_duration, min_amplifier, max_amplifier)
 
     @staticmethod
     def damage_entity(
         damage_type: str,
-        min_damage: float | LevelBasedValue,
-        max_damage: float | LevelBasedValue
+        min_damage: float | LevelBasedValues,
+        max_damage: float | LevelBasedValues
     ) -> "ToDict":
         return EntityEffect._DamageEntity(damage_type, min_damage, max_damage)
 
     @staticmethod
-    def change_item_damage(amount: float | LevelBasedValue) -> "ToDict":
+    def change_item_damage(amount: float | LevelBasedValues) -> "ToDict":
         return EntityEffect._ChangeItemDamage(amount)
 
     @staticmethod
-    def ignite(duration: float | LevelBasedValue) -> "ToDict":
+    def ignite(duration: float | LevelBasedValues) -> "ToDict":
         return EntityEffect._Ignite(duration)
 
     @staticmethod
     def explode(
-        radius: float | LevelBasedValue,
+        radius: float | LevelBasedValues,
         block_interaction: str = "none",
         create_fire: bool = False,
         damage_type: str | None = None,
-        knockback_multiplier: float | LevelBasedValue | None = None,
+        knockback_multiplier: float | LevelBasedValues | None = None,
         offset: list[float] | None = None,
         immune_blocks: list[str] | None = None,
         sound: str | None = None,
@@ -133,8 +133,8 @@ class EntityEffect(ToDict):
     @staticmethod
     def replace_disk(
         block_state: dict,
-        radius: float | LevelBasedValue,
-        height: float | LevelBasedValue,
+        radius: float | LevelBasedValues,
+        height: float | LevelBasedValues,
         offset: list[int] | None = None,
         predicate: dict | None = None,
         trigger_game_event: str | None = None
@@ -377,7 +377,7 @@ class EntityEffect(ToDict):
 
 
 class AttributeEffect(ToDict):
-    def __init__(self, attribute: str, amount: float | LevelBasedValue, operation: str, id: str):
+    def __init__(self, attribute: str, amount: float | LevelBasedValues, operation: str, id: str):
         self.attribute = attribute
         self.amount = amount
         self.operation = operation

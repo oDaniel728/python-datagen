@@ -1,6 +1,5 @@
-import json
 from pathlib import Path
-from typing import Any, Callable, Type
+from typing import Callable, Type
 
 from datagen.globals import LOOT_TABLES_PATH
 from datagen.utils.json_encoder import dumps
@@ -8,7 +7,7 @@ from datagen.utils.minecraft.identifier import Identifier
 from datagen.utils.obfuscator import Obfuscator
 from datagen.utils.repr.enchantment import Enchantment
 from datagen.utils.repr.item import Item
-from datagen.utils.repr.levelbasedvalue import LevelBasedValue
+from datagen.utils.repr.levelbasedvalue import LevelBasedValues
 from datagen.utils.simplefile import SimpleFile
 
 
@@ -149,7 +148,7 @@ class LootConditions():
     def random_chance_with_enchanted_bonus(
         enchantment: str | Identifier | Enchantment,
         unenchanted_chance: float | list[float] = 0.0,
-        enchanted_chance: float | LevelBasedValue | list[float] | None = None,
+        enchanted_chance: float | LevelBasedValues | list[float] | None = None,
     ) -> dict:
         _to_num = lambda v: (
             {"min": v[0], "max": v[1]}

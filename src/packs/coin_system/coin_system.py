@@ -17,7 +17,7 @@ from datagen.utils.minecraft.collections.items import Items
 from datagen.utils.minecraft.targetselector import TargetSelector
 from datagen.utils.minecraft.targetselectorsettings import TargetSelectorSettings
 from datagen.utils.minecraft.text._components import LiteralText
-from datagen.utils.repr.levelbasedvalue import LevelBasedValue
+from datagen.utils.repr.levelbasedvalue import LevelBasedValues
 from datagen.utils.repr.position3 import Position3
 from datagenpp.extras.entityteam import EntityTeam
 from datagenpp.extras.item.entityspawnegg import EntitySpawnEgg
@@ -219,21 +219,21 @@ class CoinSystem(Pack, name='csys'):
                 Range(1, 10),
                 weight=1,
                 unenchanted_chance=0.1,
-                enchanted_chance=LevelBasedValue.linear(0.1, 0.09)
+                enchanted_chance=LevelBasedValues.linear(0.1, 0.09)
             ) \
             .add_bundle(
                 CoinBundleItem( 
                     FeatherCoin(), 10, LiteralText("Coin Bundle I", textsettings.COMMON), "common"
                 ),
                 unenchanted_chance=0.2,
-                enchanted_chance=LevelBasedValue.lookup([i / 10 for i in range(1, 6)], 0)
+                enchanted_chance=LevelBasedValues.lookup([i / 10 for i in range(1, 6)], 0)
             ) \
             .add_bundle(
                 CoinBundleItem(
                     FeatherCoin(), 25, LiteralText("Coin Bundle II", textsettings.UNCOMMON), "uncommon"
                 ),
                 unenchanted_chance=0.1, 
-                enchanted_chance=LevelBasedValue.lookup([max(0, i / 5) for i in range(-4, 7)], 0)
+                enchanted_chance=LevelBasedValues.lookup([max(0, i / 5) for i in range(-4, 7)], 0)
             ) \
             .add_bundle( 
                 ItemBundle(
@@ -242,7 +242,7 @@ class CoinSystem(Pack, name='csys'):
                     "rare"
                 ),
                 unenchanted_chance=0.005,
-                enchanted_chance=LevelBasedValue.lookup([max(0, i / 2) for i in range(-8, 3)], 0)
+                enchanted_chance=LevelBasedValues.lookup([max(0, i / 2) for i in range(-8, 3)], 0)
             ) \
         .seal()
         ns += feathercoinloot
