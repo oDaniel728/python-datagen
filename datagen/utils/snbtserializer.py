@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import Any
 import re
 
+from datagen.function.functionmacroargument import FunctionMacroArgument
 from datagen.types.util.min import Range
 from datagen.utils.json_encoder import dumps
 from datagen.utils.minecraft.identifier import Identifier
@@ -183,6 +184,39 @@ class SNBTSerializer:
         
         if isinstance(value, Range):
             return dumps(value.to_dict())
+
+        if isinstance(value, bytes):
+            return f'"{value.decode("utf-8")}"'
+
+        if isinstance(value, bytearray):
+            return f'"{value.decode("utf-8")}"'
+        
+        if isinstance(value, set):
+            return (
+                "["
+                + ",".join(
+                    SNBTSerializer._serialize_value(v)
+                    for v in value
+                )
+                + "]"
+            )
+
+        if isinstance(value, tuple):
+            return (
+                "["
+                + ",".join(
+                    SNBTSerializer._serialize_value(v)
+                    for v in value
+                )
+                + "]"
+            )
+        
+        from datagen.function.commands._data.datastorage import DataStorage
+        if isinstance(value, DataStorage):
+            return f'"{value._id_str()}"'
+        
+        if isinstance(value, FunctionMacroArgument):
+            return f'{value.__str__()}'
 
         raise TypeError(
             f"Unsupported type: {type(value)}"
