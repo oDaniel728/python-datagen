@@ -1,22 +1,21 @@
 from typing import Literal
 
-from datagen.function.commands.command import Command
 from datagen.function.commands.customcommand import CustomCommand
+from datagen.types.util.partialstring import PartialString
 from datagen.utils.minecraft.targetselector import TargetSelector
 from datagen.utils.minecraft.text import Text
 
-
 class Team():
     @staticmethod
-    def add(name: str, displayName: Text.BaseText):
+    def add(name: PartialString, displayName: Text.BaseText):
         return CustomCommand(f"team add {name} {displayName}")
     
     @staticmethod
-    def empty(name: str):
+    def empty(name: PartialString):
         return CustomCommand(f"team empty {name}")
     
     @staticmethod
-    def join(name: str, target: TargetSelector):
+    def join(name: PartialString, target: TargetSelector):
         return CustomCommand(f"team join {name} {target}")
 
     @staticmethod
@@ -24,17 +23,17 @@ class Team():
         return CustomCommand(f"team leave {target}")
     
     @staticmethod
-    def list(name: str | None = None):
+    def list(name: PartialString | None = None):
         if name:
             return CustomCommand(f"team list {name}")
         return CustomCommand("team list")
     
     @staticmethod
-    def remove(name: str):
+    def remove(name: PartialString):
         return CustomCommand(f"team remove {name}")
 
     class _UTeamModifier():
-        def __init__(self, name: str) -> None:
+        def __init__(self, name: PartialString) -> None:
             self.name = name
 
         def displayName(self, displayName: Text.BaseText):
@@ -67,5 +66,5 @@ class Team():
             return CustomCommand(f"team modify {self.name} seeFriendlyInvisibles {str(seeFriendlyInvisibles).lower()}")
 
     @staticmethod
-    def modify(name: str):
+    def modify(name: PartialString):
         return Team._UTeamModifier(name)
