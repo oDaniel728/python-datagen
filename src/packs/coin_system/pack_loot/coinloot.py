@@ -3,10 +3,10 @@ from datagen.types.util.min import Range
 from datagen.utils.minecraft.identifier import Identifier
 from datagen.utils.repr.item import Item
 from datagen.utils.repr.levelbasedvalue import LevelBasedValue, LevelBasedValues
-from packs.coin_system.pack_enchantments.bundles import BUNDLES
-from packs.coin_system.pack_enchantments.coins import COINS
-from packs.coin_system.pack_enchantments.emeralds import EMERALDS
-from packs.coin_system.pack_enchantments.items import ITEMS
+from packs.coin_system.data.csys.enchantment.bundles import BUNDLES
+from packs.coin_system.data.csys.enchantment.coins import COINS
+from packs.coin_system.data.csys.enchantment.emeralds import EMERALDS
+from packs.coin_system.data.csys.enchantment.items import ITEMS
 
 
 class CoinLoot(LootTableBuilder):
