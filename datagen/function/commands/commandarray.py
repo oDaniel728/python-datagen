@@ -17,8 +17,11 @@ class CommandArray():
         for _ in self:
             ~ _
 
-    def __iadd__(self, other: Command):
-        self.commands.append(other)
+    def __iadd__(self, other: Command | CommandArray):
+        if isinstance(other, CommandArray):
+            self.commands.extend(other.commands)
+        else:
+            self.commands.append(other)
         return self
 
     def __enter__(self):
