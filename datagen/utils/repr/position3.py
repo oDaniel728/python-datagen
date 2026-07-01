@@ -1,7 +1,9 @@
-from typing import Self
+from typing import Any
+
+from datagen.function.functionmacroargument import FunctionMacroArgument
 
 
-class Position3[N: int | float]():
+class Position3[N: int | float | str | FunctionMacroArgument]():
     def __init__(self, x: N, y: N, z: N):
         self.x = x
         self.y = y
@@ -29,3 +31,21 @@ class Position3[N: int | float]():
     def set_x(self, x: N) -> None: self.x = x
     def set_y(self, y: N) -> None: self.y = y
     def set_z(self, z: N) -> None: self.z = z
+
+    @staticmethod
+    def auto(v: Any) -> "Position3":
+        if isinstance(v, Position3):
+            return v
+        elif isinstance(v, (list, tuple)) and len(v) == 3:
+            return Position3(v[0], v[1], v[2])
+        elif isinstance(v, dict) and all(k in v for k in ("x", "y", "z")):
+            return Position3(v["x"], v["y"], v["z"])
+        elif isinstance(v, str) and (s := v.split(" ")) and len(s) == 3:
+            if '.' in v:
+                return Position3(float(s[0]), float(s[1]), float(s[2]))
+            elif '$' in v or '~' in v:
+                return Position3(s[0], s[1], s[2])
+            else:
+                return Position3(int(s[0]), int(s[1]), int(s[2]))
+        else:
+            raise ValueError(f"Cannot convert {v} to Position3")
