@@ -1,13 +1,14 @@
 from typing import TYPE_CHECKING
 
+from datagen.function.functionmacroargument import FunctionMacroArgument
 from datagen.utils.repr.position3 import Position3
 
 
 if TYPE_CHECKING:
     from datagen.utils.minecraft.playerposition import PlayerPosition
 
-class BlockPosition(Position3[int]):
-    def __init__(self, x: int, y: int, z: int):
+class BlockPosition(Position3[int | FunctionMacroArgument]):
+    def __init__(self, x: int | FunctionMacroArgument, y: int | FunctionMacroArgument, z: int | FunctionMacroArgument):
         super().__init__(x, y, z)
 
     @staticmethod
