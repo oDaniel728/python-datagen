@@ -26,7 +26,7 @@ class _ConditionBuilder():
         self._parent = parent
         self._prefix = prefix
 
-    def block(self, block: Block, at: BlockPosition):
+    def block(self, block: Block, at: BlockPosition | Position3):
         self._parent._chunks.append(f"{self._prefix} block {at} {block.id}")
         return self
 
