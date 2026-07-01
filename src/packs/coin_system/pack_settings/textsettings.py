@@ -39,7 +39,7 @@ EPIC = LiteralTextSettings(
     underlined=False,
     strikethrough=False,
     obfuscated=False,
-    color = "purple",
+    color = "light_purple",
 )
 LEGENDARY = LiteralTextSettings(
     italic=False,
