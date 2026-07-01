@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, _TypedDict
+from typing import TYPE_CHECKING
 from uuid import UUID
 
 from datagen.function.commands.bossbar import BossBar
@@ -450,7 +450,7 @@ class EntityDataValue[T]():
         >>> ed["Inventory[0]"].remove()
     """
 
-    type TAny = "T | FunctionMacroArgument | Identifier | Function | ScoreboardPlayer | EntityDataValue | EntityData | DataStorageValue | DataStorage | UUID | EntityUUID"  # type: ignore
+    type TAny[T] = "T | FunctionMacroArgument | Identifier | Function | ScoreboardPlayer | EntityDataValue | EntityData | DataStorageValue | DataStorage | UUID | EntityUUID"  # type: ignore
 
     def __init__(self, entity: EntityData, key: EntityData.TKey) -> None:
         """Inicializa EntityDataValue.
@@ -733,7 +733,7 @@ class BlockEntityDataValue[T]():
         >>> bed["CustomName"].remove()
     """
 
-    type TAny = "T | FunctionMacroArgument | Identifier | Function | ScoreboardPlayer | BlockEntityDataValue | BlockEntityData | DataStorageValue | DataStorage | UUID | EntityUUID"  # type: ignore
+    type TAny[T] = "T | FunctionMacroArgument | Identifier | Function | ScoreboardPlayer | BlockEntityDataValue | BlockEntityData | DataStorageValue | DataStorage | UUID | EntityUUID"  # type: ignore
 
     def __init__(self, block_entity: BlockEntityData, key: BlockEntityData.TKey) -> None:
         """Inicializa BlockEntityDataValue.
@@ -973,7 +973,7 @@ class BlockEntityDataValue[T]():
                 f"set from block {self.__block_entity.get_pos()} {self.__key}"
             )
 
-    def __lshift__(self, other: "BlockEntityDataValue.TAny | EntityData | BlockEntityData | DataStorage") -> Command:
+    def __lshift__(self, other: "BlockEntityDataValue.TAny[T] | EntityData | BlockEntityData | DataStorage") -> Command:
         """Operador << para setar ou copiar valores."""
         if isinstance(other, (EntityDataValue, BlockEntityDataValue, DataStorageValue)):
             return other.set_into(self)  # type: ignore
