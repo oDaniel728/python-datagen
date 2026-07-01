@@ -2,7 +2,7 @@ from datagen.loot_table.loot_table import LootTableBuilder
 from datagen.types.util.min import Range
 from datagen.utils.minecraft.identifier import Identifier
 from datagen.utils.repr.item import Item
-from datagen.utils.repr.levelbasedvalue import LevelBasedValues
+from datagen.utils.repr.levelbasedvalue import LevelBasedValue, LevelBasedValues
 from packs.coin_system.pack_enchantments.bundles import BUNDLES
 from packs.coin_system.pack_enchantments.coins import COINS
 from packs.coin_system.pack_enchantments.emeralds import EMERALDS
@@ -37,7 +37,7 @@ class CoinLoot(LootTableBuilder):
         bonus_amount: Range,
         weight: int = 1,
         unenchanted_chance: float = 0.0,
-        enchanted_chance: LevelBasedValues | list[float] = LevelBasedValues.linear(0.05, 0.095),
+        enchanted_chance: LevelBasedValue | list[float] = LevelBasedValues.linear(0.05, 0.095),
     ):
         (
             self.pool(base_amount.to_dict())
@@ -65,7 +65,7 @@ class CoinLoot(LootTableBuilder):
         bonus_amount: Range,
         weight: int = 1,
         unenchanted_chance: float = 0.0,
-        enchanted_chance: LevelBasedValues | list[float] = LevelBasedValues.linear(0.05, 0.095),
+        enchanted_chance: LevelBasedValue | list[float] = LevelBasedValues.linear(0.05, 0.095),
     ):
         (
             self.pool(base_amount.to_dict())
@@ -92,7 +92,7 @@ class CoinLoot(LootTableBuilder):
         amount: Range = Range(1, 1),
         weight: int = 1,
         unenchanted_chance: float = 0.0,
-        enchanted_chance: LevelBasedValues | list[float] = LevelBasedValues.linear(0.05, 0.05),
+        enchanted_chance: LevelBasedValue | list[float] = LevelBasedValues.linear(0.05, 0.05),
     ):
         (
             self.pool(amount.to_dict())
@@ -112,7 +112,7 @@ class CoinLoot(LootTableBuilder):
         amount: Range = Range(1, 1),
         weight: int = 1,
         unenchanted_chance: float = 0.0,
-        enchanted_chance: LevelBasedValues | list[float] = LevelBasedValues.linear(0.05, 0.095),
+        enchanted_chance: LevelBasedValue | list[float] = LevelBasedValues.linear(0.05, 0.095),
     ):
         (
             self.pool(amount.to_dict())

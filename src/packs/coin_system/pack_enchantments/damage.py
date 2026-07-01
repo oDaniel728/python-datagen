@@ -1,6 +1,6 @@
 from datagen.datapack.namespace import Namespace
 from datagen.utils.minecraft.text._components import LiteralText
-from datagen.utils.repr.levelbasedvalue import LevelBasedValues
+from datagen.utils.repr.levelbasedvalue import LevelBasedValue, LevelBasedValues
 from packs.coin_system.pack_enchantments.common import basic_enchantment
 
 
