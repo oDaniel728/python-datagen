@@ -6,7 +6,7 @@ if TYPE_CHECKING:
 
 
 class DatagenEncoder(json.JSONEncoder):
-    def default(self, obj: Any) -> Any:
+    def default(self, obj: Any) -> Any: # type: ignore
         from datagen.utils.minecraft.text._base import BaseText
         if isinstance(obj, BaseText):
             return str(obj)
