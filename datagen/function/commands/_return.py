@@ -1,7 +1,7 @@
 from typing import Any
-from xml.etree.ElementTree import tostring
 
 from datagen.function.commands.command import Command
+from datagen.function.commands.commandarray import CommandArray
 from datagen.function.commands.customcommand import CustomCommand
 from datagen.function.commands._data.datastorage import DataStorage, DataStorageValue
 from datagen.function.function import Function
@@ -18,8 +18,12 @@ class Return(Command):
         return Return(value)
 
     @staticmethod
-    def run(command: Command):
-        return Return(f"run {command.raw()}")
+    def run(command: Command | CommandArray) -> CommandArray:
+        if isinstance(command, CommandArray):
+            *cmds, last_command = command.commands
+            return CommandArray([*cmds, Return(f"run {last_command.raw()}")])
+        else:
+            return CommandArray([Return(f"run {command.raw()}")])
     
     @staticmethod
     def fail():

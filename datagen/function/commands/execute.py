@@ -165,7 +165,7 @@ class Execute(Command):
         supplier(self._condition_builder)
         return self
 
-    def RUN(self, command: Command | Function | Identifier) -> Self:
+    def RUN(self, command: Command | Function | Identifier | CommandArray) -> Self:
         self._check_seal()
         if isinstance(command, Command):
             self._chunks.append("run " + command.raw())
@@ -173,6 +173,8 @@ class Execute(Command):
             self._chunks.append(f"run function {command.id}")
         elif isinstance(command, Identifier):
             self._chunks.append(f"run function {command}")
+        elif isinstance(command, CommandArray):
+            self.RUN(command.to_function())
         else:
             raise ValueError("Invalid command type")
         return self

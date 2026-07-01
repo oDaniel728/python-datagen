@@ -1,4 +1,7 @@
+from datagen.function.anonymousfunction import AnonymousFunction
 from datagen.function.commands.command import Command
+from datagen.function.function import Function
+from datagen.utils.minecraft.identifier import Identifier
 
 
 class CommandArray():
@@ -31,3 +34,13 @@ class CommandArray():
 
     def __exit__(self, exc_type, exc_value, traceback):
         CommandArray.__current_array = self.__previous_array
+
+    def to_function(self, id: Identifier | None = None) -> Function:
+        if id is None:
+            with AnonymousFunction() as _:
+                ~ self
+            return _
+        else:
+            with Function(id) as _:
+                ~ self
+            return _
