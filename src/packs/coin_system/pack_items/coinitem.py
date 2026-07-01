@@ -1,4 +1,3 @@
-import json
 from typing import Literal
 
 from datagen.utils.json_encoder import dumps
@@ -20,8 +19,12 @@ class CoinItem(Item):
         "epic": EPIC,
         "legendary": LEGENDARY
     })
+    @staticmethod
+    def get_rarity_map() -> dict[_TRarity, LiteralTextSettings]:
+        return CoinItem.__RarityMap
+    
     def __init__(self, id: Identifier, name: str, rarity: _TRarity, lore: str, value: int) -> None:
-        _lore = [
+        _lore: list[str] = [
             dumps({"text": lore}),
             dumps([{"italic": False, "text": "Value: ", "color": "white"}, {"italic": False, "text": str(value), "color": "gold"}]),
         ]
@@ -29,5 +32,6 @@ class CoinItem(Item):
             "max_stack_size": 99,
             "item_name": LiteralText(name, self.__RarityMap[rarity]),
             "lore": _lore,
-            "custom_data": SNBTSerializer.serialize({"coin": True, "value": value, "show": True}),
+            "custom_data": SNBTSerializer.serialize({"coin": True, "value": value, "show": True, "rarity": rarity}),
+            "fire_resistant": {}
         })
