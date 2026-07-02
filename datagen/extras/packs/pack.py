@@ -1,4 +1,4 @@
-from abc import ABC, abstractmethod
+from abc import ABC
 
 from datagen.datapack.datapack import DataPack
 from datagen.datapack.namespace import Namespace
@@ -35,19 +35,16 @@ class Pack(ABC):
         self.dp.build()
         self.on_build()
 
-    @abstractmethod
     def on_prepare(self) -> None:
-        ...
+        pass
 
-    @abstractmethod
     def on_register(
         self, 
         ns: Namespace, 
         mc: Namespace, 
         tmp: Namespace
     ) -> None:
-        ...
+        pass
 
-    @abstractmethod
     def on_build(self) -> None:
-        ...
+        pass
