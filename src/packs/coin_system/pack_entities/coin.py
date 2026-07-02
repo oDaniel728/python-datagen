@@ -6,7 +6,7 @@ from datagen.utils.minecraft.collections.status_effects import StatusEffects
 from datagen.utils.repr.attribute import Attribute
 from datagen.utils.repr.entitytype import EntityType
 from datagen.utils.repr.status_effect import StatusEffect
-from datagenpp.extras.repr.entity import Entity
+from datagen.extras.repr.entity import Entity
 
 
 class Coin(Entity):

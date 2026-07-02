@@ -7,7 +7,7 @@ from datagen.utils.repr.appliedstatuseffect import AppliedStatusEffect
 from datagen.utils.repr.enchantment import Enchantment
 from datagen.utils.repr.item import Item
 from datagen.utils.repr.itemstack import ItemStack
-from datagenpp.extras.item.settings.toolrule import ToolRule
+from datagen.extras.item.settings.toolrule import ToolRule
 
 
 class BaseItemSettings(Item.Settings):

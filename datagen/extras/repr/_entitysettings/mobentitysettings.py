@@ -3,9 +3,9 @@ from collections.abc import Iterable
 from datagen.utils.repr.appliedstatuseffect import AppliedStatusEffect
 from datagen.utils.repr.attribute import Attribute
 from datagen.utils.repr.position3 import Position3
-from datagenpp.extras.repr._entitysettings.interfaces.ageingentity import AgeingEntity
-from datagenpp.extras.repr._entitysettings.interfaces.healthyentity import HealthyEntity
-from datagenpp.extras.repr.entitysettings import EntitySettings
+from datagen.extras.repr._entitysettings.interfaces.ageingentity import AgeingEntity
+from datagen.extras.repr._entitysettings.interfaces.healthyentity import HealthyEntity
+from datagen.extras.repr.entitysettings import EntitySettings
 from datagen.types.util.reprs import *
 
 class MobEntitySettings(HealthyEntity, AgeingEntity):

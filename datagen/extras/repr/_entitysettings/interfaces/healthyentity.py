@@ -1,6 +1,6 @@
 from typing import Self
 
-from datagenpp.extras.repr.entitysettings import EntitySettings
+from datagen.extras.repr.entitysettings import EntitySettings
 
 
 class HealthyEntity(EntitySettings):

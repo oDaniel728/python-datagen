@@ -3,8 +3,8 @@ from datagen.utils.minecraft.text._base import BaseText
 from datagen.utils.minecraft.text._components import LiteralText
 from datagen.utils.repr.item import Item
 from datagen.utils.repr.itemstack import ItemStack
-from datagenpp.extras.item.settings.baseitemsettings import BaseItemSettings
-from datagenpp.extras.item.settings.bundleitemsettings import BundleItemSettings
+from datagen.extras.item.settings.baseitemsettings import BaseItemSettings
+from datagen.extras.item.settings.bundleitemsettings import BundleItemSettings
 from packs.coin_system.pack_items.coinitem import CoinItem
 
 class ItemBundle(Item):

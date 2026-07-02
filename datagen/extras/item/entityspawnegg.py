@@ -1,7 +1,7 @@
 from datagen.loot_table.loot_table import LootTable
 from datagen.utils.minecraft.collections.items import Items
 from datagen.utils.repr.item import Item
-from datagenpp.extras.repr.entity import Entity
+from datagen.extras.repr.entity import Entity
 
 
 class EntitySpawnEgg(Item):

@@ -6,7 +6,7 @@ from datagen.function.commands.customcommand import CustomCommand
 from datagen.function.commands.execute import Execute
 from datagen.function.function import Function
 from datagen.types.util.rtypes import TAny, TFunction, TIdentifier, TInteger, TPath, TString
-from datagenpp.extras.packs.pack import Pack
+from datagen.extras.packs.pack import Pack
 
 
 class Builtins(Pack, name="dgbtns", description="Datagen++ built-in functions and commands"):

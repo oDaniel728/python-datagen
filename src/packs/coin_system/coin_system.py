@@ -1,5 +1,5 @@
 from datagen.datapack.namespace import Namespace
-from datagenpp.extras.packs.pack import Pack
+from datagen.extras.packs.pack import Pack
 from packs.coin_system.data.csys.enchantment.bundles import BUNDLES
 from packs.coin_system.data.csys.enchantment.coins import COINS
 from packs.coin_system.data.csys.enchantment.damage import DAMAGE

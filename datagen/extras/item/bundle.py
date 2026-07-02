@@ -2,7 +2,7 @@ from typing import Iterable
 
 from datagen.utils.minecraft.collections.items import Items
 from datagen.utils.repr.item import Item
-from datagenpp.extras.item.settings.bundleitemsettings import BundleItemSettings
+from datagen.extras.item.settings.bundleitemsettings import BundleItemSettings
 
 
 class Bundle(Item[BundleItemSettings]):

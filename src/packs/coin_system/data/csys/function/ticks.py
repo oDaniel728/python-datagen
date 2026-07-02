@@ -15,7 +15,7 @@ from datagen.utils.minecraft.collections.items import Items
 from datagen.utils.minecraft.targetselector import TargetSelector
 from datagen.utils.minecraft.targetselectorsettings import TargetSelectorSettings
 from datagen.utils.minecraft.text._components import LiteralText
-from datagenpp.extras.item.settings.baseitemsettings import BaseItemSettings
+from datagen.extras.item.settings.baseitemsettings import BaseItemSettings
 from packs.coin_system.pack_objectives.ages import AGES_SOBJ
 from packs.coin_system.pack_objectives.coin_healths import COIN_HEALTHS
 from packs.coin_system.pack_objectives.roll import ROLL

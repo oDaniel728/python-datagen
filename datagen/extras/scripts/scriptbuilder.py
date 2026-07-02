@@ -21,7 +21,7 @@ from datagen.utils.repr.block import Block
 from datagen.utils.repr.entitytype import EntityType
 from datagen.utils.repr.item import Item
 from datagen.utils.scoreboard.criterion import ObjectiveCriterion
-from datagenpp.extras.scripts.script import Script
+from datagen.extras.scripts.script import Script
 
 _tmp = Namespace.temp()
 _counter = Counter()

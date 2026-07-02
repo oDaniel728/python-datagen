@@ -4,8 +4,8 @@ from datagen.utils.minecraft.collections.blocks import Blocks
 from datagen.utils.minecraft.relativeblockposition import RelativeBlockPosition
 from datagen.utils.repr.block import Block
 from datagen.utils.repr.blockschematic import BlockSchematic
-from datagenpp.extras.item.chaincommandblock import ChainCommandBlock
-from datagenpp.extras.item.settings.commandblocksettings import CommandBlockSettings
+from datagen.extras.item.chaincommandblock import ChainCommandBlock
+from datagen.extras.item.settings.commandblocksettings import CommandBlockSettings
 
 
 class CommandBlock(Block[CommandBlockSettings]):

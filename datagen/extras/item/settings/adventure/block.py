@@ -1,6 +1,6 @@
 from datagen.utils.repr.block import Block
 from datagen.utils.repr.item import Item
-from datagenpp.extras.item.settings.adventure.tool import AdventureToolSettings
+from datagen.extras.item.settings.adventure.tool import AdventureToolSettings
 
 
 class AdventureBlockSettings(AdventureToolSettings):

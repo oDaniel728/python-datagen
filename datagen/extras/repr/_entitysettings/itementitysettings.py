@@ -1,6 +1,6 @@
 from datagen.utils.repr.itemstack import ItemStack
-from datagenpp.extras.repr._entitysettings.interfaces.ageingentity import AgeingEntity
-from datagenpp.extras.repr._entitysettings.interfaces.healthyentity import HealthyEntity
+from datagen.extras.repr._entitysettings.interfaces.ageingentity import AgeingEntity
+from datagen.extras.repr._entitysettings.interfaces.healthyentity import HealthyEntity
 from datagen.types.util.reprs import *
 
 class ItemEntitySettings(AgeingEntity, HealthyEntity):
