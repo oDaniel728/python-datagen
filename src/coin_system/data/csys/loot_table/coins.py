@@ -3,11 +3,11 @@ from datagen.types.util.min import Range
 from datagen.utils.minecraft.collections.entity_types import EntityTypes
 from datagen.utils.minecraft.text._components import LiteralText
 from datagen.utils.repr.levelbasedvalue import LevelBasedValues
-from packs.coin_system.pack_entities.coin import Coin
-from packs.coin_system.pack_items.coinbundleitem import CoinBundleItem, ItemBundle
-from packs.coin_system.pack_items.coins.feather import FeatherCoin
-from packs.coin_system.pack_loot.coinloot import CoinLoot
-from packs.coin_system.pack_settings import textsettings
+from coin_system.pack_entities.coin import Coin
+from coin_system.pack_items.coinbundleitem import CoinBundleItem, ItemBundle
+from coin_system.pack_items.coins.feather import FeatherCoin
+from coin_system.pack_loot.coinloot import CoinLoot
+from coin_system.pack_settings import textsettings
 
 
 class CoinLootTables():

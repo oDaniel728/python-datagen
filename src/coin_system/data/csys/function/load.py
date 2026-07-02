@@ -1,8 +1,8 @@
 from datagen.datapack.namespace import Namespace
-from packs.coin_system.pack_objectives.ages import AGES_SOBJ
-from packs.coin_system.pack_objectives.coin_healths import COIN_HEALTHS
-from packs.coin_system.pack_objectives.roll import ROLL
-from packs.coin_system.pack_teams.util import make_rarity_team
+from coin_system.pack_objectives.ages import AGES_SOBJ
+from coin_system.pack_objectives.coin_healths import COIN_HEALTHS
+from coin_system.pack_objectives.roll import ROLL
+from coin_system.pack_teams.util import make_rarity_team
 
 
 class LoadFunction():

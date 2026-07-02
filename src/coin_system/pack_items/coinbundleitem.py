@@ -5,7 +5,7 @@ from datagen.utils.repr.item import Item
 from datagen.utils.repr.itemstack import ItemStack
 from datagen.extras.item.settings.baseitemsettings import BaseItemSettings
 from datagen.extras.item.settings.bundleitemsettings import BundleItemSettings
-from packs.coin_system.pack_items.coinitem import CoinItem
+from coin_system.pack_items.coinitem import CoinItem
 
 class ItemBundle(Item):
     def __init__(self, items: list[ItemStack], name: BaseText = LiteralText("Bundle"), rarity: BaseItemSettings._TRarity = "common") -> None:

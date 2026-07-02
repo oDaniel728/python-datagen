@@ -2,7 +2,7 @@ from datagen.datapack.namespace import Namespace
 from datagen.function.commands.give import Give
 from datagen.utils.minecraft.targetselector import TargetSelector
 from datagen.extras.item.entityspawnegg import EntitySpawnEgg
-from packs.coin_system.pack_entities.coin import Coin
+from coin_system.pack_entities.coin import Coin
 
 
 class GiveFunctions():

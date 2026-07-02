@@ -6,7 +6,7 @@ from datagen.utils.minecraft.text._components import LiteralText
 from datagen.utils.minecraft.text._settings import LiteralTextSettings
 from datagen.utils.repr.item import Item
 from datagen.utils.snbtserializer import SNBTSerializer
-from packs.coin_system.pack_settings.textsettings import BASIC, COMMON, EPIC, LEGENDARY, RARE, UNCOMMON
+from coin_system.pack_settings.textsettings import BASIC, COMMON, EPIC, LEGENDARY, RARE, UNCOMMON
 
 
 class CoinItem(Item):

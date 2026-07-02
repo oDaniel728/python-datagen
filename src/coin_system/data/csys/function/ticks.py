@@ -16,12 +16,12 @@ from datagen.utils.minecraft.targetselector import TargetSelector
 from datagen.utils.minecraft.targetselectorsettings import TargetSelectorSettings
 from datagen.utils.minecraft.text._components import LiteralText
 from datagen.extras.item.settings.baseitemsettings import BaseItemSettings
-from packs.coin_system.pack_objectives.ages import AGES_SOBJ
-from packs.coin_system.pack_objectives.coin_healths import COIN_HEALTHS
-from packs.coin_system.pack_objectives.roll import ROLL
-from packs.coin_system.pack_selectors.glowing_items import NOT_GLOWING_ITEMS
-from packs.coin_system.pack_selectors.orbs import EXP_ORB
-from packs.coin_system.pack_settings import textsettings
+from coin_system.pack_objectives.ages import AGES_SOBJ
+from coin_system.pack_objectives.coin_healths import COIN_HEALTHS
+from coin_system.pack_objectives.roll import ROLL
+from coin_system.pack_selectors.glowing_items import NOT_GLOWING_ITEMS
+from coin_system.pack_selectors.orbs import EXP_ORB
+from coin_system.pack_settings import textsettings
 
 
 class TickFunctions():
