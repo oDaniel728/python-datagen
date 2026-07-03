@@ -222,5 +222,4 @@ generated/
 private/
 
 .opencode/
-datapacks
-datapacks/
+datapacks/*
