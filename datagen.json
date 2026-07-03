@@ -1,7 +1,7 @@
 {
     "builderSettings": {
         "source": "src/",
-        "output": "datapacks/ ",
+        "output": "datapacks/",
         "comment": false,
         "allowEmptyLines": false,
         "obfuscation": {
