@@ -222,4 +222,5 @@ generated/
 private/
 
 .opencode/
+datapacks/
 datagen.json
