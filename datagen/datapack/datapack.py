@@ -108,6 +108,13 @@ class DataPack:
         """Adds a namespace to the datapack and returns the datapack for chaining."""
         self.namespaces.add(namespace)
         return self
+    
+    def get_namespace_by_name(self, name: str) -> Namespace:
+        """Returns the namespace with the given name, or raises a ValueError if no such namespace exists."""
+        for ns in self.namespaces:
+            if ns.name == name:
+                return ns
+        raise ValueError(f"Namespace with name '{name}' not found")
 
     def __clear(self, output: str | Path, _log_this: bool = True):
         if _log_this:
