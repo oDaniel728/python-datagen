@@ -104,12 +104,29 @@ class Block[T: __Settings__ = __Settings__](Item[T]):
 
         def get_block_entity_data(self) -> dict:
             return {}
+
+    class BlockKWSettings(__Settings__):
+        def __init__(self, **kwargs) -> None:
+            super().__init__()
+            self._block_state = kwargs.get("block_state", {})
+            self._block_entity_data = kwargs.get("block_entity_data", {})
+            self._components = {k: v for k, v in kwargs.items() if k not in ("block_state", "block_entity_data")}
+
+        def get_block_state(self) -> dict:
+            return self._block_state
+
+        def get_block_entity_data(self) -> dict:
+            return self._block_entity_data
+
+        def get_components(self) -> dict:
+            return self._components      
+
     def __init__(self, id: Identifier, nbt: T | dict = {}) -> None:
         super().__init__(id, nbt)
         self.settings = nbt if not isinstance(nbt, dict) else self.BlockDefaultSettings()
         Block.instances[id] = self # type: ignore
 
-    def with_settings[U: __Settings__](self, setting: U) -> "Block[U]": # type: ignore
+    def with_settings[U: __Settings__ | Block.BlockKWSettings | Block.Settings ](self, setting: U) -> "Block[U]": # type: ignore
         return Block[U](self.id, setting)
 
     @staticmethod
