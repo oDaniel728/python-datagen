@@ -43,10 +43,10 @@ class Position3[N: int | float | str | FunctionMacroArgument]():
         elif isinstance(v, dict) and all(k in v for k in ("x", "y", "z")):
             return Position3(v["x"], v["y"], v["z"])
         elif isinstance(v, str) and (s := v.split(" ")) and len(s) == 3:
-            if '.' in v:
-                return Position3(float(s[0]), float(s[1]), float(s[2]))
-            elif '$' in v or '~' in v:
+            if ('$' in v) or ('~' in v):
                 return Position3(s[0], s[1], s[2])
+            elif '.' in v:
+                return Position3(float(s[0]), float(s[1]), float(s[2]))
             else:
                 return Position3(int(s[0]), int(s[1]), int(s[2]))
         else:
