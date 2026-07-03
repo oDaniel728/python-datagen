@@ -23,10 +23,11 @@ class CommandArray():
             ~ _
 
     def __iadd__(self, other: Command | CommandArray | Function):
+        from datagen.function.function import Function
         if isinstance(other, CommandArray):
             self.commands.extend(other.commands)
         elif isinstance(other, Function):
-            self += other.run()
+            self.commands.extend(other.run())
         else:
             self.commands.append(other)
         return self
@@ -41,12 +42,6 @@ class CommandArray():
 
     def to_function(self, id: Identifier | None = None) -> "Function":
         from datagen.function.function import Function
-        from datagen.function.anonymousfunction import AnonymousFunction
-        if id is None:
-            with AnonymousFunction() as _:
-                ~ self
-            return _
-        else:
-            with Function(id) as _:
-                ~ self
-            return _
+        with ~ Function(id) as _:
+            ~ self
+        return _
