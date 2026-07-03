@@ -31,7 +31,7 @@ python dumpgen/gen.py
 
 This reads all JSON files from `dumpgen/dumps/` and writes the generated Python files to `datagen/utils/minecraft/collections/`.
 
-The paths are configured in `.datagenconfig`:
+The paths are configured in `datagen.json`:
 
 ```json
 "dumperSettings": {

@@ -22,7 +22,7 @@ When you clone or download the project, you will see this structure:
 
 ```
 my-project/
-├── .datagenconfig       ← configuration file (output paths, etc.)
+├── datagen.json       ← configuration file (output paths, etc.)
 ├── __main__.py          ← entry point, runs src/main.py
 ├── src/
 │   └── main.py          ← YOUR code goes here
@@ -43,7 +43,7 @@ From the project root, run:
 python .
 ```
 
-This calls `__main__.py`, which imports and runs `src/main.py`. After running, the output datapack folder will appear inside `datapacks/` (or wherever `output` is set in `.datagenconfig`).
+This calls `__main__.py`, which imports and runs `src/main.py`. After running, the output datapack folder will appear inside `datapacks/` (or wherever `output` is set in `datagen.json`).
 
 ---
 
@@ -135,7 +135,7 @@ ln -s ~/.minecraft/saves/MyWorld/datapacks/ datapacks/
 
 Now every `python .` build writes directly into your world. Use `/reload` in-game to see changes.
 
-**Option 2 — Configure output path:** Set the `output` in `.datagenconfig` to point directly to your world's `datapacks/` folder:
+**Option 2 — Configure output path:** Set the `output` in `datagen.json` to point directly to your world's `datapacks/` folder:
 
 ```json
 {

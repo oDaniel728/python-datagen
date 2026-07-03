@@ -1,9 +1,9 @@
-# Configuration — `.datagenconfig`
+# Configuration — `datagen.json`
 
-The `.datagenconfig` file is a JSON file in the root of your project that controls where the library reads from and writes to. It is loaded automatically when any part of `datagen` is imported.
+The `datagen.json` file is a JSON file in the root of your project that controls where the library reads from and writes to. It is loaded automatically when any part of `datagen` is imported.
 
 > **What is Configuration for?**  
-> The `.datagenconfig` file tells python-datagen where your source code is and where generated datapacks should be saved. You can point the output directly to your Minecraft world's `datapacks/` folder for faster testing.  
+> The `datagen.json` file tells python-datagen where your source code is and where generated datapacks should be saved. You can point the output directly to your Minecraft world's `datapacks/` folder for faster testing.  
 > [Learn more about the datapacks folder on the Minecraft Wiki →](https://minecraft.wiki/w/Data_pack)
 
 ---
@@ -12,13 +12,13 @@ The `.datagenconfig` file is a JSON file in the root of your project that contro
 
 ```
 my-project/
-├── .datagenconfig   ← must be here, in the project root
+├── datagen.json   ← must be here, in the project root
 ├── __main__.py
 ├── src/
 └── ...
 ```
 
-> **Important:** The library reads `.datagenconfig` relative to the working directory. Always run your project from the project root (`python .`), not from inside a subdirectory.
+> **Important:** The library reads `datagen.json` relative to the working directory. Always run your project from the project root (`python .`), not from inside a subdirectory.
 
 ---
 

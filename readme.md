@@ -13,7 +13,7 @@ A Python library for generating Minecraft Java Edition datapacks programmaticall
 - Scoreboard objective helpers
 - `Script` and `ScriptBuilder` for high-level game event hooks
 - `DumpGen` to regenerate Minecraft data constants from game dumps
-- Configurable via `.datagenconfig`
+- Configurable via `datagen.json`
 
 ---
 
@@ -41,7 +41,7 @@ Run with:
 python .
 ```
 
-The generated datapack will be placed in the folder configured in `.datagenconfig` (default: `datapacks/`).
+The generated datapack will be placed in the folder configured in `datagen.json` (default: `datapacks/`).
 
 ---
 
@@ -60,7 +60,7 @@ The generated datapack will be placed in the folder configured in `.datagenconfi
 | [Predicates](docs/09-predicates.md) | Loot/condition predicates *(experimental)* |
 | [Script & ScriptBuilder](docs/10-script-and-scriptbuilder.md) | High-level event hooks |
 | [DumpGen](docs/11-dumpgen.md) | Regenerating game data constants |
-| [Configuration](docs/12-configuration.md) | `.datagenconfig` reference |
+| [Configuration](docs/12-configuration.md) | `datagen.json` reference |
 | [Advancements](docs/13-advancements.md) | Advancement definitions |
 | [Enums & Collections](docs/14-enums.md) | Minecraft data constants |
 

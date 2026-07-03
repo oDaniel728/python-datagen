@@ -222,4 +222,4 @@ generated/
 private/
 
 .opencode/
-*.datagenconfig
+# datagen.json

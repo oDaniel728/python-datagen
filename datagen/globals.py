@@ -8,7 +8,7 @@ PREDICATES_PATH = "predicate/"
 RECIPES_PATH = "recipe/"
 ADVANCEMENTS_PATH = "advancement/"
 LOOT_TABLES_PATH = "loot_table/"
-CONFIG_PATH = ".datagenconfig"
+CONFIG_PATH = "datagen.json"
 
 class DatagenConfig():
     class TDatagenConfigTObfuscationIdentifiers(TypedDict):
