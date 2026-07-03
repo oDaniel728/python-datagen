@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING, Any, Self
 
 
+from datagen.function.anonymousfunction import AnonymousFunction
 from datagen.function.functionmacroargument import FunctionMacroArgument
 
 if TYPE_CHECKING:
@@ -93,9 +94,13 @@ with Function(Identifier.of("pack:another")) as g:
 
     fns = dict[Identifier, "Self"]()
 
-    def __init__(self, id: Identifier):
+    def __init__(self, id: Identifier | None = None):
+        if not id:
+            _id = AnonymousFunction().id
+        else:
+            _id = id
         from datagen.datapack.namespace import Namespace
-        self.id = id
+        self.id: Identifier = _id
         self.namespace: Namespace = Namespace.temp()
 
         self.commands = list[Command]()
