@@ -329,9 +329,11 @@ class TargetSelectorSettings():
         return self
     def do_nearest(self):
         self.with_sort("nearest")
+        self.with_limit(1)
         return self
     def do_furthest(self):
         self.with_sort("furthest")
+        self.with_limit(1)
         return self
     def do_rand(self):
         self.with_sort("random")
