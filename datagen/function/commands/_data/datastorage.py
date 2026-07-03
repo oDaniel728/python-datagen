@@ -20,7 +20,7 @@ from datagen.utils.minecraft.targetselector import TargetSelector
 
 class DataStorage[D: dict | _TypedDict]():
     type TKey = "str | int | float | bool | Identifier | FunctionMacroArgument"
-    type TAny = "str | int | float | bool | Identifier | list[TAny] | dict[TKey, TAny] | None | FunctionMacroArgument | EntityUUID"
+    type TAny = "str | int | float | bool | Identifier | list[TAny] | dict[TKey, TAny] | None | FunctionMacroArgument | EntityUUID | EntityDataValue | EntityData | BlockEntityDataValue | BlockEntityData | DataStorageValue | DataStorage"
 
     def __init__(self, id: Identifier | FunctionMacroArgument | str):
         self.id = id
@@ -36,6 +36,7 @@ class DataStorage[D: dict | _TypedDict]():
         return f"{namespace}:{Obfuscator.obfuscate_path(namespace, path, 'identifiers.data_storages')}".lower()
 
     def set(self, key: TKey, value: TAny) -> CustomCommand:
+        from datagen.function.commands._data.entitydata import EntityDataValue as EDV, BlockEntityDataValue as BEDV, EntityData as ED, BlockEntityData as BED
         if isinstance(value, FunctionMacroArgument):
             _v = str(value)
             q = "'" if '"' in _v else '"'
@@ -52,6 +53,18 @@ class DataStorage[D: dict | _TypedDict]():
             return CustomCommand(f'data modify storage {self._id_str()} {key} set value {"true" if value else "false"}')
         if isinstance(value, EntityUUID):
             return CustomCommand(f'data modify storage {self._id_str()} {key} set value "{value.to_string()}"')
+        if isinstance(value, DataStorageValue):
+            return CustomCommand(f"data modify storage {self._id_str()} {key} set from storage {value.storage._id_str()} {value.key}")
+        if isinstance(value, EDV):
+            return CustomCommand(f"data modify storage {self._id_str()} {key} set from entity {value.get_entity().get_target()} {value.get_key()}")
+        if isinstance(value, BEDV):
+            return CustomCommand(f"data modify storage {self._id_str()} {key} set from block {value.get_block_entity().get_pos()} {value.get_key()}")
+        if isinstance(value, DataStorage):
+            return CustomCommand(f"data modify storage {self._id_str()} {key} set from storage {value._id_str()}")
+        if isinstance(value, ED):
+            return CustomCommand(f"data modify storage {self._id_str()} {key} set from entity {value.get_target()}")
+        if isinstance(value, BED):
+            return CustomCommand(f"data modify storage {self._id_str()} {key} set from block {value.get_pos()}")
         return CustomCommand(f"data modify storage {self._id_str()} {key} set value {value}")
     
     def set_from_block(self, key: TKey, pos: "BlockPosition", path: str) -> CustomCommand:
