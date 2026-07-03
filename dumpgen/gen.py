@@ -412,4 +412,5 @@ def dump_all():
     dump_villager_professions()
     dump_villager_types()
 
-dump_all()
+if __name__ == "__main__":
+    dump_all()
