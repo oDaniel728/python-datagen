@@ -22,9 +22,11 @@ class CommandArray():
         for _ in self:
             ~ _
 
-    def __iadd__(self, other: Command | CommandArray):
+    def __iadd__(self, other: Command | CommandArray | Function):
         if isinstance(other, CommandArray):
             self.commands.extend(other.commands)
+        elif isinstance(other, Function):
+            self += other.run()
         else:
             self.commands.append(other)
         return self
