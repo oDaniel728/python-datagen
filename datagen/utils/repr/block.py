@@ -162,3 +162,9 @@ class Block[T: __Settings__ = __Settings__](Item[T]):
     def at(self, pos: BlockPosition):
         from datagen.utils.repr.placeableblock import PlaceableBlock
         return PlaceableBlock(self.id, self.settings, pos) # type: ignore
+    
+    def to_state(self):
+        return {
+            "Name": ~self.id,
+            "Properties": self.settings.get_block_state()
+        }
