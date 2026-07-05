@@ -38,9 +38,9 @@ class TextDisplayEntity(DisplayEntity):
 
     def with_text(self, value: BaseText | list[BaseText]) -> "Self":
         if isinstance(value, BaseText):
-            self.properties["text"] = [value.to_dict()]
+            return self.with_text([value])
         else:
-            self.properties["text"] = [v.to_dict() for v in value]
+            self.properties["text"] = str([v.to_dict() for v in value])
         return self
     
     def with_text_opacity(self, value: byte = -1) -> "Self":
