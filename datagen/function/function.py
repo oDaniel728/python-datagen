@@ -105,6 +105,9 @@ with Function(Identifier.of("pack:another")) as g:
 
         self.commands = list[Command]()
 
+    def __repr__(self) -> str:
+        return f"Function(id={self.id})"
+
     def __hash__(self) -> int:
         return hash(self.id)
 

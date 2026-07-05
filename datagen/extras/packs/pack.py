@@ -20,6 +20,9 @@ class Pack(ABC):
         self.__register__()
         self.__build__()
 
+    def __repr__(self) -> str:
+        return f"Pack(name={self.dp.name}, ...)"
+
     def __prepare__(self):
         self.ns = Namespace(self.dp.name.lower())
         self.mc = Namespace.minecraft()

@@ -23,6 +23,8 @@ class Position3[N: int | float | str | FunctionMacroArgument]():
     def to_tuple(self) -> tuple[N, N, N]:
         return (self.x, self.y, self.z)
         
+    def __repr__(self) -> str:
+        return f"{{ x: {self.x}, y: {self.y}, z: {self.z} }}"
 
     def get_x(self) -> N: return self.x
     def get_y(self) -> N: return self.y
