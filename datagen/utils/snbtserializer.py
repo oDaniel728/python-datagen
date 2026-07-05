@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import Any
 import re
 
+from datagen.extras.color import Color
 from datagen.function.functionmacroargument import FunctionMacroArgument
 from datagen.types.util.min import Range
 from datagen.utils.json_encoder import dumps
@@ -217,6 +218,9 @@ class SNBTSerializer:
         
         if isinstance(value, FunctionMacroArgument):
             return f'{value.__str__()}'
+        
+        if isinstance(value, Color):
+            return f'{value.to_hex()}'
 
         raise TypeError(
             f"Unsupported type: {type(value)}"
