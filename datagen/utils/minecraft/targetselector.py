@@ -23,7 +23,8 @@ class TargetSelector():
 
     def with_settings(self, filters: "dict | TargetSelectorSettings" = {}):
         _filters = filters if isinstance(filters, dict) else filters.to_dict()
-        return TargetSelector(self._value, { **self.filters, **_filters })
+        _filters = { k: v for k, v in _filters.items() if not v is None }
+        return TargetSelector(self._value, self.filters | _filters)
 
     def __format(self, data: Any, d: int = 0) -> Any:
         if isinstance(data, Identifier):
