@@ -151,6 +151,18 @@ class Item[T: __Settings__]():
         nbt_dict: dict = self._remove_nulls(self.get_nbt_dict())
         return f"{~self.id}[{','.join(f'{k}{'=' if k != 'custom_data' else '~'}{v}' for k, v in nbt_dict.items())}]" if nbt_dict else f"{~self.id}"
 
+    def get_item_string(self) -> str:
+        nbt_dict: dict = self._remove_nulls(self.get_nbt_dict())
+        return f"{~self.id}[{','.join(f'{k}={v}' for k, v in nbt_dict.items())}]" if nbt_dict else f"{~self.id}"
+    def get_item_filter(self) -> str:
+        nbt_dict: dict = self._remove_nulls(self.get_nbt_dict())
+        strs = []
+        for k, v in nbt_dict.items():
+            sig = '=' if not str(k).startswith('~') else '~'
+            _k = str(k).lstrip('~')
+            strs.append(f"{_k}{sig}{v}")
+        return f"{~self.id}[{','.join(strs)}]" if nbt_dict else f"{~self.id}"
+
     def __invert__(self):
         return self.id
 

@@ -93,7 +93,13 @@ class ReplaceItem():
                 raise ValueError(
                     "with_item replacement accepts only four positional arguments"
                 )
-            return CustomCommand(f"item replace {type} {target} {slot} with {arg1}")
+            _args = ''
+            if isinstance(arg1, Item):
+                _args = arg1.get_item_string()
+            elif isinstance(arg1, ItemStack):
+                _args = arg1.get_string()
+            else: _args = arg1
+            return CustomCommand(f"item replace {type} {target} {slot} with {_args}")
 
         if not isinstance(arg2, SlotRange):
             raise ValueError(

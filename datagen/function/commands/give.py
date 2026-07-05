@@ -10,4 +10,4 @@ class Give(Command):
         self.stack = stack
 
     def to_string(self) -> str:
-        return self.auto_macro(f"give {self.target} {self.stack}")
+        return self.auto_macro(f"give {self.target} {self.stack.get_string()}")

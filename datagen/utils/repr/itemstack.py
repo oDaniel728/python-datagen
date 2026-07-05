@@ -16,3 +16,9 @@ class ItemStack[I: Item = Item]():
     
     def __str__(self) -> str:
         return f"{Item.__str__(self.item)} {self.count}"
+    
+    def get_filter(self) -> str:
+        return f"{self.item.get_item_filter()} {self.count}"
+    
+    def get_string(self) -> str:
+        return f"{self.item.get_item_string()} {self.count}"
