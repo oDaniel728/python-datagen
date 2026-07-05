@@ -148,20 +148,36 @@ class Item[T: __Settings__]():
         return v
 
     def __str__(self) -> str:
-        nbt_dict: dict = self._remove_nulls(self.get_nbt_dict())
-        return f"{~self.id}[{','.join(f'{k}{'=' if k != 'custom_data' else '~'}{v}' for k, v in nbt_dict.items())}]" if nbt_dict else f"{~self.id}"
+        return self.get_item_string()
 
     def get_item_string(self) -> str:
         nbt_dict: dict = self._remove_nulls(self.get_nbt_dict())
-        return f"{~self.id}[{','.join(f'{k}={v}' for k, v in nbt_dict.items())}]" if nbt_dict else f"{~self.id}"
+        if not nbt_dict:
+            return f"{~self.id}"
+        parts = []
+        for k, v in nbt_dict.items():
+            sep = '~' if k == 'custom_data' else '='
+            parts.append(f"{k}{sep}{v}")
+        return f"{~self.id}[{','.join(parts)}]"
+
     def get_item_filter(self) -> str:
         nbt_dict: dict = self._remove_nulls(self.get_nbt_dict())
-        strs = []
+        if not nbt_dict:
+            return f"{~self.id}"
+        parts = []
         for k, v in nbt_dict.items():
-            sig = '=' if not str(k).startswith('~') else '~'
-            _k = str(k).lstrip('~')
-            strs.append(f"{_k}{sig}{v}")
-        return f"{~self.id}[{','.join(strs)}]" if nbt_dict else f"{~self.id}"
+            key = str(k)
+            if k == 'custom_data':
+                sep = '~'
+                out_key = k
+            elif key.startswith('~'):
+                sep = '~'
+                out_key = key.lstrip('~')
+            else:
+                sep = '='
+                out_key = k
+            parts.append(f"{out_key}{sep}{v}")
+        return f"{~self.id}[{','.join(parts)}]"
 
     def __invert__(self):
         return self.id
