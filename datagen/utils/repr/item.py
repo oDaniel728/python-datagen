@@ -1,9 +1,10 @@
 import abc
-from typing import TYPE_CHECKING, Any, Self, Type, overload
+from typing import TYPE_CHECKING, Any, Self, overload
 
 from datagen.types.protocols.todict import ToDict
 from datagen.utils.json_encoder import dumps
 from datagen.utils.minecraft.identifier import Identifier
+from datagen.utils.snbtserializer import SNBTSerializer
 if TYPE_CHECKING:
     from datagen.utils.repr.itemstack import ItemStack
 
@@ -156,7 +157,7 @@ class Item[T: __Settings__]():
             return f"{~self.id}"
         parts = []
         for k, v in nbt_dict.items():
-            parts.append(f"{k}={v}")
+            parts.append(f"{k}={SNBTSerializer.serialize(v)}")
         return f"{~self.id}[{','.join(parts)}]"
 
     def get_item_filter(self) -> str:
@@ -175,7 +176,7 @@ class Item[T: __Settings__]():
             else:
                 sep = '='
                 out_key = k
-            parts.append(f"{out_key}{sep}{v}")
+            parts.append(f"{out_key}{sep}{SNBTSerializer.serialize(v)}")
         return f"{~self.id}[{','.join(parts)}]"
 
     def __invert__(self):
