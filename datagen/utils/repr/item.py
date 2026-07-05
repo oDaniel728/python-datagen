@@ -156,8 +156,7 @@ class Item[T: __Settings__]():
             return f"{~self.id}"
         parts = []
         for k, v in nbt_dict.items():
-            sep = '~' if k == 'custom_data' else '='
-            parts.append(f"{k}{sep}{v}")
+            parts.append(f"{k}={v}")
         return f"{~self.id}[{','.join(parts)}]"
 
     def get_item_filter(self) -> str:
