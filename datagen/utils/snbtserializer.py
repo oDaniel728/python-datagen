@@ -5,6 +5,7 @@ import re
 
 from datagen.extras.color import Color
 from datagen.function.functionmacroargument import FunctionMacroArgument
+from datagen.types.util.holder import Holder
 from datagen.types.util.min import Range
 from datagen.utils.json_encoder import dumps
 from datagen.utils.minecraft.identifier import Identifier
@@ -221,6 +222,9 @@ class SNBTSerializer:
         
         if isinstance(value, Color):
             return f'{value.to_hex()}'
+
+        if isinstance(value, Holder):
+            return SNBTSerializer._serialize_value(value.get())
 
         raise TypeError(
             f"Unsupported type: {type(value)}"
