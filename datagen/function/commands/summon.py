@@ -6,6 +6,7 @@ from datagen.utils.repr.entitytype import EntityType
 from datagen.utils.repr.item import Item
 from datagen.utils.repr.itemstack import ItemStack
 from datagen.utils.repr.position3 import Position3
+from datagen.utils.snbtserializer import SNBTSerializer
 
 
 class Summon():
@@ -30,7 +31,7 @@ class Summon():
         pos: Position3, 
         nbt: dict | None = None
     ) -> CustomCommand:
-        return CustomCommand(f"summon {entity} {pos} {'' if nbt is None else dumps(nbt)}")
+        return CustomCommand(f"summon {entity} {pos} {'' if nbt is None else SNBTSerializer.serialize(nbt)}".strip())
     
     @staticmethod
     def item(
