@@ -1,12 +1,10 @@
 from typing import Literal, Self
 
-from datagen.extras.entities.mobentity import MobEntity
-from datagen.extras.repr.entity import Entity
-from datagen.utils.minecraft.collections.entity_types import EntityTypes
+from datagen.extras.entities.baseentity import BaseEntity
 from datagen.utils.repr.entitytype import EntityType
 
 
-class DisplayEntity(MobEntity):
+class DisplayEntity(BaseEntity):
     def __init__(self, type: EntityType):
         super().__init__(type)
         
