@@ -8,11 +8,12 @@ class ItemStack[I: Item = Item]():
         self.count = count
 
     def to_dict(self) -> dict:
-        return {
-            "id": ~self.item.id,
-            "components": self.item.get_nbt_dict(),
-            "count": self.count
-        }
+        data = {}
+        data['id'] = ~self.item.id
+        data['count'] = self.count
+        if c:=self.item.get_nbt_dict():
+            data['components'] = c
+        return data
     
     def __str__(self) -> str:
         return f"{Item.__str__(self.item)} {self.count}"
