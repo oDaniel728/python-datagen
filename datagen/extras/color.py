@@ -32,6 +32,10 @@ class Color():
         b = self._v & 0xFF
         return (r, g, b)
     
+    def to_float_values(self) -> tuple[float, float, float]:
+        r, g, b = self.to_rgb()
+        return (r / 255.0, g / 255.0, b / 255.0)
+    
     @staticmethod
     def from_hex(hex_str: str) -> 'Color':
         if hex_str.startswith('#'):
