@@ -7,6 +7,7 @@ from datagen.utils.minecraft.identifier import Identifier
 
 
 class CommandArray():
+    _last = None
     __current_array: CommandArray | None = None
     @staticmethod
     def get_current_array() -> CommandArray | None:
@@ -33,11 +34,17 @@ class CommandArray():
         return self
 
     def __enter__(self):
+        from datagen.function.function import Function
+        CommandArray._last = Function.current_function
+        Function.current_function = self # type: ignore
+        
         self.__previous_array = CommandArray.__current_array
         CommandArray.__current_array = self
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
+        from datagen.function.function import Function
+        Function.current_function = CommandArray._last
         CommandArray.__current_array = self.__previous_array
 
     def to_function(self, id: Identifier | None = None) -> "Function":
