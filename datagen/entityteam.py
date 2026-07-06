@@ -34,3 +34,9 @@ class EntityTeam():
 
     def __invert__(self):
         return ~ self.add()
+    
+    def __str__(self):
+        return self._obf_name()
+    
+    def __repr__(self):
+        return f"EntityTeam({self.name!r}, {self.displayname!r})"
