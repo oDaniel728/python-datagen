@@ -120,22 +120,28 @@ class ScoreboardObjective():
         ~ self.add()
         return self
     
-    def __getitem__(self, key: str) -> "ScoreboardPlayer":
+    def __getitem__(self, key: str | TargetSelector) -> "ScoreboardPlayer":
         return self.player(key)
     
-    def __setitem__(self, key: str, value: int):
+    def __setitem__(self, key: str | TargetSelector, value: int):
         return self.player(key).set(value)
     
     def rset(
         self, 
         d: dict[
-            str, "int | bool | (Function | Identifier | Command) | FunctionMacroArgument | DataStorageValue | ScoreboardPlayer"
+            str | TargetSelector, "int | bool | (Function | Identifier | Command) | FunctionMacroArgument | DataStorageValue | ScoreboardPlayer"
         ]
     ) -> CommandArray:
         from datagen.utils.scoreboard.player import ScoreboardPlayer
         from datagen.function.commands.execute import Execute
         arr = CommandArray([])
         for k, v in d.items():
+            if isinstance(k, TargetSelector):
+                k = str(k)
+            
+            if not isinstance(k, str):
+                raise ValueError(f"Invalid key type: {type(k)} for key: {k}")
+            
             if isinstance(v, (bool, int, str)):
                 arr += (self.player(k).set(int(v)))
             elif isinstance(v, (FunctionMacroArgument, DataStorageValue)):
