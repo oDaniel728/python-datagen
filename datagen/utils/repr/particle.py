@@ -1,9 +1,10 @@
+from datagen.types.util.holder import Holder
 from datagen.utils.minecraft.identifier import Identifier
 
 
-class ParticleType():
+class ParticleType(Holder[Identifier]):
     def __init__(self, id: Identifier) -> None:
-        self.id = id
+        super().__init__(id)
 
     def __str__(self) -> str:
-        return str(self.id)
+        return str(self.get())
