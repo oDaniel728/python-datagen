@@ -2,21 +2,18 @@ from typing import Self
 from uuid import UUID
 
 from datagen.extras.entities._util.hasproperties import HasProperties
-from datagen.extras.entities.baseentity import BaseEntity
+from datagen.extras.entities.mobentity import MobEntity
 from datagen.utils.repr.entitytype import EntityType
-from datagen.types.util.reprs import *
 
-class BaseProjectileEntity[T: HasProperties]:
-    def with_has_been_shot(self: T, value: bool) -> T:
-        self.properties["HasBeenShot"] = value
-        return self
-    
-    def with_left_owner(self: T, value: bool) -> T:
-        self.properties["LeftOwner"] = value
-        return self
-    
+type tuple4[T] = tuple[T, T, T, T]
+
+class TameableEntities[T: HasProperties]:
     def with_owner(self: T, value: tuple4[int] | list[int] | UUID) -> T:
         if isinstance(value, (tuple, list)):
             value = UUID(bytes=bytes(value))
         self.properties["Owner"] = value
+        return self
+    
+    def with_sitting(self: T, value: bool) -> T:
+        self.properties["Sitting"] = value
         return self

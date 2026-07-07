@@ -1,11 +1,12 @@
 from typing import Self
 from uuid import UUID
 
+from datagen.extras.entities.baseentity import BaseEntity
 from datagen.extras.entities.breedableentities import BreedableEntities
 from datagen.utils.minecraft.collections.entity_types import EntityTypes
 from datagen.types.util.reprs import tuple4
 
-class CamelEntity(BreedableEntities):
+class CamelEntity(BaseEntity, BreedableEntities):
     def __init__(self):
         super().__init__(EntityTypes.CAMEL)
 

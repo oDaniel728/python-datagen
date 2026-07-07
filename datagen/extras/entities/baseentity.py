@@ -1,3 +1,4 @@
+from datagen.extras.entities._util.hasproperties import HasProperties
 from datagen.extras.repr.entity import Entity
 from datagen.extras.repr.entitysettings import EntitySettings
 from datagen.utils.minecraft.identifier import Identifier
@@ -5,7 +6,7 @@ from datagen.utils.minecraft.text._base import BaseText
 from datagen.utils.repr.entitytype import EntityType
 from datagen.types.util.reprs import *
 
-class BaseEntity(Entity):
+class BaseEntity(Entity, HasProperties):
     def __init__(self, type: EntityType):
         super().__init__(type, {})
 

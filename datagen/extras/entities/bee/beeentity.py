@@ -1,10 +1,11 @@
 from datagen.extras.entities.angerentities import AngerEntities
+from datagen.extras.entities.baseentity import BaseEntity
 from datagen.extras.entities.breedableentities import BreedableEntities
 from datagen.utils.minecraft.blockposition import BlockPosition
 from datagen.utils.minecraft.collections.entity_types import EntityTypes
 
 
-class BeeEntity(BreedableEntities, AngerEntities):
+class BeeEntity(BaseEntity, BreedableEntities, AngerEntities):
     def __init__(self):
         super().__init__(EntityTypes.BEE)
 

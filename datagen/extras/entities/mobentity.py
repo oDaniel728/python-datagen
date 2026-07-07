@@ -2,6 +2,7 @@ from typing import Self
 from uuid import UUID
 
 from datagen.entityteam import EntityTeam
+from datagen.extras.entities._util.hasproperties import HasProperties
 from datagen.extras.entities.baseentity import BaseEntity
 from datagen.extras.entityattribute import EntityAttribute
 from datagen.loot_table.loot_table import LootTable
@@ -15,50 +16,47 @@ from datagen.utils.repr.position3 import Position3
 from datagen.types.util.reprs import *
 
 
-class MobEntity(BaseEntity):
-    def __init__(self, type: EntityType):
-        super().__init__(type)
-
-    def with_absorption_amount(self, value: float) -> "Self":
+class MobEntity[T: HasProperties]:
+    def with_absorption_amount(self: T, value: float) -> T:
         self.properties["AbsorptionAmount"] = value
         return self
     
-    def with_active_effects(self, values: list[AppliedStatusEffect]) -> "Self":
+    def with_active_effects(self: T, values: list[AppliedStatusEffect]) -> T:
         self.properties["ActiveEffects"] = list(values)
         return self
     
-    def add_active_effect(self, value: AppliedStatusEffect) -> "Self":
+    def add_active_effect(self: T, value: AppliedStatusEffect) -> T:
         self.properties.setdefault("ActiveEffects", []).append(value)
         return self
     
-    def with_attributes(self, values: list[EntityAttribute]) -> "Self":
+    def with_attributes(self: T, values: list[EntityAttribute]) -> T:
         self.properties["attributes"] = list(values)
         return self
     
-    def add_attribute(self, value: EntityAttribute) -> "Self":
+    def add_attribute(self: T, value: EntityAttribute) -> T:
         self.properties.setdefault("attributes", []).append(value)
         return self
     
-    def with_can_pick_up_loot(self, value: bool) -> "Self":
+    def with_can_pick_up_loot(self: T, value: bool) -> T:
         self.properties["CanPickUpLoot"] = value
         return self
     
-    def with_current_explosion_impact_pos(self, value: Position3 | tuple[float, float, float] | list[float]) -> "Self":
+    def with_current_explosion_impact_pos(self: T, value: Position3 | tuple[float, float, float] | list[float]) -> T:
         self.properties["CurrentExplosionImpactPos"] = Position3.auto(value)
         return self
     
-    def with_death_loot_table(self, value: str | Identifier | Holder[Identifier] | LootTable) -> "Self":
+    def with_death_loot_table(self: T, value: str | Identifier | Holder[Identifier] | LootTable) -> T:
         if isinstance(value, LootTable):
             self.properties["DeathLootTable"] = value.id
         else:
             self.properties["DeathLootTable"] = IdentifierConverter.auto(value)
         return self
     
-    def with_death_loot_table_seed(self, value: int) -> "Self":
+    def with_death_loot_table_seed(self: T, value: int) -> T:
         self.properties["DeathLootTableSeed"] = value
         return self
     
-    def with_death_time(self, value: int) -> "Self":
+    def with_death_time(self: T, value: int) -> T:
         self.properties["DeathTime"] = value
         return self
 
@@ -66,46 +64,46 @@ class MobEntity(BaseEntity):
         "head", "chest", "legs", "feet", "mainhand", "offhand", "body", "saddle"
     ]
     def with_drop_chances(
-        self,
+        self: T,
         value: dict[_TMobDropSlot, float]
-    ) -> "Self":
+    ) -> T:
         self.properties["drop_chances"] = value
         return self
     
     def with_equipment(
-        self,
+        self: T,
         value: dict[_TMobDropSlot, ItemStack]
-    ) -> "Self":
+    ) -> T:
         self.properties["equipment"] = value
         return self
     
-    def with_fall_flying(self, value: byte) -> "Self":
+    def with_fall_flying(self: T, value: byte) -> T:
         self.properties["FallFlying"] = value
         return self
 
-    def with_health(self, value: float) -> "Self":
+    def with_health(self: T, value: float) -> T:
         self.properties["Health"] = value
         return self
     
-    def with_hurt_time(self, value: short) -> "Self":
+    def with_hurt_time(self: T, value: short) -> T:
         self.properties["HurtTime"] = value
         return self
     
-    def with_leash(self, value: tuple4[int] | list[int] | UUID) -> "Self":
+    def with_leash(self: T, value: tuple4[int] | list[int] | UUID) -> T:
         if isinstance(value, (tuple, list)):
             value = UUID(bytes=bytes(value))
         self.properties["Leash"] = value
         return self
     
-    def with_no_ai(self, value: bool) -> "Self":
+    def with_no_ai(self: T, value: bool) -> T:
         self.properties["NoAI"] = value
         return self
     
-    def with_persistent(self, value: bool) -> "Self":
+    def with_persistent(self: T, value: bool) -> T:
         self.properties["PersistenceRequired"] = value
         return self
     
-    def with_team(self, value: EntityTeam | str) -> "Self":
+    def with_team(self: T, value: EntityTeam | str) -> T:
         if isinstance(value, EntityTeam):
             self.properties["Team"] = value
         else:

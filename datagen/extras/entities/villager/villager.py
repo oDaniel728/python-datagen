@@ -1,6 +1,7 @@
 from typing import Literal, Self
 from uuid import UUID
 
+from datagen.extras.entities.baseentity import BaseEntity
 from datagen.extras.entities.mobentity import MobEntity
 from datagen.extras.entities.villager.tradeoffer import VillagerTradeOffer
 from datagen.utils.minecraft.collections.entity_types import EntityTypes
@@ -11,7 +12,7 @@ from datagen.utils.repr.villager_type import VillagerType
 from datagen.types.util.reprs import *
 
 
-class VillagerEntity(MobEntity):
+class VillagerEntity(BaseEntity, MobEntity):
     def __init__(self):
         super().__init__(EntityTypes.VILLAGER)
 

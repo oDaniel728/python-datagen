@@ -1,10 +1,11 @@
 from datagen.extras.entities.armorstand.armorstandpose import ArmorStandPose
+from datagen.extras.entities.baseentity import BaseEntity
 from datagen.extras.entities.mobentity import MobEntity
 from datagen.utils.minecraft.collections.entity_types import EntityTypes
 from datagen.utils.repr.entitytype import EntityType
 
 
-class ArmorStandEntity(MobEntity):
+class ArmorStandEntity(BaseEntity, MobEntity):
     def __init__(self):
         super().__init__(EntityTypes.ARMOR_STAND)
     
