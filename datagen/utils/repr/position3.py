@@ -53,3 +53,9 @@ class Position3[N: int | float | str | FunctionMacroArgument]():
                 return Position3(int(s[0]), int(s[1]), int(s[2]))
         else:
             raise ValueError(f"Cannot convert {v} to Position3")
+        
+
+    def __iter__(self):
+        yield self.x
+        yield self.y
+        yield self.z
