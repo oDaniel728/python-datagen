@@ -1,3 +1,6 @@
+from typing import TYPE_CHECKING
+
+from datagen.function.commands.command import Command
 from datagen.function.commands.customcommand import CustomCommand
 from datagen.function.commands.summon import Summon
 from datagen.utils.converters import Dictionary
@@ -5,6 +8,9 @@ from datagen.utils.minecraft.relativeplayerposition import RelativePlayerPositio
 from datagen.utils.minecraft.targetselector import TargetSelector
 from datagen.utils.minecraft.targetselectorsettings import TargetSelectorSettings
 from datagen.utils.repr.entitytype import EntityType
+if TYPE_CHECKING:
+    from datagen.entitytag import EntityTag
+    from datagen.utils.repr.itemstack import ItemStack
 from datagen.utils.repr.position3 import Position3
 
 
@@ -30,3 +36,17 @@ class Entity():
     
     def nbt(self) -> dict:
         return self.properties | {"id": self.type.id}
+    
+    def give(self, item: "ItemStack") -> Command:
+        from datagen.function.commands.give import Give
+        return Give(self.target(), item)
+    
+    def kill(self) -> Command:
+        from datagen.function.commands.kill import Kill
+        return Kill(self.target())
+    
+    def add_tag(self, tag: "EntityTag") -> Command:
+        return tag.add(self.target())
+
+    def __repr__(self) -> str:
+        return f"Entity({self.type}, {self.properties})"
