@@ -260,6 +260,12 @@ class SNBTSerializer:
 
         return value
 
+    @staticmethod
+    def deserialize_value(snbt: str) -> Any:
+        """Parse any SNBT value (not only compounds)."""
+        parser = _SNBTParser(snbt)
+        return parser.parse()
+
 
 # ============================================================
 # PARSER
