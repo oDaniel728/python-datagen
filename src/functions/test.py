@@ -1,18 +1,22 @@
 from datagen.extras.color import Color
+from datagen.extras.complex.complexitem import ComplexItem
 from datagen.extras.entities.areaeffectcloud.areaeffectcloud import AreaEffectCloudEntity
 from datagen.extras.entities.areaeffectcloud.potiontypes import PotionTypes
 from datagen.extras.entities.villager.tradeoffer import VillagerTradeOffer
 from datagen.extras.entities.villager.villager import VillagerEntity
 from datagen.extras.packs.pack import Pack
 from datagen.extras.utils.commandchain import CommandChain
+from datagen.function.commands.kill import Kill
 from datagen.function.commands.say import Say
 from datagen.function.commands.summon import Summon
 from datagen.function.function import Function
+from datagen.utils.minecraft.collections.blocks import Blocks
 from datagen.utils.minecraft.collections.items import Items
 from datagen.utils.minecraft.collections.particle_types import ParticleTypes
 from datagen.utils.minecraft.collections.status_effects import StatusEffects
 from datagen.utils.minecraft.collections.villager_professions import VillagerProfessions
 from datagen.utils.minecraft.relativeplayerposition import RelativePlayerPosition
+from datagen.utils.minecraft.targetselector import TargetSelector
 
 
 def register_test(pack: Pack) -> None:
@@ -46,3 +50,19 @@ def register_test(pack: Pack) -> None:
             ])
         )
         ~ E.summon()
+
+    with~ Function(pack.ns / "test/complex_item") as test_complex_item:
+        complex_item = ComplexItem(
+            pack.ns / "test_complex_item",
+            Blocks.STONE.id,
+            {
+                "custom_data": {
+                    "foo": "bar",
+                    "baz": 123,
+                }
+            }
+        )
+        ~ complex_item.give(TargetSelector.NEAREST_PLAYER, 1)
+
+    with~ Function(pack.ns / "test/complex_item_on_ground") as test_complex_item_on_ground:
+        ~ Kill(complex_item.get_on_ground_target())

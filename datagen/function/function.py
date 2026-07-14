@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Self
+from typing import TYPE_CHECKING, Any, Callable, Self, overload
 
 
 from datagen.function.functionmacroargument import FunctionMacroArgument
@@ -229,8 +229,18 @@ with Function(Identifier.of("pack:another")) as g:
         ns += self
         return self
 
-    def __call__(self, *a: P.args, **k: P.kwargs) -> "CommandArray":
+    @overload
+    def __call__(self, *a: P.args, **k: P.kwargs) -> "CommandArray": ...
+    @overload
+    def __call__(self, callable: Callable, /) -> None: ...
+    
+    def __call__(self, *a, **k) -> "CommandArray | None":
         """Allows the function to be called like a regular Python function, returning a `RunFunction` command that executes this function with the given arguments. The arguments can be provided as positional or keyword arguments, and will be passed to the `run` method to create the appropriate command. This syntax is a convenient way to create a command that runs the function with specific arguments, and can be used in command sequences or other contexts where commands are needed."""
+        if len(a) == 1 and callable(a[0]) and not k:
+            cb = a[0]
+            with self as f:
+                cb()
+            return None
         args = k | {str(i): ag for i, ag in enumerate(a)}
         return self.run(args)
     
